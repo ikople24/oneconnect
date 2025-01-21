@@ -1,3 +1,4 @@
+import DropdownListMenu from "./DropdownListMenu";
 import Logo from "./Logo";
 
 const Navbar = () => {
@@ -9,7 +10,7 @@ const Navbar = () => {
       >
         <Logo/>
         <h1>cityname</h1>
-        <h1>Profile</h1>
+        <DropdownListMenu />
         
       </div>
     </nav>
