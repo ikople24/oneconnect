@@ -10,6 +10,7 @@ import { AlignJustify } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { links } from "@/utils/links";
 import Usericon from "./Usericon";
+import { SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 
 
 const DropdownListMenu = () => {
@@ -34,7 +35,30 @@ const DropdownListMenu = () => {
             )
           })
         }
+        <DropdownMenuSeparator />
 
+        <SignedOut>
+        <DropdownMenuItem>
+        {/* กรณีทียังไม่ได้ล็อกอิน */}
+          <SignInButton mode="modal">
+          <button>login</button>
+          </SignInButton>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>
+          <SignUpButton mode="modal">
+            <button>Registers</button>
+          </SignUpButton>
+        </DropdownMenuItem>
+        </SignedOut>
+        
+        {/* กรณีที่ล็อคอินแล้ว */}
+        <SignedIn>
+          <DropdownMenuItem>
+            <SignOutButton />
+          </DropdownMenuItem>
+        </SignedIn>
+      
         
        
       </DropdownMenuContent>

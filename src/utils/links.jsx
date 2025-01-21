@@ -1,4 +1,6 @@
 export const links = [
-    {href: "/", label: "Home"},
-    {href: "/about", label: "About"},
+    {href: "/", label: "Homepage"},
+    {href: "/register", label: "Register"},
+    {href: "/admin/createuser", label: "CreateUser"},
+    {href: "/admin/mainapps", label: "MainApps"},
 ]

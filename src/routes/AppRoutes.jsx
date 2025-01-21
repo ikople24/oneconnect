@@ -4,7 +4,10 @@ import Navbar from "@/components/nevbar/Navbar";
 import Layout from "@/layouts/Layout";
 import CreateUser from "@/pages/admin/CreateUser";
 import MainApps from "@/pages/admin/MainApps";
+import Homepage from "@/pages/homepage";
 import Notfound from "@/pages/Notfound";
+import Register from "@/pages/Register";
+
 import { BrowserRouter, Routes, Route, Outlet } from "react-router";
 
 const AppRoutes = () => {
@@ -15,8 +18,8 @@ const AppRoutes = () => {
         <Route element={
           <Layout/>
         } >
-          <Route path="/" element={<h1>homepage</h1>} />
-          <Route path="about" element={<h1>About page</h1>} />
+          <Route path="/" element={<Homepage/>} />
+          <Route path="register" element={<Register/>} />
         </Route>
 
 
