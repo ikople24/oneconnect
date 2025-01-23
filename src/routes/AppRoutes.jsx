@@ -4,7 +4,7 @@ import Navbar from "@/components/nevbar/Navbar";
 import Layout from "@/layouts/Layout";
 import CreateUser from "@/pages/admin/CreateUser";
 import MainApps from "@/pages/admin/MainApps";
-import Homepage from "@/pages/homepage";
+import Homepage from "@/pages/Homepage";
 import Notfound from "@/pages/Notfound";
 import Register from "@/pages/Register";
 

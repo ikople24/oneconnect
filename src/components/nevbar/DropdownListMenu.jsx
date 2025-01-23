@@ -55,6 +55,7 @@ const DropdownListMenu = () => {
         {/* กรณีที่ล็อคอินแล้ว */}
         <SignedIn>
           <DropdownMenuItem>
+            <UserButton />
             <SignOutButton />
           </DropdownMenuItem>
         </SignedIn>
