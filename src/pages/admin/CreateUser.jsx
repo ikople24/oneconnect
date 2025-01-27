@@ -9,17 +9,42 @@ const CreateUser = () => {
     role: "",
   });
 
+  // State สำหรับเก็บข้อผิดพลาด
+  const [errors, setErrors] = useState({});
+
   // Handle การเปลี่ยนค่าฟอร์ม
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Validate ฟอร์ม
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name || formData.name.length > 50) {
+      newErrors.name = "Name must be less than 50 characters.";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format.";
+    }
+    const phoneRegex = /^\d{10,}$/;
+    if (!formData.phone || !phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Phone must be at least 10 digits.";
+    }
+    return newErrors;
+  };
+
   // Handle การ submit ฟอร์ม
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted", formData);
-    // คุณสามารถเพิ่ม logic สำหรับการส่งข้อมูลไปยัง API ได้ที่นี่
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      console.log("Form Submitted", formData);
+      // คุณสามารถเพิ่ม logic สำหรับการส่งข้อมูลไปยัง API ได้ที่นี่
+    }
   };
 
   return (
@@ -32,81 +57,62 @@ const CreateUser = () => {
           </div>
 
           {/* Form */}
-          <form className="w-full" onSubmit={handleSubmit}>
-            {/* Name */}
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
                 type="text"
-                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Enter your name"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
+              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
             </div>
-
-            {/* Email */}
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
-                id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Enter your email"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
-
-            {/* Phone */}
-            <div className="mb-4">
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                Phone
-              </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Phone</label>
               <input
-                type="tel"
-                id="phone"
+                type="text"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Enter your phone"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
+              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
             </div>
-
-            {/* Role */}
-            <div className="mb-4">
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Role</label>
               <select
-                id="role"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               >
-                <option value="">Select role</option>
+                <option value="">Select a role</option>
                 <option value="admin">Admin</option>
-                <option value="user">User</option>
-                <option value="guest">Guest</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
               </select>
             </div>
-
-            {/* Save Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Save
-            </button>
+            <div>
+              <button
+                type="submit"
+                className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
           </form>
         </div>
       </div>
