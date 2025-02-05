@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 // rafce
 const LayoutAdmin = () => {
   return (
-    <main className="container">
+    <main >
       <Navbar />
       <Outlet />
     </main>
