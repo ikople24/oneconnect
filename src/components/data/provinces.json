@@ -4,8 +4,10 @@
     "name_th": "กรุงเทพมหานคร",
     "name_en": "Bangkok",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.7563,
+    "longitude": 100.5018,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -13,8 +15,10 @@
     "name_th": "สมุทรปราการ",
     "name_en": "Samut Prakan",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.5927,
+    "longitude": 100.6010,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -22,8 +26,10 @@
     "name_th": "นนทบุรี",
     "name_en": "Nonthaburi",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.8743,
+    "longitude": 100.5167,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -31,8 +37,10 @@
     "name_th": "ปทุมธานี",
     "name_en": "Pathum Thani",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.0000,
+    "longitude": 100.5167,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -40,8 +48,10 @@
     "name_th": "พระนครศรีอยุธยา",
     "name_en": "Phra Nakhon Si Ayutthaya",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.3514,
+    "longitude": 100.5680,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -49,8 +59,10 @@
     "name_th": "อ่างทอง",
     "name_en": "Ang Thong",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.5950,
+    "longitude": 100.4531,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -58,8 +70,10 @@
     "name_th": "ลพบุรี",
     "name_en": "Loburi",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.8044,
+    "longitude": 100.6190,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -67,8 +81,10 @@
     "name_th": "สิงห์บุรี",
     "name_en": "Sing Buri",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.8994,
+    "longitude": 100.4097,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -76,8 +92,10 @@
     "name_th": "ชัยนาท",
     "name_en": "Chai Nat",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.1892,
+    "longitude": 100.1320,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -85,8 +103,10 @@
     "name_th": "สระบุรี",
     "name_en": "Saraburi",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.5294,
+    "longitude": 100.9091,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -94,8 +114,10 @@
     "name_th": "ชลบุรี",
     "name_en": "Chon Buri",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.3611,
+    "longitude": 100.9846,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -103,8 +125,10 @@
     "name_th": "ระยอง",
     "name_en": "Rayong",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 12.6800,
+    "longitude": 101.2700,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -112,8 +136,10 @@
     "name_th": "จันทบุรี",
     "name_en": "Chanthaburi",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 12.6073,
+    "longitude": 102.1100,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -121,8 +147,10 @@
     "name_th": "ตราด",
     "name_en": "Trat",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 11.8728,
+    "longitude": 102.5140,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -130,8 +158,10 @@
     "name_th": "ฉะเชิงเทรา",
     "name_en": "Chachoengsao",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.6827,
+    "longitude": 101.0300,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -139,8 +169,10 @@
     "name_th": "ปราจีนบุรี",
     "name_en": "Prachin Buri",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.5400,
+    "longitude": 101.3886,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -148,8 +180,10 @@
     "name_th": "นครนายก",
     "name_en": "Nakhon Nayok",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.0842,
+    "longitude": 101.2243,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -157,8 +191,10 @@
     "name_th": "สระแก้ว",
     "name_en": "Sa Kaeo",
     "geography_id": 5,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.9980,
+    "longitude": 102.0990,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -166,8 +202,10 @@
     "name_th": "นครราชสีมา",
     "name_en": "Nakhon Ratchasima",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.9707,
+    "longitude": 102.0972,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -175,8 +213,10 @@
     "name_th": "บุรีรัมย์",
     "name_en": "Buri Ram",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.9893,
+    "longitude": 103.0920,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -184,8 +224,10 @@
     "name_th": "สุรินทร์",
     "name_en": "Surin",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.8850,
+    "longitude": 103.4942,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -193,8 +235,10 @@
     "name_th": "ศรีสะเกษ",
     "name_en": "Si Sa Ket",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.1167,
+    "longitude": 104.3194,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -202,8 +246,10 @@
     "name_th": "อุบลราชธานี",
     "name_en": "Ubon Ratchathani",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.0800,
+    "longitude": 104.8820,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -211,8 +257,10 @@
     "name_th": "ยโสธร",
     "name_en": "Yasothon",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.7483,
+    "longitude": 104.1500,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -220,8 +268,10 @@
     "name_th": "ชัยภูมิ",
     "name_en": "Chaiyaphum",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.8000,
+    "longitude": 102.0200,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -229,8 +279,10 @@
     "name_th": "อำนาจเจริญ",
     "name_en": "Amnat Charoen",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.8587,
+    "longitude": 104.6360,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -238,8 +290,10 @@
     "name_th": "หนองบัวลำภู",
     "name_en": "Nong Bua Lam Phu",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.2000,
+    "longitude": 102.3830,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -247,8 +301,10 @@
     "name_th": "ขอนแก่น",
     "name_en": "Khon Kaen",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.4413,
+    "longitude": 102.8322,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -256,8 +312,10 @@
     "name_th": "อุดรธานี",
     "name_en": "Udon Thani",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.4130,
+    "longitude": 102.7850,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -265,8 +323,10 @@
     "name_th": "เลย",
     "name_en": "Loei",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.4900,
+    "longitude": 101.7380,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -274,8 +334,10 @@
     "name_th": "หนองคาย",
     "name_en": "Nong Khai",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.8632,
+    "longitude": 102.7414,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -283,8 +345,10 @@
     "name_th": "มหาสารคาม",
     "name_en": "Maha Sarakham",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.1825,
+    "longitude": 103.2969,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -292,8 +356,10 @@
     "name_th": "ร้อยเอ็ด",
     "name_en": "Roi Et",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.7813,
+    "longitude": 104.7000,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -301,8 +367,10 @@
     "name_th": "กาฬสินธุ์",
     "name_en": "Kalasin",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.4280,
+    "longitude": 103.5040,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -310,8 +378,10 @@
     "name_th": "สกลนคร",
     "name_en": "Sakon Nakhon",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.1754,
+    "longitude": 104.1460,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -319,8 +389,10 @@
     "name_th": "นครพนม",
     "name_en": "Nakhon Phanom",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.3580,
+    "longitude": 104.7500,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -328,8 +400,10 @@
     "name_th": "มุกดาหาร",
     "name_en": "Mukdahan",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.5491,
+    "longitude": 104.6304,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -337,8 +411,10 @@
     "name_th": "เชียงใหม่",
     "name_en": "Chiang Mai",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 18.7901,
+    "longitude": 98.9853,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -346,8 +422,10 @@
     "name_th": "ลำพูน",
     "name_en": "Lamphun",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 18.5689,
+    "longitude": 97.9283,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -355,8 +433,10 @@
     "name_th": "ลำปาง",
     "name_en": "Lampang",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 18.2922,
+    "longitude": 99.5101,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -364,8 +444,10 @@
     "name_th": "อุตรดิตถ์",
     "name_en": "Uttaradit",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.6307,
+    "longitude": 100.0895,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -373,8 +455,10 @@
     "name_th": "แพร่",
     "name_en": "Phrae",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 18.1514,
+    "longitude": 100.1300,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -382,8 +466,10 @@
     "name_th": "น่าน",
     "name_en": "Nan",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 18.7724,
+    "longitude": 100.7762,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -391,8 +477,10 @@
     "name_th": "พะเยา",
     "name_en": "Phayao",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 19.2204,
+    "longitude": 99.9382,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -400,8 +488,10 @@
     "name_th": "เชียงราย",
     "name_en": "Chiang Rai",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 19.9126,
+    "longitude": 99.8275,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -409,8 +499,10 @@
     "name_th": "แม่ฮ่องสอน",
     "name_en": "Mae Hong Son",
     "geography_id": 1,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 19.3030,
+    "longitude": 97.9812,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -418,8 +510,10 @@
     "name_th": "นครสวรรค์",
     "name_en": "Nakhon Sawan",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.7084,
+    "longitude": 100.1258,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -427,8 +521,10 @@
     "name_th": "อุทัยธานี",
     "name_en": "Uthai Thani",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 15.3630,
+    "longitude": 99.9903,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -436,8 +532,10 @@
     "name_th": "กำแพงเพชร",
     "name_en": "Kamphaeng Phet",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.4833,
+    "longitude": 99.5290,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -445,8 +543,10 @@
     "name_th": "ตาก",
     "name_en": "Tak",
     "geography_id": 4,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.8793,
+    "longitude": 99.1373,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -454,8 +554,10 @@
     "name_th": "สุโขทัย",
     "name_en": "Sukhothai",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 17.0250,
+    "longitude": 99.8221,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -463,8 +565,10 @@
     "name_th": "พิษณุโลก",
     "name_en": "Phitsanulok",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.8250,
+    "longitude": 100.2674,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -472,8 +576,10 @@
     "name_th": "พิจิตร",
     "name_en": "Phichit",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.4346,
+    "longitude": 100.3622,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -481,8 +587,10 @@
     "name_th": "เพชรบูรณ์",
     "name_en": "Phetchabun",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 16.4200,
+    "longitude": 10101.15500,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -490,8 +598,10 @@
     "name_th": "ราชบุรี",
     "name_en": "Ratchaburi",
     "geography_id": 4,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.5410,
+    "longitude": 99.8160,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -499,8 +609,10 @@
     "name_th": "กาญจนบุรี",
     "name_en": "Kanchanaburi",
     "geography_id": 4,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.0227,
+    "longitude": 99.5084,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -508,8 +620,10 @@
     "name_th": "สุพรรณบุรี",
     "name_en": "Suphan Buri",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 14.4675,
+    "longitude": 100.1057,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -517,8 +631,10 @@
     "name_th": "นครปฐม",
     "name_en": "Nakhon Pathom",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.8194,
+    "longitude": 100.0533,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -526,8 +642,10 @@
     "name_th": "สมุทรสาคร",
     "name_en": "Samut Sakhon",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.5857,
+    "longitude": 100.2757,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -535,8 +653,10 @@
     "name_th": "สมุทรสงคราม",
     "name_en": "Samut Songkhram",
     "geography_id": 2,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 13.4131,
+    "longitude": 99.9876,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -544,8 +664,10 @@
     "name_th": "เพชรบุรี",
     "name_en": "Phetchaburi",
     "geography_id": 4,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 12.9650,
+    "longitude": 99.9571,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -553,8 +675,10 @@
     "name_th": "ประจวบคีรีขันธ์",
     "name_en": "Prachuap Khiri Khan",
     "geography_id": 4,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 11.7952,
+    "longitude": 99.7971,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -562,8 +686,10 @@
     "name_th": "นครศรีธรรมราช",
     "name_en": "Nakhon Si Thammarat",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 8.4383,
+    "longitude": 99.9608,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -571,8 +697,10 @@
     "name_th": "กระบี่",
     "name_en": "Krabi",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 8.0833,
+    "longitude": 98.9167,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -580,8 +708,10 @@
     "name_th": "พังงา",
     "name_en": "Phangnga",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 8.4300,
+    "longitude": 98.5649,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -589,8 +719,10 @@
     "name_th": "ภูเก็ต",
     "name_en": "Phuket",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 7.8804,
+    "longitude": 98.3923,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -598,8 +730,10 @@
     "name_th": "สุราษฎร์ธานี",
     "name_en": "Surat Thani",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 9.1010,
+    "longitude": 99.3257,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -607,8 +741,10 @@
     "name_th": "ระนอง",
     "name_en": "Ranong",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 9.9333,
+    "longitude": 98.6172,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -616,8 +752,10 @@
     "name_th": "ชุมพร",
     "name_en": "Chumphon",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 10.4981,
+    "longitude": 99.1839,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -625,8 +763,10 @@
     "name_th": "สงขลา",
     "name_en": "Songkhla",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 7.1883,
+    "longitude": 100.5978,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -634,8 +774,10 @@
     "name_th": "สตูล",
     "name_en": "Satun",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 7.0064,
+    "longitude": 100.0167,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -643,8 +785,10 @@
     "name_th": "ตรัง",
     "name_en": "Trang",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 7.5528,
+    "longitude": 99.6041,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -652,8 +796,10 @@
     "name_th": "พัทลุง",
     "name_en": "Phatthalung",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 7.6167,
+    "longitude": 100.0667,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -661,8 +807,10 @@
     "name_th": "ปัตตานี",
     "name_en": "Pattani",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 6.8713,
+    "longitude": 98.1330,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -670,8 +818,10 @@
     "name_th": "ยะลา",
     "name_en": "Yala",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 6.5420,
+    "longitude": 101.2825,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -679,8 +829,10 @@
     "name_th": "นราธิวาส",
     "name_en": "Narathiwat",
     "geography_id": 6,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 6.4307,
+    "longitude": 101.8262,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   },
   {
@@ -688,8 +840,10 @@
     "name_th": "บึงกาฬ",
     "name_en": "buogkan",
     "geography_id": 3,
-    "created_at": "2019-08-09T03:33:09.000+07:00",
-    "updated_at": "2022-05-16T06:31:03.000+07:00",
+    "latitude": 18.3392,
+    "longitude": 103.3936,
+    "created_at": "9/8/2019 03:33:09",
+    "updated_at": "16/5/2022 06:31:03",
     "deleted_at": null
   }
 ]

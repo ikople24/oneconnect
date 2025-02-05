@@ -2,15 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import thailandPolygon from '../components/data/thailand.json'
-import thailandProvinceList from '../components/data/province.json'
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+import thailandPolygon from "../components/data/thailand.json";
+import { Select } from "antd";
+import thailandProvinceList from "../components/data/provinces.json";
 // import logo from "../assets/logo.png";
 
 const geoUrl = "/custom.geo.json";
@@ -61,14 +62,20 @@ export default function ServiceAreaSelection() {
     fetchPlaces();
     fetchGeoData();
   }, []);
-
-  const handleConfirm = () => {
-    if (selectedPlace) {
-      navigate(`/dashboard?place=${selectedPlace}`);
-    } else {
-      alert("กรุณาเลือกพื้นที่ก่อนกดปุ่มยืนยัน");
-    }
+  const onChange = (value) => {
+    console.log(`selected ${value}`);
   };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
+
+  // const handleConfirm = () => {
+  //   if (selectedPlace) {
+  //     navigate(`/dashboard?place=${selectedPlace}`);
+  //   } else {
+  //     alert("กรุณาเลือกพื้นที่ก่อนกดปุ่มยืนยัน");
+  //   }
+  // };
 
   const handleMapClick = (e) => {
     console.log(e.latlng);
@@ -115,7 +122,22 @@ export default function ServiceAreaSelection() {
           <h1 className="text-2xl font-bold mb-4">
             เลือกพื้นที่ที่จะใช้บริการ
           </h1>
-          <Select onValueChange={(value) => setSelectedPlace(value)}>
+
+          <Select
+            showSearch
+            placeholder="เลือกพื้นที่ของคุณ"
+            optionFilterProp="label"
+            onChange={onChange}
+            onSearch={onSearch}
+            options={thailandProvinceList.map((province) => {
+              return {
+                label: province.name_th,
+                value: province.name_th,
+              };
+            })}
+          />
+
+          {/* <Select onValueChange={(value) => setSelectedPlace(value)}>
             <SelectTrigger className="w-full lg:w-72 h-14 text-lg mx-auto">
               <SelectValue placeholder="เลือกพื้นที่ของคุณ" />
             </SelectTrigger>
@@ -130,8 +152,8 @@ export default function ServiceAreaSelection() {
                 <SelectItem disabled>ไม่พบพื้นที่</SelectItem>
               )}
             </SelectContent>
-          </Select>
-          <button
+          </Select> */}
+          {/* <button
             className={`mt-8 w-full lg:w-72 h-14 px-4 py-4 text-lg text-center rounded-md shadow-lg ${
               selectedPlace
                 ? "bg-black text-white cursor-pointer"
@@ -141,7 +163,7 @@ export default function ServiceAreaSelection() {
             disabled={!selectedPlace}
           >
             ยืนยัน
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

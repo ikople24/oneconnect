@@ -7,6 +7,7 @@ export const ENDPOINT = {
   UPDATE_PLACE: `${baseUrl}/places/`, // PARAM
   //GET
   // dropdown
+  GET_ALL_PROVINCE: `${baseUrl}/places/province`,
   GET_ALL_CITY: `${baseUrl}/places/city`,
   GET_ALL_ZONE: `${baseUrl}/places/zone`,
   GET_ALL_PLACE: `${baseUrl}/places`,
