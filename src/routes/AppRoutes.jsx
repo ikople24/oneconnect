@@ -21,7 +21,9 @@ const AppRoutes = () => {
         <Route element={
           <Layout/>
         } >
-          <Route path="/" element={<Markerpin/>} />
+          <Route path="/" element={<Homepage/>}  />
+          <Route path="/map" element={<Markerpin/>} />
+
           {/* <Route path="createuser" element={<CreateUser/>} /> */}
           <Route path="markerinformation" element={<Markerinformation/>} />
           <Route path="dashboard" element={<Dashboard/>} />

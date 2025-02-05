@@ -6,8 +6,8 @@ const Homepage = () => {
   return (
     <div>
       <h1>Homepage</h1>
-      <Formmap />
-      <Dashboard />
+      {/* <Formmap />
+      <Dashboard /> */}
     </div>
   )
 }

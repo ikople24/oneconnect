@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import thailandPolygon from '../components/data/thailand.json'
+import thailandProvinceList from '../components/data/province.json'
 // import logo from "../assets/logo.png";
 
 const geoUrl = "/custom.geo.json";
@@ -69,7 +71,11 @@ export default function ServiceAreaSelection() {
   };
 
   const handleMapClick = (e) => {
-    const { properties } = e.layer.feature;
+    console.log(e.latlng);
+    const { properties } = e?.layer?.feature;
+
+    console.log(properties);
+
     setSelectedPlace(properties.name);
   };
 
@@ -79,14 +85,14 @@ export default function ServiceAreaSelection() {
         {/* Map Section */}
         <div className="map-section flex-grow h-[70vh] lg:h-[90vh] w-full lg:w-3/4 rounded-lg shadow-lg">
           <MapContainer
-            center={[13.736717, 100.523186]}
-            zoom={5}
+            center={[13.885556744960699, 100.63529495228143]}
+            zoom={6}
             className="h-full w-full"
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {geoData && (
+            {thailandPolygon && (
               <GeoJSON
-                data={geoData}
+                data={thailandPolygon}
                 onEachFeature={(feature, layer) => {
                   layer.on({
                     click: handleMapClick,
@@ -106,16 +112,18 @@ export default function ServiceAreaSelection() {
         {/* Dropdown Section */}
         <div className="dropdown-section w-full lg:w-2/4 text-center px-4 lg:px-0 py-6 ml-4">
           {/* <img src={logo} alt="logo" className="w-20 mx-auto" /> */}
-          <h1 className="text-2xl font-bold mb-4">เลือกพื้นที่ที่จะใช้บริการ</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            เลือกพื้นที่ที่จะใช้บริการ
+          </h1>
           <Select onValueChange={(value) => setSelectedPlace(value)}>
             <SelectTrigger className="w-full lg:w-72 h-14 text-lg mx-auto">
               <SelectValue placeholder="เลือกพื้นที่ของคุณ" />
             </SelectTrigger>
             <SelectContent>
-              {places.length > 0 ? (
-                places.map((place, index) => (
-                  <SelectItem key={index} value={place}>
-                    {place}
+              {thailandProvinceList.length > 0 ? (
+                thailandProvinceList.map((place, index) => (
+                  <SelectItem key={index} value={place.name_th}>
+                    {place.name_th}
                   </SelectItem>
                 ))
               ) : (
@@ -124,17 +132,17 @@ export default function ServiceAreaSelection() {
             </SelectContent>
           </Select>
           <button
-            className={`mt-8 w-full lg:w-72 h-14 px-4 py-4 text-lg text-center rounded-md shadow-lg ${selectedPlace
-              ? "bg-black text-white cursor-pointer"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
+            className={`mt-8 w-full lg:w-72 h-14 px-4 py-4 text-lg text-center rounded-md shadow-lg ${
+              selectedPlace
+                ? "bg-black text-white cursor-pointer"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
             onClick={handleConfirm}
             disabled={!selectedPlace}
           >
             ยืนยัน
           </button>
         </div>
-
       </div>
     </div>
   );

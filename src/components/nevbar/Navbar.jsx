@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import DropdownListMenu from "./DropdownListMenu";
 import Logo from "./Logo";
 
 const Navbar = () => {
+  const navigate = useNavigate()
+
   return (
     <nav>
       <div
@@ -12,9 +15,10 @@ const Navbar = () => {
        
         <div className="flex gap-2 ml-5">
         <Logo/>
-        <Button variant="ghost" className="bg-gray-100 text-primaryContent ml-5">ข้อมูลเมือง</Button>
-        <Button variant="ghost" className="bg-gray-100 text-primaryContent">ของดีในเมือง</Button>
-        <Button variant="ghost" className="bg-gray-100 text-primaryContent">สุขภาพคนเมือง</Button>
+        <Button onClick={()=> navigate('/')} variant="ghost" className="bg-gray-100 text-primaryContent ml-5">ข้อมูลเมือง</Button>
+        <Button onClick={()=> navigate('/map')} variant="ghost" className="bg-gray-100 text-primaryContent ml-5">แผนที่</Button>
+        <Button onClick={()=> navigate('/')} variant="ghost" className="bg-gray-100 text-primaryContent">ของดีในเมือง</Button>
+        <Button onClick={()=> navigate('/')} variant="ghost" className="bg-gray-100 text-primaryContent">สุขภาพคนเมือง</Button>
         </div>
         <h1>cityname</h1>
         <DropdownListMenu />
