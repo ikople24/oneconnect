@@ -1,50 +1,45 @@
-import { useNavigate } from "react-router";
-import { Button } from "../ui/button";
+import React, { useState } from "react";
 import DropdownListMenu from "./DropdownListMenu";
 import Logo from "./Logo";
+import { Link } from "react-router-dom";
+import { AlignJustify, X } from "lucide-react";
 
 const Navbar = () => {
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <nav>
-      <div
-        className="flex flex-col items-center bg-primaryTitle text-slate-200 
-      py-4 justify-between sm:flex-row gap-4 "
-      >
-        <div className="flex gap-2 ml-5">
-          <Logo />
-          <Button
-            onClick={() => navigate("/")}
-            variant="ghost"
-            className="bg-gray-100 text-primaryContent ml-5"
-          >
-            ข้อมูลเมือง
-          </Button>
-          <Button
-            onClick={() => navigate("/map")}
-            variant="ghost"
-            className="bg-gray-100 text-primaryContent ml-5"
-          >
-            แผนที่
-          </Button>
-          <Button
-            onClick={() => navigate("/")}
-            variant="ghost"
-            className="bg-gray-100 text-primaryContent"
-          >
-            ของดีในเมือง
-          </Button>
-          <Button
-            onClick={() => navigate("/")}
-            variant="ghost"
-            className="bg-gray-100 text-primaryContent"
-          >
-            สุขภาพคนเมือง
-          </Button>
+    <nav className="bg-white shadow-md">
+      <div className="container mx-auto flex justify-between items-center">
+        <Logo />
+        <div className="hidden md:flex space-x-16">
+          <Link to="/">ข้อมูลเมือง</Link>
+          <Link to="/map">แผนที่</Link>
+          <Link to="/">ของดีในเมือง</Link>
+          <Link to="/">สุขภาพคนเมือง</Link>
         </div>
-        <h1>cityname</h1>
-        <DropdownListMenu />
+        <div className="hidden md:block">
+          <DropdownListMenu />
+        </div>
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={24} /> : <AlignJustify size={24} />}
+        </button>
       </div>
+      {isOpen && (
+        <div className="md:hidden flex flex-col justify-center items-center space-y-4 p-4 bg-white shadow-md">
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            ข้อมูลเมือง
+          </Link>
+          <Link to="/map" onClick={() => setIsOpen(false)}>
+            แผนที่
+          </Link>
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            ของดีในเมือง
+          </Link>
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            สุขภาพคนเมือง
+          </Link>
+          <DropdownListMenu />
+        </div>
+      )}
     </nav>
   );
 };
