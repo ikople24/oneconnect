@@ -1,12 +1,14 @@
-import { Link } from "react-router";
-import { Button } from "../ui/button";
+import React from "react";
+import { Link } from "react-router-dom";
 
-// rafce
+
 const Logo = () => {
   return (
-    <Button asChild>
-      <Link to="/">Oneconnect</Link>
-    </Button>
+    <>
+      <Link to="/">
+        <img src="/ocn_logo.png" className="w-20 h-20 p-2 object-fill" />
+      </Link>
+    </>
   );
 };
 export default Logo;
