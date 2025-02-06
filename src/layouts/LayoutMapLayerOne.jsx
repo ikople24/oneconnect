@@ -6,9 +6,7 @@ const LayoutMapLayerOne = () => {
   return (
     <main className="">
       <div className="flex flex-col h-screen">
-        <nav className="">
-          {/* <Navbar /> */}
-        </nav>
+          <Navbar />
 
         <div className="flex flex-1">
           <div className="flex-1 bg-gray-100 p-4">
