@@ -1,24 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 import thailandPolygon from "../components/data/thailand.json";
 import { Select, Row, Col, Flex, Button } from "antd";
-import thailandProvinceList from "@/components/data/provinces.json";
-import regionThailand from "@/components/data/region.json";
 import { ENDPOINT } from "@/components/endpoint";
-// import logo from "../assets/logo.png";
 
 export default function ServiceAreaSelection() {
   const [regionList, setRegionList] = useState([]);
   const [regionSelected, setRegion] = useState(null);
+  const [placeList, setPlaceList] = useState([]);
+  const [placeSelected, setPlaceSelected] = useState();
+  const [placePolygon, setPlacePolygon] = useState([]);
   const [provinceList, setProvinceList] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [flyToLatLng, setFlyToLatLng] = useState([]);
@@ -26,25 +20,108 @@ export default function ServiceAreaSelection() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setRegionList(regionThailand);
-    setProvinceList(thailandProvinceList);
+    const fetchData = async () => {
+      await Promise.allSettled([
+        fetchProvince(),
+        fetchRegion(),
+        fetchPlaces(),
+        fetchPlacePolygon(),
+      ]);
+    };
+    fetchData();
   }, []);
-  const onChangeProvince = (value) => {
-    if (value) {
-      console.log(`selected ${value}`);
-      setClearTrigger(0);
-      setRegion(value.geography_id);
-      setSelectedProvince(value.name_th);
-      setFlyToLatLng([value.latitude, value.longitude]);
+
+  //TODO: FETCH DROPDOWN
+
+  const fetchProvince = async (geographyId) => {
+    try {
+      const params = new URLSearchParams(
+        geographyId && { geographyId: geographyId }
+      );
+      const province = await fetch(
+        `${ENDPOINT.GET_ALL_PROVINCE}?${params.toString()}`
+      );
+      const response = await province.json();
+      setProvinceList(response);
+    } catch (error) {
+      console.error("ERROR FETCH PROVINCE:", error);
     }
   };
-  const onClearProvince = () => {
+  const fetchRegion = async (geographyId) => {
+    try {
+      const region = await fetch(`${ENDPOINT.GET_ALL_GEOGRAPHY}`);
+      const response = await region.json();
+      setRegionList(response);
+    } catch (error) {
+      console.error("ERROR FETCH REGION:", error);
+    }
+  };
+  const fetchPlaces = async (provinceId, geographyId) => {
+    try {
+      console.log(provinceId, geographyId);
+      const params = new URLSearchParams({
+        provinceId: provinceId ?? "",
+        geographyId: geographyId ?? "",
+      });
+      console.log(params);
+
+      const places = await fetch(
+        `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`
+      );
+      const response = await places.json();
+      setPlaceList(response.data ?? []);
+    } catch (error) {
+      console.error("ERROR FETCH PLACES:", error);
+    }
+  };
+  const fetchPlacePolygon = async () => {
+    try {
+      const placePolygon = await fetch(ENDPOINT.GET_ALL_PLACE);
+      const response = await placePolygon.json();
+      setPlacePolygon(response.data ?? []);
+    } catch (error) {
+      console.error("ERROR FETCH PLACES:", error);
+    }
+  };
+  const onChangeProvince = async (value) => {
+    console.log(value);
+    setClearTrigger(0);
+    setRegion(value?.geography_id);
+    setSelectedProvince(value);
+    setFlyToLatLng([value?.latitude, value?.longitude]);
+    await fetchPlaces(value?._id);
+  };
+  const onChangePlace = (value) => {
+    console.log(value);
+    setPlaceSelected({ ...value });
+    setFlyToLatLng(value.location.coordinates);
+  };
+  const onChangeRegion = async (region) => {
+    setSelectedProvince(null);
+    setPlaceSelected(null);
+    setRegion(region.id);
+    await Promise.allSettled([
+      fetchProvince(region.id),
+      fetchPlaces(null, region.id),
+    ]);
+  };
+  const onClearPlace = async () => {
+    await fetchPlaces();
+    setPlaceSelected(null);
+    setRegion(null);
+    setFlyToLatLng([13.885556744960699, 100.63529495228143]);
+    setClearTrigger(1);
+  };
+  const onClearProvince = async () => {
+    await Promise.allSettled([fetchProvince(), fetchPlaces()]);
     setSelectedProvince(null);
     setRegion(null);
     setFlyToLatLng([13.885556744960699, 100.63529495228143]);
     setClearTrigger(1);
   };
+
   const FlyToProvince = ({ position, zoom }) => {
+    console.log("FLY POSITION", position);
     const map = useMap();
 
     if (position) {
@@ -57,12 +134,6 @@ export default function ServiceAreaSelection() {
   };
   const onSearch = (value) => {
     console.log("search:", value);
-  };
-
-  const onChangeRegion = (region) => {
-    const provinceTmp = [...thailandProvinceList];
-
-    setRegion(region.id);
   };
 
   const handleConfirm = () => {
@@ -110,10 +181,48 @@ export default function ServiceAreaSelection() {
                   }}
                 />
               )}
-              {selectedProvince && <FlyToProvince position={flyToLatLng} />}
-              {clearTrigger && (
-                <FlyToProvince position={flyToLatLng} zoom={6} />
+              {placePolygon &&
+                placePolygon.map((polygon, idx) => {
+                  return (
+                    <React.Fragment key={`polygon-${idx}`}>
+                      <GeoJSON
+                        key={`place-${idx}`}
+                        data={polygon.place.features}
+                        style={{
+                          color: "#f0ff",
+                          weight: 1,
+                          fillColor: "#D6D6DA",
+                          fillOpacity: 0.5,
+                        }}
+                      />
+                      <GeoJSON
+                        key={`zone-${idx}`}
+                        data={polygon.zones.features}
+                        style={{
+                          color: "#f0ff",
+                          weight: 1,
+                          fillColor: "#D6D6DA",
+                          fillOpacity: 0.5,
+                        }}
+                      />
+                    </React.Fragment>
+                  );
+                })}
+
+              {selectedProvince && (
+                <>
+                  <FlyToProvince position={flyToLatLng} />
+                </>
               )}
+              {placeSelected && (
+                <>
+                  <FlyToProvince position={flyToLatLng} zoom={13} />
+                </>
+              )}
+
+              {/* {clearTrigger && (
+                <FlyToProvince position={flyToLatLng} zoom={6} />
+              )} */}
             </MapContainer>
           </div>
         </Col>
@@ -139,39 +248,71 @@ export default function ServiceAreaSelection() {
                   </Button>
                 ))}
               </Flex>
-              <div>
-                <Select
-                  showSearch
-                  placeholder="เลือกจังหวัดของคุณ"
-                  optionFilterProp="label"
-                  allowClear={true}
-                  onClear={onClearProvince}
-                  onChange={(value) => {
-                    const selectedProvince = thailandProvinceList.find(
-                      (province) => province.id === value
-                    );
-                    onChangeProvince(selectedProvince); // Pass the full object here
-                  }}
-                  value={selectedProvince ?? null}
-                  onSearch={onSearch}
-                  options={provinceList.map((province) => {
-                    return {
-                      label: province.name_th,
-                      value: province.id,
-                    };
-                  })}
-                />
-              </div>
-
+              <Flex gap={5}>
+                <div>
+                  <Select
+                    notFoundContent="ไม่มีข้อมูลจังหวัด"
+                    showSearch
+                    placeholder="เลือกจังหวัดของคุณ"
+                    optionFilterProp="label"
+                    allowClear={true}
+                    onClear={onClearProvince}
+                    className="min-w-40"
+                    onChange={(value) => {
+                      if (value) {
+                        const provinceObj = provinceList.find(
+                          (province) => province._id === value
+                        );
+                        onChangeProvince(provinceObj);
+                      }
+                    }}
+                    value={selectedProvince?._id ?? null}
+                    onSearch={onSearch}
+                    options={provinceList.map((province) => {
+                      return {
+                        label: province.name_th,
+                        value: province._id,
+                      };
+                    })}
+                  />
+                </div>
+                <div>
+                  <Select
+                    showSearch
+                    notFoundContent="ไม่มีข้อมูลเมือง"
+                    placeholder="เลือกเมืองของคุณ"
+                    optionFilterProp="label"
+                    allowClear={true}
+                    onClear={onClearPlace}
+                    className="min-w-40"
+                    onChange={(value) => {
+                      if (value) {
+                        const placeObj = placeList.find(
+                          (place) => place._id === value
+                        );
+                        onChangePlace(placeObj);
+                      }
+                    }}
+                    value={placeSelected?._id ?? null}
+                    onSearch={onSearch}
+                    options={placeList.map((place) => {
+                      return {
+                        label: place.municipalityName,
+                        value: place._id,
+                      };
+                    })}
+                  />
+                </div>
+              </Flex>
               <div className={`text-center my-4`}>
                 <button
                   className={`${
-                    selectedProvince
+                    placeSelected
                       ? "bg-black text-white cursor-pointer"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   } px-7 py-1`}
                   onClick={handleConfirm}
-                  disabled={!selectedProvince}
+                  disabled={!placeSelected}
                 >
                   ยืนยัน
                 </button>
