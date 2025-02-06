@@ -1,0 +1,142 @@
+/* Container & Title */
+.table-container {
+  padding: 20px;               /* เพิ่ม Padding  */
+  margin: 40px auto;           /* จัดให้อยู่ตรงกลาง */
+  max-width: 1200px;           /* กำหนดความกว้าง */
+  width: 100%;                 /* ให้ยืดเต็มหน้าจอเมื่อหน้าจอเล็ก */
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;   /* สีพื้นหลัง */
+  border-radius: 10px;         /* มุมโค้ง */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+}
+
+  
+  .table-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #242323;
+  }
+  
+  /* Search Section */
+  .search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: box-shadow 0.3s;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(1, 5, 10, 0.8);
+  }
+  
+  .search-button {
+    background-color: #2a3847;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #648397;
+  }
+  
+  /* Data Table */
+  .data-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  .data-table th,
+  .data-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    word-wrap: break-word;
+  }
+  
+  .data-table th {
+    background-color: #525f69;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+  }
+  
+  /* Hover Effect */
+  .data-row:hover {
+    background-color: #e8f4ff;
+    transition: background-color 0.3s;
+  }
+  
+  /* Input Fields in Edit Mode */
+  .edit-input {
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  /* Action Buttons */
+  .action-buttons button {
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .action-buttons button:hover {
+    transform: scale(1.05);
+  }
+  
+  .edit-button {
+    background-color: #ffc107;
+    color: white;
+  }
+  
+  .edit-button:hover {
+    background-color: #e0a800;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+  
+  .save-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .save-button:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-button {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .cancel-button:hover {
+    background-color: #5a6268;
+  }
+  

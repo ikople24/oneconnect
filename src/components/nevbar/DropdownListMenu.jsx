@@ -45,13 +45,13 @@ const DropdownListMenu = () => {
           <DropdownMenuItem>
             {/* กรณีทียังไม่ได้ล็อกอิน */}
             <SignInButton mode="modal">
-              <button>login</button>
+              <button>เข้าสู่ระบบ</button>
             </SignInButton>
           </DropdownMenuItem>
 
           <DropdownMenuItem>
             <SignUpButton mode="modal">
-              <button>Registers</button>
+              <button>สมัครสมาชิก</button>
             </SignUpButton>
           </DropdownMenuItem>
         </SignedOut>
