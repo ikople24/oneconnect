@@ -1,6 +1,6 @@
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ENDPOINT = {
-  // Places
+  //TODO: Places
   //POST
   CREATE_PLACE: `${baseUrl}/places`,
   //PATCH
@@ -11,9 +11,12 @@ export const ENDPOINT = {
   GET_ALL_CITY: `${baseUrl}/places/city`,
   GET_ALL_ZONE: `${baseUrl}/places/zone`,
   GET_ALL_PLACE: `${baseUrl}/places`,
+  GET_ALL_PROVINCE_NAME: `${baseUrl}/places/province/name`,
+  GET_ALL_GEOGRAPHY: `${baseUrl}/places/geography`,
   // DELETE
   DELETE_PLACE: `${baseUrl}/places`, // PARAM
-  // Marker
+
+  //TODO: Marker
   // POST
   CREATE_MARKER: `${baseUrl}/markers`,
   // ADMIN
