@@ -13,6 +13,7 @@ import Dashboard from "@/pages/Dashboard";
 import Datatable from "@/pages/admin/Datatable";
 import LayoutMapLayerOne from "@/layouts/LayoutMapLayerOne";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router";
+import Map from "@/pages/Map"
 
 const AppRoutes = () => {
   return (
@@ -27,7 +28,7 @@ const AppRoutes = () => {
         </Route>
 
         <Route element={<LayoutMapLayerOne />}>
-          <Route path="/map" element={<MapLayerOne />} />
+          <Route path="/map" element={<Map/>} />
         </Route>
 
         {/* private */}

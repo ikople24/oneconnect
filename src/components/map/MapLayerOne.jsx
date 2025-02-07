@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import thailandPolygon from "@/components/data/thailand.json";
 import { Select, Row, Col, Flex, Button } from "antd";
 import { ENDPOINT } from "@/components/endpoint";
 
-export default function ServiceAreaSelection() {
+export default function ServiceAreaSelection(props) {
+  const { setPlace } = props;
   const [regionList, setRegionList] = useState([]);
   const [regionSelected, setRegion] = useState(null);
   const [placeList, setPlaceList] = useState([]);
@@ -94,6 +96,11 @@ export default function ServiceAreaSelection() {
     console.log(value);
     setPlaceSelected({ ...value });
     setFlyToLatLng(value.location.coordinates);
+
+    setPlace({
+      placeId: value._id,
+      location: value.location.coordinates,
+    });
   };
   const onChangeRegion = async (region) => {
     setSelectedProvince(null);
@@ -137,7 +144,8 @@ export default function ServiceAreaSelection() {
 
   const handleConfirm = () => {
     if (placeSelected) {
-      navigate(`/dashboard?place=${selectedProvince}`);
+      const { changePage } = props;
+      changePage();
     } else {
       alert("กรุณาเลือกพื้นที่ก่อนกดปุ่มยืนยัน");
     }
@@ -167,11 +175,11 @@ export default function ServiceAreaSelection() {
               {thailandPolygon && (
                 <GeoJSON
                   data={thailandPolygon}
-                  onEachFeature={(feature, layer) => {
-                    layer.on({
-                      click: handleMapClick,
-                    });
-                  }}
+                  //   onEachFeature={(feature, layer) => {
+                  //     layer.on({
+                  //       click: handleMapClick,
+                  //     });
+                  //   }}
                   style={{
                     color: "#555",
                     weight: 1,
