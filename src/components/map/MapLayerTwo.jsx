@@ -1,26 +1,54 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import React from "react";
 import { Button } from "antd";
-
+import { GeoJSON, useMapEvent } from "react-leaflet";
+import { ENDPOINT } from "../endpoint";
 export default function MapLayerTwo(props) {
   const { place } = props;
+  const [markers, setMaker] = useState([]);
   useEffect(() => {
     console.log(place);
+    const fetchData = async () => {
+      await Promise.allSettled([fetchMarkers(place?._id)]);
+    };
+    fetchData();
   }, []);
-  const [summary, setSummary] = useState({ elderly_count: 150 });
-  const [communities, setCommunities] = useState([
-    { id: 1, name: "ชุมชน A", elderly_count: 50 },
-    { id: 2, name: "ชุมชน B", elderly_count: 60 },
-    { id: 3, name: "ชุมชน C", elderly_count: 40 },
-  ]);
-  const [markers, setMarkers] = useState([
-    { id: 1, lat: 13.736717, lng: 100.523186, name: "ชุมชน A" },
-    { id: 2, lat: 13.745, lng: 100.534, name: "ชุมชน B" },
-    { id: 3, lat: 16.449162, lng: 100.515, name: "ชุมชน C" },
-    { id: 4, lat: 16.4491624, lng: 102.8421862, name: "testing" },
-  ]);
+  const fetchMarkers = async (placeId) => {
+    try {
+      console.log(placeId);
+      const params = new URLSearchParams({
+        placeId: placeId ?? "",
+      });
+      console.log(params);
 
+      const markers = await fetch(
+        `${ENDPOINT.GET_MARKERS}?${params.toString()}`
+      );
+      const response = await markers.json();
+      console.log(response);
+      response.map((marker) => {
+        marker.geometry.coordinates.reverse();
+        return marker;
+      });
+      setMaker(response ?? []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const [summary, setSummary] = useState({ elderly_count: 150 });
+
+  const LocationMarker = () => {
+    useMapEvent("click", (e) => {
+      console.log("Clicked coordinates:", e.latlng);
+    });
+  };
+  const handleMapClick = (e) => {
+    const { community } = e.target.feature.properties;
+    const zoneName = community;
+    const zoneId = e.target.feature._id;
+  };
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -28,7 +56,9 @@ export default function MapLayerTwo(props) {
         <div className="lg:col-span-2 bg-white shadow-lg rounded-lg p-6 relative">
           <div className="flex justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-700 mb-4">แผนที่</h2>
+              <h2 className="text-xl font-bold text-gray-700 mb-4">
+                แผนที่ {}
+              </h2>
             </div>
             <div>
               <Button type="primary" size="">
@@ -38,14 +68,46 @@ export default function MapLayerTwo(props) {
           </div>
           <div className="overflow-hidden rounded-lg border border-gray-200 relative">
             <MapContainer
-              center={place.location}
+              center={place?.location?.coordinates}
               zoom={12}
               style={{ height: "600px", width: "100%" }}
             >
+              <LocationMarker />
+              {
+                <React.Fragment key={`polygon`}>
+                  <GeoJSON
+                    key={`place`}
+                    data={place.place.features}
+                    style={{
+                      color: "#f0ff",
+                      weight: 1,
+                      fillColor: "#D6D6DA",
+                      fillOpacity: 0.5,
+                    }}
+                  />
+                  <GeoJSON
+                    key={`zone`}
+                    data={place.zones.features}
+                    style={{
+                      color: "#f0ff",
+                      weight: 1,
+                      fillColor: "#D6D6DA",
+                      fillOpacity: 0.5,
+                    }}
+                    onEachFeature={(feature, layer) => {
+                      layer.on({
+                        click: handleMapClick,
+                      });
+                    }}
+                  />
+                </React.Fragment>
+              }
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               {markers.map((marker) => (
-                <Marker key={marker.id} position={[marker.lat, marker.lng]}>
-                  <Popup className="font-semibold">{marker.name}</Popup>
+                <Marker key={marker._id} position={marker.geometry.coordinates}>
+                  <Popup className="font-semibold">
+                    {marker.properties.markerType}
+                  </Popup>
                 </Marker>
               ))}
             </MapContainer>
@@ -64,7 +126,7 @@ export default function MapLayerTwo(props) {
             ข้อมูลตามชุมชน
           </h2>
           <ul className="space-y-3 mt-2">
-            {communities.map((community) => (
+            {/* {communities.map((community) => (
               <li
                 key={community.id}
                 className="p-3 bg-gray-50 rounded-md border border-gray-300"
@@ -78,7 +140,7 @@ export default function MapLayerTwo(props) {
                   {community.elderly_count} คน
                 </span>
               </li>
-            ))}
+            ))} */}
           </ul>
         </div>
       </div>

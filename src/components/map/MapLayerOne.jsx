@@ -97,10 +97,7 @@ export default function ServiceAreaSelection(props) {
     setPlaceSelected({ ...value });
     setFlyToLatLng(value.location.coordinates);
 
-    setPlace({
-      placeId: value._id,
-      location: value.location.coordinates,
-    });
+    setPlace(value);
   };
   const onChangeRegion = async (region) => {
     setSelectedProvince(null);
@@ -174,7 +171,7 @@ export default function ServiceAreaSelection(props) {
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               {thailandPolygon && (
                 <GeoJSON
-                  data={thailandPolygon}
+                  // data={thailandPolygon}
                   //   onEachFeature={(feature, layer) => {
                   //     layer.on({
                   //       click: handleMapClick,
