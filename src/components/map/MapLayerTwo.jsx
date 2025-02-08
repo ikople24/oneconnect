@@ -56,7 +56,9 @@ export default function MapLayerTwo(props) {
         <Marker
           key={marker._id}
           position={marker.geometry.coordinates}
-        ></Marker>
+        >
+          <Popup>{marker.properties.name}</Popup>
+        </Marker>
       );
     });
     return markerInLayer;
@@ -82,7 +84,7 @@ export default function MapLayerTwo(props) {
           <div className="overflow-hidden rounded-lg border border-gray-200 relative">
             <MapContainer
               center={place?.location?.coordinates}
-              zoom={12}
+              zoom={13}
               style={{ height: "600px", width: "100%" }}
             >
               <LayersControl position="topright">
