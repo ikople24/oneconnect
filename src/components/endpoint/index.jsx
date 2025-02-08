@@ -13,6 +13,7 @@ export const ENDPOINT = {
   GET_ALL_PLACE: `${baseUrl}/places`,
   GET_ALL_PROVINCE_NAME: `${baseUrl}/places/province/name`,
   GET_ALL_GEOGRAPHY: `${baseUrl}/places/geography`,
+  GET_ALL_PINTYPES: `${baseUrl}/places/pin`,
   // DELETE
   DELETE_PLACE: `${baseUrl}/places`, // PARAM
 
