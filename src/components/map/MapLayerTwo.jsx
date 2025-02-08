@@ -5,13 +5,17 @@ import React from "react";
 import { Button } from "antd";
 import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
+import ModalAddMarker from "../modal/ModalAddMarker";
 export default function MapLayerTwo(props) {
   const { place } = props;
   const [markers, setMaker] = useState([]);
+  const [pinTypes, setPinTypes] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   useEffect(() => {
     console.log(place);
     const fetchData = async () => {
-      await Promise.allSettled([fetchMarkers(place?._id)]);
+      await Promise.allSettled([fetchMarkers(place?._id), fetchPinTypes(place?._id)]);
     };
     fetchData();
   }, []);
@@ -63,6 +67,72 @@ export default function MapLayerTwo(props) {
     });
     return markerInLayer;
   };
+
+  // fetch ข้อมูลประเภทหมุดแต่ละเมือง
+  const fetchPinTypes = async(placeId) => {
+    try {
+      const params = new URLSearchParams({
+        placeId: placeId ?? "",
+      });
+      const response = await fetch(`${ENDPOINT.GET_ALL_PINTYPES}?${params?.toString()}`);
+      
+      if (!response.ok){
+        console.log('Can not fetch :: pinTypes');
+      }
+
+      const data = await response.json();
+      setPinTypes(data);
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  // method สำหรับ เพิ่มหมุด
+  const handleAddMarker = async(values) => {
+    try {
+      const bodyData = {
+        geometry: {
+          type: "Point",
+          coordinates: [
+            parseFloat(values.longitude), 
+            parseFloat(values.latitude)
+          ]
+        },
+        properties: {
+          name: values.firstName + " " + values.lastName, 
+          markerType: values.pinType, 
+          users: {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            placeName: values.zone,
+            zoneName: values.zone,
+            gender: values.gender,
+            idCard: values.idCard,
+            telNumber: values.telNumber || "",
+            birthdate: values.birthdate.format("YYYY-MM-DD"),
+            age: parseInt(values.age, 10),
+          },
+          places: {
+            placeId: values.placeId,
+            zoneId: values.zoneId
+          }
+        }
+      };
+      const response = await fetch(`${ENDPOINT.CREATE_MARKER}`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyData),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -161,6 +231,14 @@ export default function MapLayerTwo(props) {
           </ul>
         </div>
       </div>
+
+      {/* Modal */}
+      <ModalAddMarker 
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(!isModalVisible)}
+        data={pinTypes}
+        handleOK={handleAddMarker}
+      />
     </div>
   );
 }
