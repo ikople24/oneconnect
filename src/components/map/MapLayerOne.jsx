@@ -171,12 +171,12 @@ export default function ServiceAreaSelection(props) {
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               {thailandPolygon && (
                 <GeoJSON
-                  // data={thailandPolygon}
-                  //   onEachFeature={(feature, layer) => {
-                  //     layer.on({
-                  //       click: handleMapClick,
-                  //     });
-                  //   }}
+                  data={thailandPolygon}
+                    // onEachFeature={(feature, layer) => {
+                    //   layer.on({
+                    //     click: handleMapClick,
+                    //   });
+                    // }}
                   style={{
                     color: "#555",
                     weight: 1,
