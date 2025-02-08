@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
-import { GeoJSON, useMapEvent } from "react-leaflet";
+import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
 export default function MapLayerTwo(props) {
   const { place } = props;
@@ -28,10 +28,7 @@ export default function MapLayerTwo(props) {
       );
       const response = await markers.json();
       console.log(response);
-      response.map((marker) => {
-        marker.geometry.coordinates.reverse();
-        return marker;
-      });
+
       setMaker(response ?? []);
     } catch (error) {
       console.error(error);
@@ -49,6 +46,22 @@ export default function MapLayerTwo(props) {
     const zoneName = community;
     const zoneId = e.target.feature._id;
   };
+
+  const LayerControllerFilterHandler = (type) => {
+    const markerTypeFilter = markers.filter(
+      (marker) => marker.properties.markerType === type
+    );
+    const markerInLayer = markerTypeFilter.map((marker) => {
+      return (
+        <Marker
+          key={marker._id}
+          position={marker.geometry.coordinates}
+        ></Marker>
+      );
+    });
+    return markerInLayer;
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -57,7 +70,7 @@ export default function MapLayerTwo(props) {
           <div className="flex justify-between">
             <div>
               <h2 className="text-xl font-bold text-gray-700 mb-4">
-                แผนที่ {}
+                แผนที่ เมือง{place.amphurName}
               </h2>
             </div>
             <div>
@@ -72,6 +85,15 @@ export default function MapLayerTwo(props) {
               zoom={12}
               style={{ height: "600px", width: "100%" }}
             >
+              <LayersControl position="topright">
+                {place.pinTypes.map((type, idx) => {
+                  return (
+                    <LayersControl.Overlay key={idx} name={type} checked > 
+                      {LayerControllerFilterHandler(type)}
+                    </LayersControl.Overlay>
+                  );
+                })}
+              </LayersControl>
               <LocationMarker />
               {
                 <React.Fragment key={`polygon`}>
@@ -103,13 +125,6 @@ export default function MapLayerTwo(props) {
                 </React.Fragment>
               }
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              {markers.map((marker) => (
-                <Marker key={marker._id} position={marker.geometry.coordinates}>
-                  <Popup className="font-semibold">
-                    {marker.properties.markerType}
-                  </Popup>
-                </Marker>
-              ))}
             </MapContainer>
           </div>
         </div>
