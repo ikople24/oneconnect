@@ -5,20 +5,27 @@ import React from "react";
 import { Button } from "antd";
 import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
+import { SwitchMode } from "../admin/SwitchMode";
 import ModalAddMarker from "../modal/ModalAddMarker";
 export default function MapLayerTwo(props) {
   const { place } = props;
   const [markers, setMaker] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(0);
   const [pinTypes, setPinTypes] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   useEffect(() => {
     console.log(place);
     const fetchData = async () => {
-      await Promise.allSettled([fetchMarkers(place?._id), fetchPinTypes(place?._id)]);
+      if (isAdmin) {
+        await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
+      } else {
+        await Promise.allSettled([fetchMarkers(place?._id)]);
+      }
+      await fetchPinTypes(place?._id)
     };
     fetchData();
-  }, []);
+  }, [isAdmin]);
+
   const fetchMarkers = async (placeId) => {
     try {
       console.log(placeId);
@@ -29,6 +36,25 @@ export default function MapLayerTwo(props) {
 
       const markers = await fetch(
         `${ENDPOINT.GET_MARKERS}?${params.toString()}`
+      );
+      const response = await markers.json();
+      console.log(response);
+
+      setMaker(response ?? []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const fetchMarkerAdmin = async (placeId) => {
+    try {
+      console.log(placeId);
+      const params = new URLSearchParams({
+        placeId: placeId ?? "",
+      });
+      console.log(params);
+
+      const markers = await fetch(
+        `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`
       );
       const response = await markers.json();
       console.log(response);
@@ -52,55 +78,77 @@ export default function MapLayerTwo(props) {
   };
 
   const LayerControllerFilterHandler = (type) => {
-    const markerTypeFilter = markers.filter(
+    const uniqueMarkers = Array.from(
+      new Map(
+        markers.map((marker) => [marker.properties.markerType, marker])
+      ).values()
+    );
+
+    const markerTypeFilter = uniqueMarkers.filter(
       (marker) => marker.properties.markerType === type
     );
-    const markerInLayer = markerTypeFilter.map((marker) => {
-      return (
-        <Marker
-          key={marker._id}
-          position={marker.geometry.coordinates}
-        >
+
+    const markerInLayer = markerTypeFilter.map((marker) => (
+      <Marker key={marker._id} position={marker.geometry.coordinates}>
+        {isAdmin ? (
+          <Popup>
+            <div className="py-2">{marker.properties?.name}</div>
+            <div className="border p-2 rounded-xl">
+              <div>
+                ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
+                {marker.properties?.users?.lastName}
+              </div>
+              <div>เพศ: {marker.properties?.users?.gender}</div>
+              <div>อายุ: {marker.properties?.users?.age}</div>
+              <div>ชุมชน : {marker.properties?.users?.zoneName}</div>
+            </div>
+          </Popup>
+        ) : (
           <Popup>{marker.properties.name}</Popup>
-        </Marker>
-      );
-    });
+        )}
+      </Marker>
+    ));
+
     return markerInLayer;
   };
 
+
   // fetch ข้อมูลประเภทหมุดแต่ละเมือง
-  const fetchPinTypes = async(placeId) => {
+  const fetchPinTypes = async (placeId) => {
     try {
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-      const response = await fetch(`${ENDPOINT.GET_ALL_PINTYPES}?${params?.toString()}`);
-      
-      if (!response.ok){
-        console.log('Can not fetch :: pinTypes');
+      const response = await fetch(
+        `${ENDPOINT.GET_ALL_PINTYPES}?${params?.toString()}`
+      );
+
+      if (!response.ok) {
+        console.log("Can not fetch :: pinTypes");
       }
 
       const data = await response.json();
+      console.log(data);
       setPinTypes(data);
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
     }
-  }
+  };
 
   // method สำหรับ เพิ่มหมุด
-  const handleAddMarker = async(values) => {
+  const handleAddMarker = async (values) => {
     try {
       const bodyData = {
         geometry: {
           type: "Point",
           coordinates: [
-            parseFloat(values.longitude), 
-            parseFloat(values.latitude)
-          ]
+            parseFloat(values.longitude),
+            parseFloat(values.latitude),
+          ],
         },
         properties: {
-          name: values.firstName + " " + values.lastName, 
-          markerType: values.pinType, 
+          name: values.firstName + " " + values.lastName,
+          markerType: values.pinType,
           users: {
             firstName: values.firstName,
             lastName: values.lastName,
@@ -113,26 +161,26 @@ export default function MapLayerTwo(props) {
             age: parseInt(values.age, 10),
           },
           places: {
-            placeId: values.placeId,
-            zoneId: values.zoneId
-          }
-        }
+            placeId: place._id,
+            zoneId: place._id,
+          },
+        },
       };
       const response = await fetch(`${ENDPOINT.CREATE_MARKER}`, {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(bodyData),
-      })
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
     }
-  }
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -146,7 +194,7 @@ export default function MapLayerTwo(props) {
               </h2>
             </div>
             <div>
-              <Button type="primary" size="">
+              <Button type="primary" size="" onClick={() => setIsModalVisible(!isModalVisible)}>
                 ปักหมุดแผนที่
               </Button>
             </div>
@@ -160,7 +208,7 @@ export default function MapLayerTwo(props) {
               <LayersControl position="topright">
                 {place.pinTypes.map((type, idx) => {
                   return (
-                    <LayersControl.Overlay key={idx} name={type} checked > 
+                    <LayersControl.Overlay key={idx} name={type} checked>
                       {LayerControllerFilterHandler(type)}
                     </LayersControl.Overlay>
                   );
@@ -202,6 +250,7 @@ export default function MapLayerTwo(props) {
         </div>
         {/* ข้อมูลสรุปและข้อมูลตามชุมชน */}
         <div className="bg-white shadow-lg rounded-lg p-6">
+          <SwitchMode isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
           <h2 className="text-xl font-bold text-gray-700">ข้อมูลสรุป</h2>
           <p className="text-gray-600 text-lg">
             จำนวนผู้สูงอายุในระบบ:{" "}
@@ -233,10 +282,10 @@ export default function MapLayerTwo(props) {
       </div>
 
       {/* Modal */}
-      <ModalAddMarker 
+      <ModalAddMarker
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(!isModalVisible)}
-        data={pinTypes}
+        data={pinTypes[0]}
         handleOK={handleAddMarker}
       />
     </div>

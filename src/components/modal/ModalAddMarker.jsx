@@ -12,7 +12,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
       form.resetFields();
     });
   };
-  
+
   return (
     <Modal
       title="ลงทะเบียนคนเมือง"
@@ -44,13 +44,17 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ประเภทข้อมูล"
               rules={[{ required: true, message: "กรุณาเลือกประเภทข้อมูล" }]}
             >
-              <Select placeholder="ประเภทข้อมูล">
-                {data.pintypes.map((item) => (
-                  <Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
+              {data?.pinTypes ? (
+                <Select
+                  placeholder="ประเภทข้อมูล"
+                  options={data.pinTypes.map((type) => ({
+                    label: type,
+                    value: type,
+                  }))}
+                />
+              ) : (
+                <span>Loading...</span>
+              )}
             </Form.Item>
           </Col>
         </Row>
@@ -162,7 +166,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ละติจูด"
               rules={[{ required: true, message: "ละติจูด" }]}
             >
-              <Input placeholder=""/>
+              <Input placeholder="" />
             </Form.Item>
           </Col>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -171,7 +175,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ลองจิจูด"
               rules={[{ required: true, message: "ลองจิจูด" }]}
             >
-              <Input placeholder=""/>
+              <Input placeholder="" />
             </Form.Item>
           </Col>
         </Row>
