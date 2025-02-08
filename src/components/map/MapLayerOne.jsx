@@ -84,6 +84,7 @@ export default function ServiceAreaSelection(props) {
       console.error("ERROR FETCH PLACES:", error);
     }
   };
+  //TODO: onchnage
   const onChangeProvince = async (value) => {
     console.log(value);
     setClearTrigger(0);

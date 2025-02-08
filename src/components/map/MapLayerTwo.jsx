@@ -6,10 +6,13 @@ import { Button } from "antd";
 import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
 import { SwitchMode } from "../admin/SwitchMode";
+import ModalAddMarker from "../modal/ModalAddMarker";
 export default function MapLayerTwo(props) {
   const { place } = props;
   const [markers, setMaker] = useState([]);
   const [isAdmin, setIsAdmin] = useState(0);
+  const [pinTypes, setPinTypes] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
     console.log(place);
     const fetchData = async () => {
@@ -18,6 +21,7 @@ export default function MapLayerTwo(props) {
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
+      await fetchPinTypes(place?._id)
     };
     fetchData();
   }, [isAdmin]);
@@ -74,32 +78,108 @@ export default function MapLayerTwo(props) {
   };
 
   const LayerControllerFilterHandler = (type) => {
-    const markerTypeFilter = markers.filter(
+    const uniqueMarkers = Array.from(
+      new Map(
+        markers.map((marker) => [marker.properties.markerType, marker])
+      ).values()
+    );
+
+    const markerTypeFilter = uniqueMarkers.filter(
       (marker) => marker.properties.markerType === type
     );
-    const markerInLayer = markerTypeFilter.map((marker) => {
-      return (
-        <Marker key={marker._id} position={marker.geometry.coordinates}>
-          {isAdmin ? (
-            <Popup>
-              <div className="py-2">{marker.properties?.name}</div>
-              <div className="border p-2 rounded-xl">
-                <div>
-                  ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
-                  {marker.properties?.users?.lastName}
-                </div>
-                <div>เพศ: {marker.properties?.users?.gender}</div>
-                <div>อายุ: {marker.properties?.users?.age}</div>
-                <div>ชุมชน : {marker.properties?.users?.zoneName}</div>
+
+    const markerInLayer = markerTypeFilter.map((marker) => (
+      <Marker key={marker._id} position={marker.geometry.coordinates}>
+        {isAdmin ? (
+          <Popup>
+            <div className="py-2">{marker.properties?.name}</div>
+            <div className="border p-2 rounded-xl">
+              <div>
+                ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
+                {marker.properties?.users?.lastName}
               </div>
-            </Popup>
-          ) : (
-            <Popup>{marker.properties.name}</Popup>
-          )}
-        </Marker>
-      );
-    });
+              <div>เพศ: {marker.properties?.users?.gender}</div>
+              <div>อายุ: {marker.properties?.users?.age}</div>
+              <div>ชุมชน : {marker.properties?.users?.zoneName}</div>
+            </div>
+          </Popup>
+        ) : (
+          <Popup>{marker.properties.name}</Popup>
+        )}
+      </Marker>
+    ));
+
     return markerInLayer;
+  };
+
+
+  // fetch ข้อมูลประเภทหมุดแต่ละเมือง
+  const fetchPinTypes = async (placeId) => {
+    try {
+      const params = new URLSearchParams({
+        placeId: placeId ?? "",
+      });
+      const response = await fetch(
+        `${ENDPOINT.GET_ALL_PINTYPES}?${params?.toString()}`
+      );
+
+      if (!response.ok) {
+        console.log("Can not fetch :: pinTypes");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setPinTypes(data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  // method สำหรับ เพิ่มหมุด
+  const handleAddMarker = async (values) => {
+    try {
+      const bodyData = {
+        geometry: {
+          type: "Point",
+          coordinates: [
+            parseFloat(values.longitude),
+            parseFloat(values.latitude),
+          ],
+        },
+        properties: {
+          name: values.firstName + " " + values.lastName,
+          markerType: values.pinType,
+          users: {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            placeName: values.zone,
+            zoneName: values.zone,
+            gender: values.gender,
+            idCard: values.idCard,
+            telNumber: values.telNumber || "",
+            birthdate: values.birthdate.format("YYYY-MM-DD"),
+            age: parseInt(values.age, 10),
+          },
+          places: {
+            placeId: place._id,
+            zoneId: place._id,
+          },
+        },
+      };
+      const response = await fetch(`${ENDPOINT.CREATE_MARKER}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
@@ -114,7 +194,7 @@ export default function MapLayerTwo(props) {
               </h2>
             </div>
             <div>
-              <Button type="primary" size="">
+              <Button type="primary" size="" onClick={() => setIsModalVisible(!isModalVisible)}>
                 ปักหมุดแผนที่
               </Button>
             </div>
@@ -200,6 +280,14 @@ export default function MapLayerTwo(props) {
           </ul>
         </div>
       </div>
+
+      {/* Modal */}
+      <ModalAddMarker
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(!isModalVisible)}
+        data={pinTypes[0]}
+        handleOK={handleAddMarker}
+      />
     </div>
   );
 }

@@ -5,8 +5,6 @@ const { Option } = Select;
 
 const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
   const [form] = Form.useForm();
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
 
   const handleAddMarker = () => {
     form.validateFields().then((values) => {
@@ -14,9 +12,6 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
       form.resetFields();
     });
   };
-
-  // TODO: name ใน  Form.Item เป็น key ที่ต้องส่งไปนำ formdata และ ค่า value จะอยู่ใน formData
-  // ให้ดู handleOK (values)
 
   return (
     <Modal
@@ -49,13 +44,17 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ประเภทข้อมูล"
               rules={[{ required: true, message: "กรุณาเลือกประเภทข้อมูล" }]}
             >
-              <Select placeholder="ประเภทข้อมูล">
-                {data.pintypes.map((item) => (
-                  <Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
+              {data?.pinTypes ? (
+                <Select
+                  placeholder="ประเภทข้อมูล"
+                  options={data.pinTypes.map((type) => ({
+                    label: type,
+                    value: type,
+                  }))}
+                />
+              ) : (
+                <span>Loading...</span>
+              )}
             </Form.Item>
           </Col>
         </Row>
@@ -130,6 +129,17 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
         <Row gutter={8}>
           <Col span={24} sm={24} md={24} xl={24} xxl={24}>
             <Form.Item
+              name="telNumber"
+              label="เบอร์โทรศัพท์"
+              rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์" }]}
+            >
+              <Input placeholder="กรอกเบอร์โทรศัพท์" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={8}>
+          <Col span={24} sm={24} md={24} xl={24} xxl={24}>
+            <Form.Item
               name="zone"
               label="ชุมชน"
               rules={[{ required: true, message: "กรุณากรอกชื่อชุมชน" }]}
@@ -156,7 +166,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ละติจูด"
               rules={[{ required: true, message: "ละติจูด" }]}
             >
-              <Input placeholder="" value={latitude} />
+              <Input placeholder="" />
             </Form.Item>
           </Col>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -165,7 +175,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ลองจิจูด"
               rules={[{ required: true, message: "ลองจิจูด" }]}
             >
-              <Input placeholder="" value={longitude} />
+              <Input placeholder="" />
             </Form.Item>
           </Col>
         </Row>
