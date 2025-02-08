@@ -5,16 +5,23 @@ import React from "react";
 import { Button } from "antd";
 import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
+import { SwitchMode } from "../admin/SwitchMode";
 export default function MapLayerTwo(props) {
   const { place } = props;
   const [markers, setMaker] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(0);
   useEffect(() => {
     console.log(place);
     const fetchData = async () => {
-      await Promise.allSettled([fetchMarkers(place?._id)]);
+      if (isAdmin) {
+        await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
+      } else {
+        await Promise.allSettled([fetchMarkers(place?._id)]);
+      }
     };
     fetchData();
-  }, []);
+  }, [isAdmin]);
+
   const fetchMarkers = async (placeId) => {
     try {
       console.log(placeId);
@@ -25,6 +32,25 @@ export default function MapLayerTwo(props) {
 
       const markers = await fetch(
         `${ENDPOINT.GET_MARKERS}?${params.toString()}`
+      );
+      const response = await markers.json();
+      console.log(response);
+
+      setMaker(response ?? []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const fetchMarkerAdmin = async (placeId) => {
+    try {
+      console.log(placeId);
+      const params = new URLSearchParams({
+        placeId: placeId ?? "",
+      });
+      console.log(params);
+
+      const markers = await fetch(
+        `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`
       );
       const response = await markers.json();
       console.log(response);
@@ -53,11 +79,23 @@ export default function MapLayerTwo(props) {
     );
     const markerInLayer = markerTypeFilter.map((marker) => {
       return (
-        <Marker
-          key={marker._id}
-          position={marker.geometry.coordinates}
-        >
-          <Popup>{marker.properties.name}</Popup>
+        <Marker key={marker._id} position={marker.geometry.coordinates}>
+          {isAdmin ? (
+            <Popup>
+              <div className="py-2">{marker.properties?.name}</div>
+              <div className="border p-2 rounded-xl">
+                <div>
+                  ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
+                  {marker.properties?.users?.lastName}
+                </div>
+                <div>เพศ: {marker.properties?.users?.gender}</div>
+                <div>อายุ: {marker.properties?.users?.age}</div>
+                <div>ชุมชน : {marker.properties?.users?.zoneName}</div>
+              </div>
+            </Popup>
+          ) : (
+            <Popup>{marker.properties.name}</Popup>
+          )}
         </Marker>
       );
     });
@@ -90,7 +128,7 @@ export default function MapLayerTwo(props) {
               <LayersControl position="topright">
                 {place.pinTypes.map((type, idx) => {
                   return (
-                    <LayersControl.Overlay key={idx} name={type} checked > 
+                    <LayersControl.Overlay key={idx} name={type} checked>
                       {LayerControllerFilterHandler(type)}
                     </LayersControl.Overlay>
                   );
@@ -132,6 +170,7 @@ export default function MapLayerTwo(props) {
         </div>
         {/* ข้อมูลสรุปและข้อมูลตามชุมชน */}
         <div className="bg-white shadow-lg rounded-lg p-6">
+          <SwitchMode isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
           <h2 className="text-xl font-bold text-gray-700">ข้อมูลสรุป</h2>
           <p className="text-gray-600 text-lg">
             จำนวนผู้สูงอายุในระบบ:{" "}
