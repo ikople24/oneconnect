@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  LayerGroup,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
@@ -21,7 +27,7 @@ export default function MapLayerTwo(props) {
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
-      await fetchPinTypes(place?._id)
+      await fetchPinTypes(place?._id);
     };
     fetchData();
   }, [isAdmin]);
@@ -78,15 +84,10 @@ export default function MapLayerTwo(props) {
   };
 
   const LayerControllerFilterHandler = (type) => {
-    const uniqueMarkers = Array.from(
-      new Map(
-        markers.map((marker) => [marker.properties.markerType, marker])
-      ).values()
-    );
-
-    const markerTypeFilter = uniqueMarkers.filter(
+    const markerTypeFilter = markers.filter(
       (marker) => marker.properties.markerType === type
     );
+    console.log("filter list -> ", markerTypeFilter);
 
     const markerInLayer = markerTypeFilter.map((marker) => (
       <Marker key={marker._id} position={marker.geometry.coordinates}>
@@ -112,7 +113,6 @@ export default function MapLayerTwo(props) {
     return markerInLayer;
   };
 
-
   // fetch ข้อมูลประเภทหมุดแต่ละเมือง
   const fetchPinTypes = async (placeId) => {
     try {
@@ -128,7 +128,7 @@ export default function MapLayerTwo(props) {
       }
 
       const data = await response.json();
-      console.log(data);
+      console.log("Pin types:", data);
       setPinTypes(data);
     } catch (error) {
       console.log("error", error);
@@ -194,7 +194,11 @@ export default function MapLayerTwo(props) {
               </h2>
             </div>
             <div>
-              <Button type="primary" size="" onClick={() => setIsModalVisible(!isModalVisible)}>
+              <Button
+                type="primary"
+                size=""
+                onClick={() => setIsModalVisible(!isModalVisible)}
+              >
                 ปักหมุดแผนที่
               </Button>
             </div>
@@ -206,10 +210,12 @@ export default function MapLayerTwo(props) {
               style={{ height: "600px", width: "100%" }}
             >
               <LayersControl position="topright">
-                {place.pinTypes.map((type, idx) => {
+                {pinTypes[0]?.pinTypes.map((type, idx) => {
                   return (
                     <LayersControl.Overlay key={idx} name={type} checked>
-                      {LayerControllerFilterHandler(type)}
+                      <LayerGroup>
+                        {LayerControllerFilterHandler(type)}
+                      </LayerGroup>
                     </LayersControl.Overlay>
                   );
                 })}
