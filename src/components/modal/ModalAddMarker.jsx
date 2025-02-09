@@ -91,6 +91,17 @@ const ModalAddMarker = ({
           </Col>
         </Row>
         <Row gutter={8}>
+          <Col span={24} sm={24} md={24} xl={24} xxl={24}>
+            <Form.Item
+              name="name"
+              label="ชื่อหมุด"
+              rules={[{ required: true, message: "กรุณากรอกชื่อของหมุด" }]}
+            >
+              <Input placeholder="กรอกชื่อของหมุด" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={8}>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
             <Form.Item
               name="firstName"

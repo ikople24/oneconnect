@@ -16,7 +16,9 @@ import ModalAddMarker from "../modal/ModalAddMarker";
 import * as L from "leaflet";
 export default function MapLayerTwo(props) {
   const { place } = props;
-  const [pointSelected, setPointSelected] = useState([]);
+  const [pointSelected, setPointSelected] = useState(
+    place?.location?.coordinates
+  );
   const [zoneSelected, setZoneSelected] = useState();
   const [markers, setMaker] = useState([]);
   const [isAdmin, setIsAdmin] = useState(0);
@@ -183,7 +185,7 @@ export default function MapLayerTwo(props) {
           ],
         },
         properties: {
-          name: values.firstName + " " + values.lastName,
+          name: values.name,
           markerType: values.pinType,
           users: {
             firstName: values.firstName,
@@ -219,6 +221,7 @@ export default function MapLayerTwo(props) {
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
+      setIsModalVisible(!isModalVisible)
     } catch (error) {
       console.log("error", error);
     }
