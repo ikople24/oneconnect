@@ -262,8 +262,7 @@ export default function MapLayerTwo(props) {
     });
 
     const currentMarkerIcon = new LeafIcon({
-      iconUrl:
-        "https://cdn.discordapp.com/attachments/1327135943957676085/1338064336152690780/1.png?ex=67a9b905&is=67a86785&hm=3cb54ec18720754ce4f4b8c0b2b1772ac3e3e469846b199bf107ee939e7ac7b6&",
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/14090/14090313.png",
       iconSize: [40, 45],
       iconAnchor: [20, 40],
       popupAnchor: [0, -40],
@@ -344,8 +343,10 @@ export default function MapLayerTwo(props) {
     );
 
     const markerInLayer = markerTypeFilter.map((marker) => (
-      <Marker key={marker._id} position={marker.geometry.coordinates}
-      icon={addIconByMarkerType(marker.properties.markerType)}
+      <Marker
+        key={marker._id}
+        position={marker.geometry.coordinates}
+        icon={addIconByMarkerType(marker.properties.markerType)}
       >
         {isAdmin ? (
           <Popup>
