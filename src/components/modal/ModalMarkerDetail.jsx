@@ -56,11 +56,11 @@ const ModalMarkerDetail = ({ visible, onCancel, data }) => {
               </Col>
               <Col span={12}>
                 <p>
-                  {data.properties.users.firstName
-                    ? data.properties.users.firstName
+                  {data.properties.users?.firstName
+                    ? data.properties.users?.firstName
                     : "N/A"}{" "}
-                  {data.properties.users.lastName
-                    ? data.properties.users.lastName
+                  {data.properties.users?.lastName
+                    ? data.properties.users?.lastName
                     : "N/A"}
                 </p>
               </Col>
@@ -71,8 +71,8 @@ const ModalMarkerDetail = ({ visible, onCancel, data }) => {
               </Col>
               <Col span={12}>
                 <p>
-                  {data.properties.users.gender
-                    ? data.properties.users.gender
+                  {data.properties.users?.gender
+                    ? data.properties.users?.gender
                     : "N/A"}
                 </p>
               </Col>
@@ -83,8 +83,8 @@ const ModalMarkerDetail = ({ visible, onCancel, data }) => {
               </Col>
               <Col span={12}>
                 <p>
-                  {data.properties.users.birthdate
-                    ? data.properties.users.birthdate
+                  {data.properties.users?.birthdate
+                    ? data.properties.users?.birthdate
                     : "N/A"}
                 </p>
               </Col>
@@ -95,8 +95,8 @@ const ModalMarkerDetail = ({ visible, onCancel, data }) => {
               </Col>
               <Col span={12}>
                 <p>
-                  {data.properties.users.age
-                    ? data.properties.users.age
+                  {data.properties.users?.age
+                    ? data.properties.users?.age
                     : "N/A"}
                 </p>
               </Col>
@@ -107,8 +107,8 @@ const ModalMarkerDetail = ({ visible, onCancel, data }) => {
               </Col>
               <Col span={12}>
                 <p>
-                  {data.properties.users.telNumber
-                    ? data.properties.users.telNumber
+                  {data.properties.users?.telNumber
+                    ? data.properties.users?.telNumber
                     : "N/A"}
                 </p>
               </Col>

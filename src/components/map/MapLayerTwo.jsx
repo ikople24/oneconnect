@@ -17,7 +17,8 @@ import "leaflet-easybutton";
 import * as L from "leaflet";
 import { ArrowLeftOutlined, StepBackwardFilled } from "@ant-design/icons";
 import { StepBackIcon } from "lucide-react";
-
+import ModalMarkerDetail from "../modal/ModalMarkerDetail";
+import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const markerRef = useRef(null);
@@ -47,18 +48,18 @@ export default function MapLayerTwo(props) {
   const [isTriggerReq, setIsTriggerReq] = useState(false);
   useEffect(() => {
     // console.log(place);
-    const fetchData = async () => {
-      if (isAdmin) {
-        await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
-      } else {
-        await Promise.allSettled([fetchMarkers(place?._id)]);
-      }
-      await fetchPinTypes(place?._id);
-    };
+
     // getLocation();
     fetchData();
   }, [isAdmin]);
-
+  const fetchData = async () => {
+    if (isAdmin) {
+      await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
+    } else {
+      await Promise.allSettled([fetchMarkers(place?._id)]);
+    }
+    await fetchPinTypes(place?._id);
+  };
   const getLocation = () => {
     setIsTriggerReq(true);
     setIsLoadingLatLng(true);
@@ -415,6 +416,12 @@ export default function MapLayerTwo(props) {
   };
 
   // TODO:: สำรหับตาราง Table
+  const handleTableChange = (pagination) => {
+    setTableParams({
+      ...tableParams,
+      pagination, // Update pagination
+    });
+  };
   const handleView = (record) => {
     console.log("ดูรายละเอียด", record);
     setSelectedRecord(record);
@@ -422,7 +429,8 @@ export default function MapLayerTwo(props) {
   };
 
   const deleteMarker = async (id) => {
-    return await fetch(`${ENDPOINT.DELETE_MARKER_ADMIN}/${id}`, {
+    console.log("ID", id);
+    return await fetch(`${ENDPOINT.DELETE_MARKER_ADMIN}${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -446,6 +454,7 @@ export default function MapLayerTwo(props) {
             content: "ลบข้อมูลสำเร็จ!",
             duration: 3,
           });
+          await fetchData();
         } catch (error) {
           message.error({
             content: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล",
@@ -466,7 +475,11 @@ export default function MapLayerTwo(props) {
       key: "index",
       align: "center",
       width: 100,
-      render: (text, record, index) => index + 1,
+      render: (text, record, index) => {
+        const { current, pageSize } = tableParams.pagination;
+        const realIndex = (current - 1) * pageSize + index + 1; // คำนวณลำดับจริง
+        return realIndex;
+      },
     },
     {
       title: "ชื่อข้อมูล",
@@ -646,23 +659,22 @@ export default function MapLayerTwo(props) {
           </ul>
         </div>
       </div>
-      {/*  ตาราง แสดงข้อมูล Admin  */}
-      <div>
-        <Table
-          columns={columns}
-          dataSource={markers}
-          rowKey="_id"
-          pagination={tableParams.pagination}
-          scroll={{ x: "max-content" }}
-        />
-      </div>
-      {/* Modal Marker Detail in Table */}
+      {isAdmin ? (
+        <div className="mt-3 max-w-7xl mx-auto shadow-lg rounded-lg">
+          <Table
+            columns={columns}
+            dataSource={markers}
+            rowKey="_id"
+            scroll={{ x: "max-content" }}
+            onChange={handleTableChange}
+          />
+        </div>
+      ) : null}
       <ModalMarkerDetail
         visible={modalMarkerIsvisible}
         onCancel={() => setModalMarkerIsvisible(false)}
         data={selectedRecord}
       />
-      {/* Modal */}
       <ModalAddMarker
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(!isModalVisible)}
