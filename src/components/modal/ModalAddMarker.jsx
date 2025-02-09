@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Form, Select, DatePicker, Row, Col } from "antd";
+import {
+  Modal,
+  Input,
+  Button,
+  Form,
+  Select,
+  DatePicker,
+  Row,
+  Col,
+  Switch,
+} from "antd";
 
 const { Option } = Select;
 
@@ -11,6 +21,11 @@ const ModalAddMarker = ({
   place,
   pointSelected,
   zoneSelected,
+  getLocation,
+  isLoadingLatLng,
+  isLatLngError,
+  isTriggerReq,
+  isAdmin,
 }) => {
   console.log(place);
   console.log(pointSelected);
@@ -44,9 +59,23 @@ const ModalAddMarker = ({
         <Button key="cancel" onClick={onCancel}>
           ยกเลิก
         </Button>,
-        <Button key="add" type="primary" onClick={handleAddMarker}>
-          เพิ่ม
-        </Button>,
+        isAdmin ? (
+          <Button key="add" type="primary" onClick={handleAddMarker}>
+            ปักหมุด
+          </Button>
+        ) : (
+          <Button
+            key="add"
+            type="primary"
+            onClick={handleAddMarker}
+            disabled={
+              (isLatLngError && isLoadingLatLng === false) ||
+              isTriggerReq !== true
+            }
+          >
+            ปักหมุด
+          </Button>
+        ),
       ]}
       width={{
         xs: "90%",
@@ -61,9 +90,20 @@ const ModalAddMarker = ({
         <Row gutter={8}>
           <Col span={24} sm={24} md={24} xl={24} xxl={24}>
             <Form.Item
+              name="name"
+              label="ชื่อหมุด"
+              rules={[{ required: true, message: "กรุณากรอกชื่อของหมุด" }]}
+            >
+              <Input placeholder="e.g., ตลาดน้ำ" maxLength={20} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={8}>
+          <Col span={24} sm={24} md={24} xl={24} xxl={24}>
+            <Form.Item
               name="pinType"
-              label="ประเภทข้อมูล"
-              rules={[{ required: true, message: "กรุณาเลือกประเภทข้อมูล" }]}
+              label="ประเภทหมุด"
+              rules={[{ required: true, message: "กรุณาเลือกประเภทของหมุด" }]}
             >
               {data?.pinTypes ? (
                 <Select
@@ -84,23 +124,19 @@ const ModalAddMarker = ({
             <Form.Item
               name="idCard"
               label="เลขบัตรประชาชน (13 หลัก)"
-              rules={[{ required: true, message: "กรุณากรอกเลขบัตรประชาชน" }]}
+              rules={[
+                { required: true, message: "กรุณากรอกเลขบัตรประชาชน" },
+                {
+                  pattern: /^[0-9]{13}$/,
+                  message: "กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง(13 หลัก)",
+                },
+              ]}
             >
-              <Input placeholder="กรอกเลขบัตรประชาชน" />
+              <Input placeholder="e.g., 1234567890123" maxLength={13} />
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={8}>
-          <Col span={24} sm={24} md={24} xl={24} xxl={24}>
-            <Form.Item
-              name="name"
-              label="ชื่อหมุด"
-              rules={[{ required: true, message: "กรุณากรอกชื่อของหมุด" }]}
-            >
-              <Input placeholder="กรอกชื่อของหมุด" />
-            </Form.Item>
-          </Col>
-        </Row>
+
         <Row gutter={8}>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
             <Form.Item
@@ -108,7 +144,7 @@ const ModalAddMarker = ({
               label="ชื่อจริง"
               rules={[{ required: true, message: "กรุณากรอกชื่อจริง" }]}
             >
-              <Input placeholder="กรอกชื่อจริง" />
+              <Input placeholder="e.g., สมชาย" maxLength={20} />
             </Form.Item>
           </Col>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -117,7 +153,7 @@ const ModalAddMarker = ({
               label="นามสกุล"
               rules={[{ required: true, message: "กรุณากรอกนามสกุล" }]}
             >
-              <Input placeholder="กรอกนามสกุล" />
+              <Input placeholder="e.g., ใจดี" maxLength={20} />
             </Form.Item>
           </Col>
         </Row>
@@ -128,7 +164,7 @@ const ModalAddMarker = ({
               label="เพศ"
               rules={[{ required: true, message: "กรุณาเลือกเพศ" }]}
             >
-              <Select placeholder="กรุณาเลือกเพศ">
+              <Select placeholder="e.g., ชาย / หญิง / อื่น ๆ">
                 <Option value="Male">ชาย</Option>
                 <Option value="Female">หญิง</Option>
               </Select>
@@ -144,7 +180,7 @@ const ModalAddMarker = ({
             >
               <DatePicker
                 style={{ width: "100%" }}
-                placeholder="เลือกวันเกิด"
+                placeholder="e.g., 2025-01-12"
               />
             </Form.Item>
           </Col>
@@ -152,9 +188,9 @@ const ModalAddMarker = ({
             <Form.Item
               name="age"
               label="อายุ"
-              rules={[{ required: true, message: "กรุณากรอกนามสกุล" }]}
+              rules={[{ required: true, message: "กรุณากรอกอายุ" }]}
             >
-              <Input placeholder="กรอกอายุ" />
+              <Input placeholder="e.g., 30" />
             </Form.Item>
           </Col>
         </Row>
@@ -163,9 +199,15 @@ const ModalAddMarker = ({
             <Form.Item
               name="telNumber"
               label="เบอร์โทรศัพท์"
-              rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์" }]}
+              rules={[
+                { required: true, message: "กรุณากรอกเบอร์โทรศัพท์" },
+                {
+                  pattern: /^[0-9]{10}$/,
+                  message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)",
+                },
+              ]}
             >
-              <Input placeholder="กรอกเบอร์โทรศัพท์" />
+              <Input placeholder="e.g., 0812345678" maxLength={10} />
             </Form.Item>
           </Col>
         </Row>
@@ -174,10 +216,10 @@ const ModalAddMarker = ({
             <Form.Item
               name="zone"
               label="ชุมชน"
-              rules={[{ required: true, message: "กรุณากรอกชื่อชุมชน" }]}
+              rules={[{ required: true, message: "กรุณาขอข้อมูลตำแหน่ง" }]}
             >
               <Select
-                placeholder="กรุณาเลือกชุมชน"
+                placeholder="กรุณาขอข้อมูลตำแหน่ง"
                 disabled
                 value={zoneSelected?.zoneId}
               >
@@ -195,7 +237,11 @@ const ModalAddMarker = ({
               label="เมือง"
               rules={[{ required: true, message: "กรุณากรอกรหัสเมือง" }]}
             >
-              <Select placeholder="กรุณาเลือกเมือง" disabled value={place?._id}>
+              <Select
+                placeholder="กรุณาขอข้อมูลตำแหน่ง"
+                disabled
+                value={place?._id}
+              >
                 <Option key={place._id} value={place._id}>
                   {place.amphurName}
                 </Option>
@@ -210,7 +256,7 @@ const ModalAddMarker = ({
               label="ละติจูด"
               rules={[{ required: true, message: "ละติจูด" }]}
             >
-              <Input placeholder="" disabled />
+              <Input placeholder="กรุณาขอข้อมูลตำแหน่ง" disabled />
             </Form.Item>
           </Col>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -219,10 +265,34 @@ const ModalAddMarker = ({
               label="ลองจิจูด"
               rules={[{ required: true, message: "ลองจิจูด" }]}
             >
-              <Input placeholder="" disabled />
+              <Input placeholder="กรุณาขอข้อมูลตำแหน่ง" disabled />
             </Form.Item>
           </Col>
         </Row>
+        {!isAdmin && (
+          <Row gutter={8}>
+            <Col span={24} sm={24} md={24} xl={24} xxl={24}>
+              {isTriggerReq === false && isAdmin !== true && (
+                <span className="text-red-500 text-sm">
+                  * กรุณาขอข้อมูลตำแหน่ง
+                </span>
+              )}
+              {isLatLngError && (
+                <span className="text-red-500 text-sm">
+                  * คุณไม่ได้อยู่ในพื้นที่
+                </span>
+              )}
+              <Button
+                className="w-full"
+                type="primary"
+                onClick={() => getLocation()}
+                loading={isLoadingLatLng ? isLoadingLatLng : false}
+              >
+                ขอข้อมูลตำแหน่ง
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Form>
     </Modal>
   );
