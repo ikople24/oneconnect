@@ -1,10 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Input, Button, Form, Select, DatePicker, Row, Col } from "antd";
 
 const { Option } = Select;
 
-const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
+const ModalAddMarker = ({
+  visible,
+  onCancel,
+  handleOK,
+  data,
+  place,
+  pointSelected,
+  zoneSelected,
+}) => {
+  console.log(place);
+  console.log(pointSelected);
+  console.log(zoneSelected);
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (place && pointSelected) {
+      form.setFieldsValue({
+        placeId: place._id,
+        zone: zoneSelected?.zoneName,
+        latitude: pointSelected[0] || "", // lat
+        longitude: pointSelected[1] || "", // lng
+      });
+    }
+  }, [place, pointSelected, form]);
 
   const handleAddMarker = () => {
     form.validateFields().then((values) => {
@@ -144,7 +165,15 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ชุมชน"
               rules={[{ required: true, message: "กรุณากรอกชื่อชุมชน" }]}
             >
-              <Input placeholder="กรอกชื่อชุมชน" />
+              <Select
+                placeholder="กรุณาเลือกชุมชน"
+                disabled
+                value={zoneSelected?.zoneId}
+              >
+                <Option key={zoneSelected?.zoneId} value={zoneSelected?.zoneId}>
+                  {zoneSelected?.zoneName}
+                </Option>
+              </Select>
             </Form.Item>
           </Col>
         </Row>
@@ -152,10 +181,14 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
           <Col span={24} sm={24} md={24} xl={24} xxl={24}>
             <Form.Item
               name="placeId"
-              label="รหัสเมือง"
+              label="เมือง"
               rules={[{ required: true, message: "กรุณากรอกรหัสเมือง" }]}
             >
-              <Input placeholder="กรอกรหัสเมือง" />
+              <Select placeholder="กรุณาเลือกเมือง" disabled value={place?._id}>
+                <Option key={place._id} value={place._id}>
+                  {place.amphurName}
+                </Option>
+              </Select>
             </Form.Item>
           </Col>
         </Row>
@@ -166,7 +199,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ละติจูด"
               rules={[{ required: true, message: "ละติจูด" }]}
             >
-              <Input placeholder="" />
+              <Input placeholder="" disabled />
             </Form.Item>
           </Col>
           <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -175,7 +208,7 @@ const ModalAddMarker = ({ visible, onCancel, handleOK, data }) => {
               label="ลองจิจูด"
               rules={[{ required: true, message: "ลองจิจูด" }]}
             >
-              <Input placeholder="" />
+              <Input placeholder="" disabled />
             </Form.Item>
           </Col>
         </Row>
