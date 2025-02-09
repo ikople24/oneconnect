@@ -19,6 +19,10 @@ import { ArrowLeftOutlined, StepBackwardFilled } from "@ant-design/icons";
 import { StepBackIcon } from "lucide-react";
 import ModalMarkerDetail from "../modal/ModalMarkerDetail";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import leaderIcon from "@/assets/markerIcon/community_leader.png";
+import olderIcon from "@/assets/markerIcon/older_person.png";
+import philosopherIcon from "@/assets/markerIcon/philosopher.png";
+import rescueIcon from "@/assets/markerIcon/rescue.png";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const markerRef = useRef(null);
@@ -297,13 +301,52 @@ export default function MapLayerTwo(props) {
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
   };
 
+  const addIconByMarkerType = (type) => {
+    switch (type) {
+      case "ผู้สูงอายุ":
+        const older = L.icon({
+          iconUrl: olderIcon, // Replace with your own icon URL
+          iconSize: [32, 32], // Size of the icon
+          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+          popupAnchor: [0, -32], // Position of the popup relative to the icon
+        });
+        return older;
+      case "ปราชญ์ชุมชน":
+        const philosopher = L.icon({
+          iconUrl: philosopherIcon,
+          iconSize: [32, 32], // Size of the icon
+          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+          popupAnchor: [0, -32], // Position of the popup relative to the icon
+        });
+        return philosopher;
+      case "ผู้นำชุมชน":
+        const leader = L.icon({
+          iconUrl: leaderIcon, // Replace with your own icon URL
+          iconSize: [32, 32], // Size of the icon
+          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+          popupAnchor: [0, -32], // Position of the popup relative to the icon
+        });
+        return leader;
+      case "กู้ภัย":
+        const rescue = L.icon({
+          iconUrl: rescueIcon, // Replace with your own icon URL
+          iconSize: [32, 32], // Size of the icon
+          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+          popupAnchor: [0, -32], // Position of the popup relative to the icon
+        });
+        return rescue;
+    }
+  };
+
   const LayerControllerFilterHandler = (type) => {
     const markerTypeFilter = markers.filter(
       (marker) => marker.properties.markerType === type
     );
 
     const markerInLayer = markerTypeFilter.map((marker) => (
-      <Marker key={marker._id} position={marker.geometry.coordinates}>
+      <Marker key={marker._id} position={marker.geometry.coordinates}
+      icon={addIconByMarkerType(marker.properties.markerType)}
+      >
         {isAdmin ? (
           <Popup>
             <div className="py-2">{marker.properties?.name}</div>
