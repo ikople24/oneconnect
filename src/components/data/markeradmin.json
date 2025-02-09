@@ -1,0 +1,72 @@
+{
+    "data": [
+        {
+            "_id": "67a86f156d86b5e97af85e27",
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    15.2336,
+                    100.523186
+                ]
+            },
+            "properties": {
+                "name": "TEST",
+                "markerType": "ผู้สูงอายุ",
+                "users": {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "placeName": "New York",
+                    "zoneName": "Manhattan",
+                    "idCard": "1212312121",
+                    "gender": "Male",
+                    "telNumber": "+123456789",
+                    "birthdate": "1990-01-01",
+                    "age": 34,
+                    "_id": "67a86f156d86b5e97af85e28"
+                },
+                "places": {
+                    "placeId": "67a4d5c7db9d9eb99eda1867",
+                    "zoneId": "679e4c28ff9896ba99438a6a"
+                }
+            },
+            "createdAt": "2025-02-09T16:02:13.341+07:00",
+            "updatedAt": "2025-02-09T16:02:13.341+07:00",
+            "deletedAt": null
+        },
+        {
+            "_id": "67a86f156d86b5e97af85e28",
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    15.2336,
+                    100.523186
+                ]
+            },
+            "properties": {
+                "name": "TEST",
+                "markerType": "ผู้สูงอายุ",
+                "users": {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "placeName": "New York",
+                    "zoneName": "Manhattan",
+                    "idCard": "1212312121",
+                    "gender": "Male",
+                    "telNumber": "+123456789",
+                    "birthdate": "1990-01-01",
+                    "age": 34,
+                    "_id": "67a86f156d86b5e97af85e28"
+                },
+                "places": {
+                    "placeId": "67a4d5c7db9d9eb99eda1867",
+                    "zoneId": "679e4c28ff9896ba99438a6a"
+                }
+            },
+            "createdAt": "2025-02-09T16:02:13.341+07:00",
+            "updatedAt": "2025-02-09T16:02:13.341+07:00",
+            "deletedAt": null
+        }
+    ]
+}
