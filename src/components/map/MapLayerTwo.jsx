@@ -151,11 +151,18 @@ export default function MapLayerTwo(props) {
               const userLatLng = e.latlng;
               console.log(e);
               console.log(userLatLng);
+              const userIcon = L.icon({
+                iconUrl:
+                  "https://cdn-icons-png.flaticon.com/512/3710/3710297.png", // Replace with the path to your custom icon
+                iconSize: [32, 32], // Size of the icon [width, height]
+                iconAnchor: [16, 32], // Point of the icon which will correspond to the marker's location
+                popupAnchor: [0, -32], // Point from which the popup should open relative to the iconAnchor
+              });
               if (markerRef.current) {
                 markerRef.current.remove();
               }
 
-              const newMarker = L.marker(userLatLng)
+              const newMarker = L.marker(userLatLng, { icon: userIcon })
                 .addTo(map)
                 .bindPopup("You are here and inside the zone!")
                 .openPopup();
@@ -334,6 +341,14 @@ export default function MapLayerTwo(props) {
           popupAnchor: [0, -32], // Position of the popup relative to the icon
         });
         return rescue;
+
+      default:
+        return L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/1397/1397898.png",
+          iconSize: [32, 32], // Size of the icon
+          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+          popupAnchor: [0, -32], // Position of the popup relative to the icon
+        });
     }
   };
 
