@@ -13,18 +13,27 @@ import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
 import { SwitchMode } from "../admin/SwitchMode";
 import ModalAddMarker from "../modal/ModalAddMarker";
+import "leaflet-easybutton";
 import * as L from "leaflet";
+import { ArrowLeftOutlined, StepBackwardFilled } from "@ant-design/icons";
+import { StepBackIcon } from "lucide-react";
+
 export default function MapLayerTwo(props) {
-  const { place } = props;
+  const { place, changePage } = props;
+  const markerRef = useRef(null);
+  const [isAdmin, setIsAdmin] = useState(0);
   const [pointSelected, setPointSelected] = useState(
-    place?.location?.coordinates
+    isAdmin && place?.location?.coordinates
   );
+  const [map, setMap] = useState(null);
   const [zoneSelected, setZoneSelected] = useState();
   const [markers, setMaker] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(0);
   const [pinTypes, setPinTypes] = useState([]);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
+  const [isLatLngError, setIsLatLngError] = useState(false);
+  const [isTriggerReq, setIsTriggerReq] = useState(false);
   useEffect(() => {
     // console.log(place);
     const fetchData = async () => {
@@ -35,8 +44,161 @@ export default function MapLayerTwo(props) {
       }
       await fetchPinTypes(place?._id);
     };
+    // getLocation();
     fetchData();
   }, [isAdmin]);
+
+  const getLocation = () => {
+    setIsTriggerReq(true);
+    setIsLoadingLatLng(true);
+    setIsLatLngError(false);
+
+    if (map) {
+      map.locate({ setView: true, maxZoom: 15 }); // Request the user's location
+      map.off("locationfound").off("locationerror");
+      map.on("locationfound", (e) => {
+        const lat = e.latitude;
+        const long = e.longitude;
+        let isInsideZone = false;
+
+        for (const zoneGeoJSON of place.zones.features) {
+          const zoneLayer = L.geoJSON(zoneGeoJSON);
+          if (zoneLayer.getBounds().contains([lat, long])) {
+            setZoneSelected({
+              zoneName: zoneGeoJSON.properties.community,
+              zoneId: zoneGeoJSON._id,
+            });
+            isInsideZone = true;
+            if (markerRef.current) {
+              markerRef.current.remove();
+            }
+
+            // Create a new marker and store it in the reference
+            const newMarker = L.marker([lat, long])
+              .addTo(map)
+              .bindPopup("You are here and inside the zone!")
+              .openPopup();
+
+            markerRef.current = newMarker; // Store the new marker in the reference
+
+            setIsLatLngError(false);
+            map.flyTo([lat, long], 15);
+            setPointSelected([lat, long]);
+            break;
+          }
+        }
+
+        if (!isInsideZone) {
+          setIsLatLngError(true);
+          setIsLoadingLatLng(false);
+        }
+        console.log("ตำแหน่งที่ได้รับ:", lat, long);
+        setIsLoadingLatLng(false);
+      });
+
+      map.on("locationerror", (error) => {
+        console.error("เกิดข้อผิดพลาดในการดึงตำแหน่ง", error);
+        setIsLatLngError(true);
+        setIsLoadingLatLng(false);
+      });
+    } else {
+      console.log("Map not available.");
+      setIsLatLngError(true);
+      setIsLoadingLatLng(false);
+    }
+  };
+
+  const FindMyLocationButton = ({ map, setPointSelected, zonesGeoJSON }) => {
+    useEffect(() => {
+      if (!map || !zonesGeoJSON || zonesGeoJSON.length === 0) return;
+
+      const button = L.control({ position: "bottomright" });
+
+      button.onAdd = function () {
+        const div = L.DomUtil.create("button", "custom-location-button");
+        div.className =
+          "w-10 h-10 bg-white border border-gray-300 rounded-md flex focus:ring-2 justify-center items-center ";
+        // Create the image element from a CDN link
+        const icon = L.DomUtil.create("img", "location-icon");
+        icon.src = "https://cdn-icons-png.flaticon.com/512/3710/3710297.png"; // Replace with your CDN link
+        icon.alt = "Find me"; // Alt text for the image
+        icon.className =
+          "w-8 h-8 rounded-xl border shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer";
+
+        div.appendChild(icon);
+
+        div.onclick = function () {
+          map.off("locationfound").off("locationerror");
+          map
+            .locate()
+            .on("locationfound", function (e) {
+              const userLatLng = e.latlng;
+              console.log(e);
+              console.log(userLatLng);
+              if (markerRef.current) {
+                markerRef.current.remove();
+              }
+
+              const newMarker = L.marker(userLatLng)
+                .addTo(map)
+                .bindPopup("You are here and inside the zone!")
+                .openPopup();
+
+              markerRef.current = newMarker;
+
+              map.flyTo(userLatLng, 15);
+            })
+            .on("locationerror", function () {
+              alert("Location access denied or unavailable.");
+            });
+        };
+
+        return div;
+      };
+
+      button.addTo(map);
+
+      return () => {
+        map.removeControl(button);
+      };
+    }, [map, setPointSelected, zonesGeoJSON]);
+
+    return null;
+  };
+  const FindMyPlace = ({ map }) => {
+    useEffect(() => {
+      const button = L.control({ position: "bottomright" });
+
+      button.onAdd = function () {
+        const div = L.DomUtil.create("button", "custom-location-button");
+        div.className =
+          "w-10 h-10 bg-white border border-gray-300 rounded-md flex focus:ring-2 justify-center items-center ";
+        // Create the image element from a CDN link
+        const icon = L.DomUtil.create("img", "location-icon");
+        icon.src = "https://cdn-icons-png.flaticon.com/512/2803/2803287.png"; // Replace with your CDN link
+        icon.alt = "Find me"; // Alt text for the image
+        icon.className =
+          "w-8 h-8 rounded-xl border shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer";
+
+        div.appendChild(icon);
+
+        div.onclick = function () {
+          map.flyTo(place?.location?.coordinates, 13);
+          markerRef.current.remove();
+        };
+
+        return div;
+      };
+
+      button.addTo(map);
+
+      return () => {
+        map.removeControl(button);
+      };
+    }, [map]);
+
+    return null;
+  };
 
   const fetchMarkers = async (placeId) => {
     try {
@@ -84,8 +246,9 @@ export default function MapLayerTwo(props) {
     });
 
     const currentMarkerIcon = new LeafIcon({
-      iconUrl: "https://cdn-icons-png.flaticon.com/512/14090/14090313.png",
-      iconSize: [40, 40],
+      iconUrl:
+        "https://cdn.discordapp.com/attachments/1327135943957676085/1338064336152690780/1.png?ex=67a9b905&is=67a86785&hm=3cb54ec18720754ce4f4b8c0b2b1772ac3e3e469846b199bf107ee939e7ac7b6&",
+      iconSize: [40, 45],
       iconAnchor: [20, 40],
       popupAnchor: [0, -40],
     });
@@ -109,8 +272,8 @@ export default function MapLayerTwo(props) {
 
   const handleMapClick = (e) => {
     console.log(e);
-
     const { lat, lng } = e.latlng;
+
     setPointSelected([lat, lng]);
     const { community } = e.target.feature.properties; // Access the feature properties
     const zoneName = community; // Assuming 'community' is the zone name
@@ -204,6 +367,19 @@ export default function MapLayerTwo(props) {
           },
         },
       };
+
+      if (!isAdmin) {
+        const latlng = L.latLng(
+          parseFloat(values.latitude),
+          parseFloat(values.longitude)
+        );
+        const zoneLayer = L.geoJSON(place.zones);
+        if (!zoneLayer.getBounds().contains(latlng)) {
+          throw new Error(
+            "The provided latitude and longitude are outside the zone."
+          );
+        }
+      }
       const response = await fetch(`${ENDPOINT.CREATE_MARKER}`, {
         method: "POST",
         headers: {
@@ -221,7 +397,7 @@ export default function MapLayerTwo(props) {
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
-      setIsModalVisible(!isModalVisible)
+      setIsModalVisible(!isModalVisible);
     } catch (error) {
       console.log("error", error);
     }
@@ -232,29 +408,53 @@ export default function MapLayerTwo(props) {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* แผนที่ */}
         <div className="lg:col-span-2 bg-white shadow-lg rounded-lg p-6 relative">
-          <div className="flex justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-700 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex justify-start items-center w-1/3">
+              <div
+                className="hover:cursor-pointer"
+                onClick={() => changePage()}
+              >
+                <span>
+                  <ArrowLeftOutlined /> เลือกเมือง
+                </span>
+              </div>
+            </div>
+            <div className="flex justify-center items-center w-1/3">
+              <h2 className="text-xl font-bold text-gray-700 ">
                 แผนที่ เมือง{place.amphurName}
               </h2>
             </div>
-            <div>
+            <div className="flex justify-end items-center w-1/3">
               <Button
                 type="primary"
-                size=""
                 onClick={() => setIsModalVisible(!isModalVisible)}
               >
                 ปักหมุดแผนที่
               </Button>
             </div>
           </div>
+
           <div className="overflow-hidden rounded-lg border border-gray-200 relative">
             <MapContainer
               center={place?.location?.coordinates}
               zoom={13}
               style={{ height: "600px", width: "100%" }}
-              // onClick={handleMapClick}
+              whenReady={(mapInstance) => setMap(mapInstance.target)}
             >
+              {map && (
+                <>
+                  <FindMyLocationButton
+                    map={map}
+                    setPointSelected={setPointSelected}
+                    zonesGeoJSON={place.zones.features}
+                  />
+                  <FindMyPlace
+                    map={map}
+                    setPointSelected={setPointSelected}
+                    zonesGeoJSON={place.zones.features}
+                  />
+                </>
+              )}
               <LayersControl position="topright">
                 {pinTypes[0]?.pinTypes.map((type, idx) => {
                   return (
@@ -348,6 +548,11 @@ export default function MapLayerTwo(props) {
         pointSelected={pointSelected}
         zoneSelected={zoneSelected}
         place={place}
+        getLocation={getLocation}
+        isLoadingLatLng={isLoadingLatLng}
+        isLatLngError={isLatLngError}
+        isTriggerReq={isTriggerReq}
+        isAdmin={isAdmin}
       />
     </div>
   );

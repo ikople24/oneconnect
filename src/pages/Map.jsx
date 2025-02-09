@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import React from "react";
 import "leaflet/dist/leaflet.css";
 import MapLayerOne from "@/components/map/MapLayerOne";
@@ -7,7 +6,6 @@ import MapLayerTwo from "@/components/map/MapLayerTwo";
 export default function ServiceAreaSelection() {
   const [stage, setStage] = useState(1);
   const [place, setPlace] = useState({});
-  const navigate = useNavigate();
 
   const changePage = () => {
     setStage(!stage);
@@ -18,7 +16,7 @@ export default function ServiceAreaSelection() {
       {stage ? (
         <MapLayerOne changePage={changePage} setPlace={setPlace} />
       ) : (
-        <MapLayerTwo place={place} />
+        <MapLayerTwo place={place} changePage={changePage} />
       )}
     </div>
   );
