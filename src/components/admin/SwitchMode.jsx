@@ -10,14 +10,14 @@ export const SwitchMode = (props) => {
 
   }
   return (
-    <div className="p-2  border rounded-md">
-      <div className="text-xl mb-2">Change role</div>
+    <div className="mb-2">
+      <div className="text-xl mb-2 font-bold">สลับบทบาท</div>
       <Flex gap={5}>
-        <div>User</div>
+        <div>ผู้ใช้งาน</div>
         <div>
           <Switch onChange={onChangeMode} />
         </div>
-        <div>Admin</div>
+        <div>ผู้ดูแลระบบ</div>
       </Flex>
     </div>
   );

@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useEffect, useState, useRef } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  LayerGroup,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
@@ -7,38 +13,44 @@ import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
 import { SwitchMode } from "../admin/SwitchMode";
 import ModalAddMarker from "../modal/ModalAddMarker";
+import * as L from "leaflet";
 export default function MapLayerTwo(props) {
   const { place } = props;
+  const [pointSelected, setPointSelected] = useState(
+    place?.location?.coordinates
+  );
+  const [zoneSelected, setZoneSelected] = useState();
   const [markers, setMaker] = useState([]);
   const [isAdmin, setIsAdmin] = useState(0);
   const [pinTypes, setPinTypes] = useState([]);
+  const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
-    console.log(place);
+    // console.log(place);
     const fetchData = async () => {
       if (isAdmin) {
         await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
-      await fetchPinTypes(place?._id)
+      await fetchPinTypes(place?._id);
     };
     fetchData();
   }, [isAdmin]);
 
   const fetchMarkers = async (placeId) => {
     try {
-      console.log(placeId);
+      // console.log(placeId);
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-      console.log(params);
+      // console.log(params);
 
       const markers = await fetch(
         `${ENDPOINT.GET_MARKERS}?${params.toString()}`
       );
       const response = await markers.json();
-      console.log(response);
+      // console.log(response);
 
       setMaker(response ?? []);
     } catch (error) {
@@ -51,13 +63,13 @@ export default function MapLayerTwo(props) {
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-      console.log(params);
+      // console.log(params);
 
       const markers = await fetch(
         `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`
       );
       const response = await markers.json();
-      console.log(response);
+      // console.log(response);
 
       setMaker(response ?? []);
     } catch (error) {
@@ -66,25 +78,52 @@ export default function MapLayerTwo(props) {
   };
   const [summary, setSummary] = useState({ elderly_count: 150 });
 
-  const LocationMarker = () => {
-    useMapEvent("click", (e) => {
-      console.log("Clicked coordinates:", e.latlng);
+  const LocationMarker = ({ isAdmin, setPointSelected, pointSelected }) => {
+    const LeafIcon = L.Icon.extend({
+      options: {},
     });
+
+    const currentMarkerIcon = new LeafIcon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/14090/14090313.png",
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40],
+    });
+    return pointSelected && isAdmin ? (
+      <Marker position={pointSelected} icon={currentMarkerIcon}>
+        <Popup>
+          <Button
+            type="primary"
+            size=""
+            onClick={() => {
+              console.log("ZONE", zoneSelected);
+              setIsModalVisible(!isModalVisible);
+            }}
+          >
+            ปักหมุดแผนที่
+          </Button>
+        </Popup>
+      </Marker>
+    ) : null;
   };
+
   const handleMapClick = (e) => {
-    const { community } = e.target.feature.properties;
-    const zoneName = community;
-    const zoneId = e.target.feature._id;
+    console.log(e);
+
+    const { lat, lng } = e.latlng;
+    setPointSelected([lat, lng]);
+    const { community } = e.target.feature.properties; // Access the feature properties
+    const zoneName = community; // Assuming 'community' is the zone name
+    const zoneId = e.target.feature._id; // Access the feature ID
+    setZoneSelected({
+      zoneName: zoneName,
+      zoneId: zoneId,
+    });
+    console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
   };
 
   const LayerControllerFilterHandler = (type) => {
-    const uniqueMarkers = Array.from(
-      new Map(
-        markers.map((marker) => [marker.properties.markerType, marker])
-      ).values()
-    );
-
-    const markerTypeFilter = uniqueMarkers.filter(
+    const markerTypeFilter = markers.filter(
       (marker) => marker.properties.markerType === type
     );
 
@@ -112,7 +151,6 @@ export default function MapLayerTwo(props) {
     return markerInLayer;
   };
 
-
   // fetch ข้อมูลประเภทหมุดแต่ละเมือง
   const fetchPinTypes = async (placeId) => {
     try {
@@ -128,7 +166,7 @@ export default function MapLayerTwo(props) {
       }
 
       const data = await response.json();
-      console.log(data);
+      console.log("Pin types:", data);
       setPinTypes(data);
     } catch (error) {
       console.log("error", error);
@@ -147,7 +185,7 @@ export default function MapLayerTwo(props) {
           ],
         },
         properties: {
-          name: values.firstName + " " + values.lastName,
+          name: values.name,
           markerType: values.pinType,
           users: {
             firstName: values.firstName,
@@ -177,6 +215,13 @@ export default function MapLayerTwo(props) {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      if (isAdmin) {
+        await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
+      } else {
+        await Promise.allSettled([fetchMarkers(place?._id)]);
+      }
+      setIsModalVisible(!isModalVisible)
     } catch (error) {
       console.log("error", error);
     }
@@ -194,7 +239,11 @@ export default function MapLayerTwo(props) {
               </h2>
             </div>
             <div>
-              <Button type="primary" size="" onClick={() => setIsModalVisible(!isModalVisible)}>
+              <Button
+                type="primary"
+                size=""
+                onClick={() => setIsModalVisible(!isModalVisible)}
+              >
                 ปักหมุดแผนที่
               </Button>
             </div>
@@ -204,17 +253,24 @@ export default function MapLayerTwo(props) {
               center={place?.location?.coordinates}
               zoom={13}
               style={{ height: "600px", width: "100%" }}
+              // onClick={handleMapClick}
             >
               <LayersControl position="topright">
-                {place.pinTypes.map((type, idx) => {
+                {pinTypes[0]?.pinTypes.map((type, idx) => {
                   return (
                     <LayersControl.Overlay key={idx} name={type} checked>
-                      {LayerControllerFilterHandler(type)}
+                      <LayerGroup>
+                        {LayerControllerFilterHandler(type)}
+                      </LayerGroup>
                     </LayersControl.Overlay>
                   );
                 })}
               </LayersControl>
-              <LocationMarker />
+              <LocationMarker
+                isAdmin={isAdmin}
+                setPointSelected={setPointSelected}
+                pointSelected={pointSelected}
+              />
               {
                 <React.Fragment key={`polygon`}>
                   <GeoJSON
@@ -237,6 +293,8 @@ export default function MapLayerTwo(props) {
                       fillOpacity: 0.5,
                     }}
                     onEachFeature={(feature, layer) => {
+                      console.log(feature);
+                      console.log("LAYER:", layer);
                       layer.on({
                         click: handleMapClick,
                       });
@@ -287,6 +345,9 @@ export default function MapLayerTwo(props) {
         onCancel={() => setIsModalVisible(!isModalVisible)}
         data={pinTypes[0]}
         handleOK={handleAddMarker}
+        pointSelected={pointSelected}
+        zoneSelected={zoneSelected}
+        place={place}
       />
     </div>
   );
