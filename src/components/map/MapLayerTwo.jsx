@@ -8,7 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React from "react";
-import { Space, Button, Table, Tooltip, Modal, message } from "antd";
+import { Space, Button, Table, Tooltip, Modal, message, Flex } from "antd";
 import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
 import { SwitchMode } from "../admin/SwitchMode";
@@ -305,6 +305,21 @@ export default function MapLayerTwo(props) {
       zoneId: zoneId,
     });
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
+  };
+
+  const mapIconMarker = (type) => {
+    switch (type) {
+      case "ผู้สูงอายุ":
+        return olderIcon;
+      case "ปราชญ์ชุมชน":
+        return philosopherIcon;
+      case "ผู้นำชุมชน":
+        return leaderIcon;
+      case "กู้ภัย":
+        return rescueIcon;
+      default:
+        return false;
+    }
   };
 
   const addIconByMarkerType = (type) => {
@@ -690,15 +705,45 @@ export default function MapLayerTwo(props) {
         <div className="bg-white shadow-lg rounded-lg p-6">
           <SwitchMode isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
           <h2 className="text-xl font-bold text-gray-700">ข้อมูลสรุป</h2>
-          <p className="text-gray-600 text-lg">
-            จำนวนผู้สูงอายุในระบบ:{" "}
+
+          <p className="text-gray-600 text-lg py-1">
+            จำนวนประชากร:{" "}
             <span className="font-semibold text-blue-600">
-              {summary.elderly_count}
+              {place.population} คน
             </span>
           </p>
-          <h2 className="text-xl font-bold text-gray-700 mt-4">
+          <p className="text-gray-600 text-lg py-1">
+            จำนวนครัวเรือน:{" "}
+            <span className="font-semibold text-blue-600">
+              {place.household} ครัวเรือน
+            </span>
+          </p>
+
+          {place?.summary.map((summary) => {
+            return (
+              <p className="text-gray-600 text-lg py-1">
+                <Flex gap={10} align="center" wrap>
+                  <div>
+                    {mapIconMarker(summary.name) !== false ? (
+                      <img
+                        className="w-10 h-10"
+                        src={mapIconMarker(summary.name)}
+                      />
+                    ) : (
+                      summary.name
+                    )}
+                  </div>
+                  <span className="font-semibold text-blue-600">
+                    {summary.count} หมุด
+                  </span>
+                </Flex>
+              </p>
+            );
+          })}
+
+          {/* <h2 className="text-xl font-bold text-gray-700 mt-4">
             ข้อมูลตามชุมชน
-          </h2>
+          </h2> */}
           <ul className="space-y-3 mt-2">
             {/* {communities.map((community) => (
               <li
