@@ -23,8 +23,10 @@ import leaderIcon from "@/assets/markerIcon/community_leader.png";
 import olderIcon from "@/assets/markerIcon/older_person.png";
 import philosopherIcon from "@/assets/markerIcon/philosopher.png";
 import rescueIcon from "@/assets/markerIcon/rescue.png";
+import { useGlobalContext } from "@/context/Context";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
+  const { TEST, setTest } = useGlobalContext();
   const markerRef = useRef(null);
   const [isAdmin, setIsAdmin] = useState(0);
   const [pointSelected, setPointSelected] = useState(
@@ -50,7 +52,9 @@ export default function MapLayerTwo(props) {
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
+
   useEffect(() => {
+    console.log("FROM CONTEXT", TEST);
     // console.log(place);
 
     // getLocation();
