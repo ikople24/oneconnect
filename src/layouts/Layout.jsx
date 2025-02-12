@@ -4,11 +4,14 @@ import { Outlet } from "react-router";
 // rafce
 const Layout = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <hr />
-      <Outlet />
-    </>
+      <div className="flex flex-1">
+        <main className="container mx-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
   );
 };
 export default Layout;
