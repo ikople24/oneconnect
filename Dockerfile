@@ -1,21 +1,28 @@
-# Use a lightweight Node.js image
-FROM node:18-alpine
+# Stage 1: Build the application
+FROM node:20-slim AS build-stage
 
-# Set working directory
-WORKDIR /app
+# Set environment and working directory
+ENV NODE_ENV=production
+WORKDIR /usr/src/app
 
-# Install dependencies
+# Install dependencies only
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
-# Copy the rest of the application files
+# Copy the application source code
 COPY . .
 
-# Build the application
+# Build the application for production
 RUN npm run build
 
-# Expose port for the application
-EXPOSE 5173
+# Stage 2: Serve the application using Nginx
+FROM nginx:alpine
 
-# Start the application in preview mode
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+# Copy the built files from the build-stage
+COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
+
+# Expose port for Nginx
+EXPOSE 80
+
+# Start Nginx server to serve the app
+CMD ["nginx", "-g", "daemon off;"]
