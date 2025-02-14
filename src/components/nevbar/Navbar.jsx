@@ -1,42 +1,104 @@
 import React, { useState } from "react";
 import DropdownListMenu from "./DropdownListMenu";
 import Logo from "./Logo";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { AlignJustify, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <Logo />
-        <div className="hidden md:flex space-x-16">
-          <Link to="/">ข้อมูลเมือง</Link>
-          <Link to="/map">แผนที่</Link>
-          <Link to="/">ของดีในเมือง</Link>
-          <Link to="/">สุขภาพคนเมือง</Link>
+    <nav className="bg-greenLight shadow-md">
+      <div className="container mx-auto flex justify-between items-center md:px-4 p-4">
+        <div>
+          <p className="text-2xl font-bold text-white">OCN</p>
         </div>
-        <div className="hidden md:block">
+        <div className="hidden md:flex space-x-8">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? "text-white font-bold" : "text-greenSoft"
+            }
+          >
+            ข้อมูลเมือง
+          </NavLink>
+          <NavLink
+            to="/map"
+            end
+            className={({ isActive }) =>
+              isActive ? "text-white font-bold" : "text-greenSoft"
+            }
+          >
+            แผนที่
+          </NavLink>
+          {/* <NavLink
+            to=""
+            end
+            className={({ isActive }) =>
+              isActive ? "text-white font-bold" : "text-greenSoft"
+            }
+          >
+            ของดีในเมือง
+          </NavLink> */}
+          {/* <NavLink
+            to=""
+            end
+            className={({ isActive }) =>
+              isActive ? "text-white font-bold" : "text-greenSoft"
+            }
+          >
+            สุขภาพคนเมือง
+          </NavLink> */}
           <DropdownListMenu />
         </div>
-        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+        <button className="md:hidden px-4" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={24} /> : <AlignJustify size={24} />}
         </button>
       </div>
       {isOpen && (
-        <div className="md:hidden flex flex-col justify-center items-center space-y-4 p-4 bg-white shadow-md">
-          <Link to="/" onClick={() => setIsOpen(false)}>
+        <div className="md:hidden flex flex-col justify-center items-center space-y-4 p-4 bg-greenLight shadow-md">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? "text-white font-bold" : "text-greenSoft"
+            }
+            onClick={() => setIsOpen(false)}
+            style={{ width: "100%", "textAlign": "center" }}
+          >
             ข้อมูลเมือง
-          </Link>
-          <Link to="/map" onClick={() => setIsOpen(false)}>
+          </NavLink>
+          <NavLink
+            to="/map"
+            end
+            className={({ isActive }) =>
+              isActive ? "text-white font-bold" : "text-greenSoft"
+            }
+            onClick={() => setIsOpen(false)}
+            style={{ width: "100%", "textAlign": "center" }}
+          >
             แผนที่
-          </Link>
-          <Link to="/" onClick={() => setIsOpen(false)}>
+          </NavLink>
+          {/* <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? "text-cyan-400 font-bold" : "text-cyan-50"
+            }
+            onClick={() => setIsOpen(false)}
+          >
             ของดีในเมือง
-          </Link>
-          <Link to="/" onClick={() => setIsOpen(false)}>
+          </NavLink>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? "text-cyan-400 font-bold" : "text-cyan-50"
+            }
+            onClick={() => setIsOpen(false)}
+          >
             สุขภาพคนเมือง
-          </Link>
+          </NavLink> */}
           <DropdownListMenu />
         </div>
       )}

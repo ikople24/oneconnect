@@ -2,7 +2,7 @@ import { CircleUserRound } from 'lucide-react';
 const Usericon = () => {
   return (
     <div>
-        <CircleUserRound />
+        <CircleUserRound color='#AFDDE5'/>
     </div>
   )
 }
