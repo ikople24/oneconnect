@@ -158,11 +158,11 @@ export default function ServiceAreaSelection(props) {
   };
 
   return (
-    <div className=" bg-gray-100  ">
+    <div className=" bg-gray-100">
       <Row gutter={20}>
         <Col xl={16} xs={0} md={24} order={1}>
           {/* <div className="map-section flex-grow h-[60vh] lg:h-[90vh] w-full lg:w-3/4 rounded-lg shadow-lg"> */}
-          <div className="flex flex-col items-center h-[90vh]">
+          <div className="flex flex-col items-center md:h-[92.5vh] lg:h-[93vh] xl:h-[93vh]">
             <MapContainer
               center={[13.885556744960699, 100.63529495228143]}
               zoom={6}
@@ -229,7 +229,7 @@ export default function ServiceAreaSelection(props) {
                 <FlyToProvince position={flyToLatLng} zoom={6} />
               )} */}
             </MapContainer>
-          </div>
+          </div> 
         </Col>
         <Col
           xl={8}
@@ -310,17 +310,18 @@ export default function ServiceAreaSelection(props) {
                 </div>
               </Flex>
               <div className={`text-center my-4`}>
-                <button
-                  className={`${
-                    placeSelected
-                      ? "bg-black text-white cursor-pointer"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  } px-7 py-1`}
+                <Button
+                  // className={`${
+                  //   placeSelected
+                  //     ? "bg-black text-white cursor-pointer"
+                  //     : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  // } px-7 py-1`}
                   onClick={handleConfirm}
                   disabled={!placeSelected}
+                  type="primary"
                 >
                   ยืนยัน
-                </button>
+                </Button>
               </div>
             </Col>
           </Row>

@@ -24,8 +24,8 @@ const DropdownListMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="bg-transparent hover:bg-transparent">
         {/* ปุ่มด้านขวา user pro file  */}
-        <div className="flex space-x-4 cursor-pointer">
-          <AlignJustify/>
+        <div className="cursor-pointer">
+          {/* <AlignJustify/> */}
           <Usericon />
         </div>
       </DropdownMenuTrigger>
