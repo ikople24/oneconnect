@@ -24,6 +24,7 @@ import olderIcon from "@/assets/markerIcon/older_person.png";
 import philosopherIcon from "@/assets/markerIcon/philosopher.png";
 import rescueIcon from "@/assets/markerIcon/rescue.png";
 import { useGlobalContext } from "@/context/Context";
+import TableEditMarkerAdmin from "./TableEditMarkerAdmin";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { TEST, setTest } = useGlobalContext();
@@ -39,14 +40,14 @@ export default function MapLayerTwo(props) {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   // TODO:: สำหรับตาราง admin
-  const [tableParams, setTableParams] = useState({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: 0,
-    },
-  });
-  const [modalMarkerIsvisible, setModalMarkerIsvisible] = useState(false);
+  // const [tableParams, setTableParams] = useState({
+  //   pagination: {
+  //     current: 1,
+  //     pageSize: 10,
+  //     total: 0,
+  //   },
+  // });
+  const [modalMarkerIsVisible, setModalMarkerIsVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
@@ -493,115 +494,6 @@ export default function MapLayerTwo(props) {
     }
   };
 
-  // TODO:: สำรหับตาราง Table
-  const handleTableChange = (pagination) => {
-    setTableParams({
-      ...tableParams,
-      pagination, // Update pagination
-    });
-  };
-  const handleView = (record) => {
-    console.log("ดูรายละเอียด", record);
-    setSelectedRecord(record);
-    setModalMarkerIsvisible(!modalMarkerIsvisible);
-  };
-
-  const deleteMarker = async (id) => {
-    console.log("ID", id);
-    return await fetch(`${ENDPOINT.DELETE_MARKER_ADMIN}${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  };
-
-  const handleDelete = (record) => {
-    console.log("ลบ", record);
-    Modal.confirm({
-      title: "คุณแน่ใจไหม?",
-      content: "หากคุณลบข้อมูลนี้จะไม่สามารถกู้คืนได้",
-      okText: "ใช่",
-      cancelText: "ยกเลิก",
-      async onOk() {
-        const { _id } = record;
-        try {
-          await deleteMarker(_id);
-
-          message.success({
-            content: "ลบข้อมูลสำเร็จ!",
-            duration: 3,
-          });
-          await fetchData();
-        } catch (error) {
-          message.error({
-            content: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล",
-            duration: 3,
-          });
-        }
-      },
-      onCancel() {
-        console.log("ยกเลิกการลบ");
-      },
-    });
-  };
-
-  const columns = [
-    {
-      title: "ลำดับ",
-      dataIndex: "index",
-      key: "index",
-      align: "center",
-      width: 100,
-      render: (text, record, index) => {
-        const { current, pageSize } = tableParams.pagination;
-        const realIndex = (current - 1) * pageSize + index + 1; // คำนวณลำดับจริง
-        return realIndex;
-      },
-    },
-    {
-      title: "ชื่อข้อมูล",
-      dataIndex: ["properties", "name"],
-      key: "name",
-      align: "center",
-      width: 200,
-    },
-    {
-      title: "ประเภทข้อมูล",
-      dataIndex: ["properties", "markerType"],
-      key: "markerType",
-      align: "center",
-      width: 200,
-    },
-    {
-      title: "แอคชั่น",
-      key: "action",
-      align: "center",
-      width: 200,
-      render: (text, record) => (
-        <Space>
-          <Tooltip title="ดูรายละเอียด" open={false}>
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<EyeOutlined />}
-              onClick={() => handleView(record)}
-            />
-          </Tooltip>
-          <Tooltip title="ลบ" open={false}>
-            <Button
-              color="danger"
-              variant="solid"
-              shape="circle"
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record)}
-            />
-          </Tooltip>
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -723,9 +615,9 @@ export default function MapLayerTwo(props) {
             </span>
           </p>
 
-          {place?.summary.map((summary) => {
+          {place?.summary.map((summary, idx) => {
             return (
-              <p className="text-gray-600 text-lg py-1">
+              <div key={idx} className="text-gray-600 text-lg py-1">
                 <Flex gap={10} align="center" wrap>
                   <div>
                     {mapIconMarker(summary.name) !== false ? (
@@ -741,7 +633,7 @@ export default function MapLayerTwo(props) {
                     {summary.count} หมุด
                   </span>
                 </Flex>
-              </p>
+              </div>
             );
           })}
 
@@ -767,20 +659,18 @@ export default function MapLayerTwo(props) {
           </ul>
         </div>
       </div>
-      {isAdmin ? (
-        <div className="mt-3 max-w-7xl mx-auto shadow-lg rounded-lg">
-          <Table
-            columns={columns}
-            dataSource={markers}
-            rowKey="_id"
-            scroll={{ x: "max-content" }}
-            onChange={handleTableChange}
-          />
-        </div>
-      ) : null}
+      <TableEditMarkerAdmin
+        markers={markers}
+        isAdmin={isAdmin}
+        setModalMarkerIsVisible={setModalMarkerIsVisible}
+        setSelectedRecord={setSelectedRecord}
+        modalMarkerIsVisible={modalMarkerIsVisible}
+        fetchData={fetchData}
+      />
+
       <ModalMarkerDetail
-        visible={modalMarkerIsvisible}
-        onCancel={() => setModalMarkerIsvisible(false)}
+        visible={modalMarkerIsVisible}
+        onCancel={() => setModalMarkerIsVisible(false)}
         data={selectedRecord}
       />
       <ModalAddMarker
