@@ -1,21 +1,24 @@
-# Use a lightweight Node.js image
-FROM node:18-alpine
+# Stage 1: Build the Vite app
+FROM node:18 AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
+# Copy package.json and package-lock.json and install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy the rest of the application files
+# Copy project files and build
 COPY . .
-
-# Build the application
 RUN npm run build
 
-# Expose port for the application
-EXPOSE 5173
+# Stage 2: Serve the built files using Nginx
+FROM nginx:alpine
 
-# Start the application in preview mode
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+# Copy built files to Nginx's default public directory
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Expose port 80 for the web server
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
