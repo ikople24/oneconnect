@@ -8,22 +8,21 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React from "react";
-import { Space, Button, Table, Tooltip, Modal, message, Flex } from "antd";
-import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
+import { Button } from "antd";
+import { GeoJSON, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
-import { SwitchMode } from "../admin/SwitchMode";
-import ModalAddMarker from "../modal/ModalAddMarker";
+import ModalAddMarker from "@/components/modal/ModalAddMarker";
 import "leaflet-easybutton";
 import * as L from "leaflet";
-import { ArrowLeftOutlined, StepBackwardFilled } from "@ant-design/icons";
-import { StepBackIcon } from "lucide-react";
-import ModalMarkerDetail from "../modal/ModalMarkerDetail";
-import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import ModalMarkerDetail from "@/components/modal/ModalMarkerDetail";
 import leaderIcon from "@/assets/markerIcon/community_leader.png";
 import olderIcon from "@/assets/markerIcon/older_person.png";
 import philosopherIcon from "@/assets/markerIcon/philosopher.png";
 import rescueIcon from "@/assets/markerIcon/rescue.png";
 import { useGlobalContext } from "@/context/Context";
+import TableEditMarkerAdmin from "./MapLayerTwo/TableEditMarkerAdmin";
+import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { TEST, setTest } = useGlobalContext();
@@ -38,26 +37,14 @@ export default function MapLayerTwo(props) {
   const [pinTypes, setPinTypes] = useState([]);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // TODO:: สำหรับตาราง admin
-  const [tableParams, setTableParams] = useState({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: 0,
-    },
-  });
-  const [modalMarkerIsvisible, setModalMarkerIsvisible] = useState(false);
+  const [modalMarkerIsVisible, setModalMarkerIsVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
 
   useEffect(() => {
     console.log("FROM CONTEXT", TEST);
-    // console.log(place);
-
-    // getLocation();
     fetchData();
   }, [isAdmin]);
   const fetchData = async () => {
@@ -265,7 +252,6 @@ export default function MapLayerTwo(props) {
       console.error(error);
     }
   };
-  const [summary, setSummary] = useState({ elderly_count: 150 });
 
   const LocationMarker = ({ isAdmin, setPointSelected, pointSelected }) => {
     const LeafIcon = L.Icon.extend({
@@ -309,21 +295,6 @@ export default function MapLayerTwo(props) {
       zoneId: zoneId,
     });
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
-  };
-
-  const mapIconMarker = (type) => {
-    switch (type) {
-      case "ผู้สูงอายุ":
-        return olderIcon;
-      case "ปราชญ์ชุมชน":
-        return philosopherIcon;
-      case "ผู้นำชุมชน":
-        return leaderIcon;
-      case "กู้ภัย":
-        return rescueIcon;
-      default:
-        return false;
-    }
   };
 
   const addIconByMarkerType = (type) => {
@@ -493,115 +464,6 @@ export default function MapLayerTwo(props) {
     }
   };
 
-  // TODO:: สำรหับตาราง Table
-  const handleTableChange = (pagination) => {
-    setTableParams({
-      ...tableParams,
-      pagination, // Update pagination
-    });
-  };
-  const handleView = (record) => {
-    console.log("ดูรายละเอียด", record);
-    setSelectedRecord(record);
-    setModalMarkerIsvisible(!modalMarkerIsvisible);
-  };
-
-  const deleteMarker = async (id) => {
-    console.log("ID", id);
-    return await fetch(`${ENDPOINT.DELETE_MARKER_ADMIN}${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  };
-
-  const handleDelete = (record) => {
-    console.log("ลบ", record);
-    Modal.confirm({
-      title: "คุณแน่ใจไหม?",
-      content: "หากคุณลบข้อมูลนี้จะไม่สามารถกู้คืนได้",
-      okText: "ใช่",
-      cancelText: "ยกเลิก",
-      async onOk() {
-        const { _id } = record;
-        try {
-          await deleteMarker(_id);
-
-          message.success({
-            content: "ลบข้อมูลสำเร็จ!",
-            duration: 3,
-          });
-          await fetchData();
-        } catch (error) {
-          message.error({
-            content: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล",
-            duration: 3,
-          });
-        }
-      },
-      onCancel() {
-        console.log("ยกเลิกการลบ");
-      },
-    });
-  };
-
-  const columns = [
-    {
-      title: "ลำดับ",
-      dataIndex: "index",
-      key: "index",
-      align: "center",
-      width: 100,
-      render: (text, record, index) => {
-        const { current, pageSize } = tableParams.pagination;
-        const realIndex = (current - 1) * pageSize + index + 1; // คำนวณลำดับจริง
-        return realIndex;
-      },
-    },
-    {
-      title: "ชื่อข้อมูล",
-      dataIndex: ["properties", "name"],
-      key: "name",
-      align: "center",
-      width: 200,
-    },
-    {
-      title: "ประเภทข้อมูล",
-      dataIndex: ["properties", "markerType"],
-      key: "markerType",
-      align: "center",
-      width: 200,
-    },
-    {
-      title: "แอคชั่น",
-      key: "action",
-      align: "center",
-      width: 200,
-      render: (text, record) => (
-        <Space>
-          <Tooltip title="ดูรายละเอียด" open={false}>
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<EyeOutlined />}
-              onClick={() => handleView(record)}
-            />
-          </Tooltip>
-          <Tooltip title="ลบ" open={false}>
-            <Button
-              color="danger"
-              variant="solid"
-              shape="circle"
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record)}
-            />
-          </Tooltip>
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -707,80 +569,25 @@ export default function MapLayerTwo(props) {
         </div>
         {/* ข้อมูลสรุปและข้อมูลตามชุมชน */}
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <SwitchMode isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
-          <h2 className="text-xl font-bold text-gray-700">ข้อมูลสรุป</h2>
-
-          <p className="text-gray-600 text-lg py-1">
-            จำนวนประชากร:{" "}
-            <span className="font-semibold text-blue-600">
-              {place.population} คน
-            </span>
-          </p>
-          <p className="text-gray-600 text-lg py-1">
-            จำนวนครัวเรือน:{" "}
-            <span className="font-semibold text-blue-600">
-              {place.household} ครัวเรือน
-            </span>
-          </p>
-
-          {place?.summary.map((summary) => {
-            return (
-              <p className="text-gray-600 text-lg py-1">
-                <Flex gap={10} align="center" wrap>
-                  <div>
-                    {mapIconMarker(summary.name) !== false ? (
-                      <img
-                        className="w-10 h-10"
-                        src={mapIconMarker(summary.name)}
-                      />
-                    ) : (
-                      summary.name
-                    )}
-                  </div>
-                  <span className="font-semibold text-blue-600">
-                    {summary.count} หมุด
-                  </span>
-                </Flex>
-              </p>
-            );
-          })}
-
-          {/* <h2 className="text-xl font-bold text-gray-700 mt-4">
-            ข้อมูลตามชุมชน
-          </h2> */}
-          <ul className="space-y-3 mt-2">
-            {/* {communities.map((community) => (
-              <li
-                key={community.id}
-                className="p-3 bg-gray-50 rounded-md border border-gray-300"
-              >
-                <span className="font-semibold text-gray-800">
-                  {community.name}
-                </span>
-                :
-                <span className="text-blue-600 font-medium">
-                  {" "}
-                  {community.elderly_count} คน
-                </span>
-              </li>
-            ))} */}
-          </ul>
-        </div>
-      </div>
-      {isAdmin ? (
-        <div className="mt-3 max-w-7xl mx-auto shadow-lg rounded-lg">
-          <Table
-            columns={columns}
-            dataSource={markers}
-            rowKey="_id"
-            scroll={{ x: "max-content" }}
-            onChange={handleTableChange}
+          <MapLayerTwoSidebar
+            place={place}
+            isAdmin={isAdmin}
+            setIsAdmin={setIsAdmin}
           />
         </div>
-      ) : null}
+      </div>
+      <TableEditMarkerAdmin
+        markers={markers}
+        isAdmin={isAdmin}
+        setModalMarkerIsVisible={setModalMarkerIsVisible}
+        setSelectedRecord={setSelectedRecord}
+        modalMarkerIsVisible={modalMarkerIsVisible}
+        fetchData={fetchData}
+      />
+
       <ModalMarkerDetail
-        visible={modalMarkerIsvisible}
-        onCancel={() => setModalMarkerIsvisible(false)}
+        visible={modalMarkerIsVisible}
+        onCancel={() => setModalMarkerIsVisible(false)}
         data={selectedRecord}
       />
       <ModalAddMarker
