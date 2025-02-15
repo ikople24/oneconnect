@@ -1,4 +1,4 @@
-import { SwitchMode } from "../admin/SwitchMode";
+import { SwitchMode } from "../../admin/SwitchMode";
 import { Flex } from "antd";
 import olderIcon from "@/assets/markerIcon/older_person.png";
 import philosopherIcon from "@/assets/markerIcon/philosopher.png";

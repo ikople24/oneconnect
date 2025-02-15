@@ -1,7 +1,7 @@
 import { Table, Space, Tooltip, Button, App } from "antd";
 import { useState } from "react";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
-import { ENDPOINT } from "../endpoint";
+import { ENDPOINT } from "../../endpoint";
 export default function TableEditMarkerAdmin({
   markers,
   isAdmin,

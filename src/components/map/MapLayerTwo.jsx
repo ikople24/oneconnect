@@ -9,20 +9,20 @@ import {
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
-import { GeoJSON, useMapEvent, LayersControl } from "react-leaflet";
+import { GeoJSON, LayersControl } from "react-leaflet";
 import { ENDPOINT } from "../endpoint";
 import ModalAddMarker from "@/components/modal/ModalAddMarker";
 import "leaflet-easybutton";
 import * as L from "leaflet";
-import { ArrowLeftOutlined, StepBackwardFilled } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import ModalMarkerDetail from "@/components/modal/ModalMarkerDetail";
 import leaderIcon from "@/assets/markerIcon/community_leader.png";
 import olderIcon from "@/assets/markerIcon/older_person.png";
 import philosopherIcon from "@/assets/markerIcon/philosopher.png";
 import rescueIcon from "@/assets/markerIcon/rescue.png";
 import { useGlobalContext } from "@/context/Context";
-import TableEditMarkerAdmin from "./TableEditMarkerAdmin";
-import MapLayerTwoSidebar from "./MapLayerTwoSidebar";
+import TableEditMarkerAdmin from "./MapLayerTwo/TableEditMarkerAdmin";
+import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { TEST, setTest } = useGlobalContext();
@@ -252,7 +252,6 @@ export default function MapLayerTwo(props) {
       console.error(error);
     }
   };
-  const [summary, setSummary] = useState({ elderly_count: 150 });
 
   const LocationMarker = ({ isAdmin, setPointSelected, pointSelected }) => {
     const LeafIcon = L.Icon.extend({
