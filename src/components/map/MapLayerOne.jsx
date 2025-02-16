@@ -88,10 +88,11 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
                         key={`place-${idx}`}
                         data={polygon.place.features}
                         style={{
-                          color: "#f0ff",
-                          weight: 1,
+                          color: "black",
+                          weight: 4,
                           fillColor: "#D6D6DA",
                           fillOpacity: 0.5,
+                          dashArray: "4 10",
                         }}
                       />
                       <GeoJSON
