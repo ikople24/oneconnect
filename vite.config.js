@@ -4,17 +4,20 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
+  preview: {
+    port: 8080,
+    strictPort: true,
   },
   server: {
-    host: true, // Allows external access inside Docker
-    port: 5173, // Default Vite port (can be changed)
+    port: 8080,
+    strictPort: true,
+    host: true,
+    origin: "http://0.0.0.0:8080",
   },
 });
