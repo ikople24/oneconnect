@@ -14,7 +14,7 @@ export default {
   			primaryBase: '#fdfdfd',
   			primaryAccent: '#577BC1',
   			primaryBg: '#f6f6f6',
-			green: '#02450',
+			greenBg: '#024950',
 			white: '#ffffff',
 			greenLight: '#0FA4AF',
 			greenSoft: '#AFDDE5',
