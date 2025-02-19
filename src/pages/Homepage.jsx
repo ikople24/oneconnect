@@ -9,7 +9,7 @@ import backgroundImage from "@/assets/logo/หน่วยงานที่เ�
 import logoMaeChan from "@/assets/logo/เทศบาลตำบลแม่จัน.png";
 import logoLumphaya from "@/assets/logo/เทศบาลตำบลลำพญา.jpeg";
 import logoTrang from "@/assets/logo/อบจ.ตรัง.jpeg";
-import logoPrivacyThailand from "@/assets/logo/Privacy_Thailand.png";
+import logoPrivacyThailand from "@/assets/logo/Privacy_thailand.png";
 import logoSadao from "@/assets/logo/เทศบาลเมืองสะเดา.png";
 import logoMuangKam from "@/assets/logo/องค์การบริหารส่วนตำบลม่วงคำ.png";
 import logoKhonKaen from "@/assets/logo/เทศบาลนครขอนแก่น.png";
