@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import logoSaishunee from "@/assets/logo/สายสุนีย์ พันธุ์พานิช.jpeg";
+import logoAw from "@/assets/logo/อว.jpg";
+import definitionImage from "@/assets/logo/คำนิยาม.jpg";
+import backgroundImage from "@/assets/logo/หน่วยงานที่เกี่ยวข้อง.png";
+import logoMaeChan from "@/assets/logo/เทศบาลตำบลแม่จัน.png";
+import logoLumphaya from "@/assets/logo/เทศบาลตำบลลำพญา.jpeg";
+import logoTrang from "@/assets/logo/อบจ.ตรัง.jpeg";
+import logoPrivacyThailand from "@/assets/logo/Privacy Thailand.png";
+import logoSadao from "@/assets/logo/เทศบาลเมืองสะเดา.png";
+import logoMuangKam from "@/assets/logo/องค์การบริหารส่วนตำบลม่วงคำ.png";
+import logoKhonKaen from "@/assets/logo/เทศบาลนครขอนแก่น.png";
+import logoPhrae from "@/assets/logo/เทศบาลเมืองแพร่.jpeg";
+
 
 const slides = [
   {
@@ -84,37 +96,22 @@ const slides = [
   },
 ];
 
-const footer = [
-  {
-    src: "src/assets/logo/สายสุนีย์ พันธุ์พานิช.jpeg",
-  },
-  {
-    src: "src/assets/logo/อว.jpg",
-  },
-];
+const footer = [{ src: logoSaishunee }, { src: logoAw }];
 
-const definition = [
-  {
-    src: "src/assets/logo/คำนิยาม.jpg",
-  },
-];
+const definition = [{ src: definitionImage }];
 
-const background = [
-  {
-    src: "src/assets/logo/หน่วยงานที่เกี่ยวข้อง.png",
-  },
-];
+const background = [{ src: backgroundImage }];
 
 const logo = [
-  { type: "image", src: "src/assets/logo/เทศบาลตำบลแม่จัน.png" },
-  { type: "image", src: "src/assets/logo/เทศบาลตำบลลำพญา.jpeg" },
-  { type: "image", src: "src/assets/logo/อบจ.ตรัง.jpeg" },
-  { type: "image", src: "src/assets/logo/Privacy Thailand.png" },
-  { type: "image", src: "src/assets/logo/เทศบาลเมืองสะเดา.png" },
-  { type: "image", src: "src/assets/logo/องค์การบริหารส่วนตำบลม่วงคำ.png" },
-  { type: "image", src: "src/assets/logo/เทศบาลนครขอนแก่น.png" },
-  { type: "image", src: "src/assets/logo/สายสุนีย์ พันธุ์พานิช.jpeg" },
-  { type: "image", src: "src/assets/logo/เทศบาลเมืองแพร่.jpeg" },
+  { type: "image", src: logoMaeChan },
+  { type: "image", src: logoLumphaya },
+  { type: "image", src: logoTrang },
+  { type: "image", src: logoPrivacyThailand },
+  { type: "image", src: logoSadao },
+  { type: "image", src: logoMuangKam },
+  { type: "image", src: logoKhonKaen },
+  { type: "image", src: logoSaishunee }, // Already imported above
+  { type: "image", src: logoPhrae },
 ];
 
 export default function Homepage() {
