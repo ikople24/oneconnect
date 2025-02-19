@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo/logo.jpg"
 import logoSaishunee from "@/assets/logo/สายสุนีย์ พันธุ์พานิช.jpeg";
 import logoAw from "@/assets/logo/อว.jpg";
 import definitionImage from "@/assets/logo/คำนิยาม.jpg";
@@ -14,7 +15,9 @@ import logoSadao from "@/assets/logo/เทศบาลเมืองสะเ�
 import logoMuangKam from "@/assets/logo/องค์การบริหารส่วนตำบลม่วงคำ.png";
 import logoKhonKaen from "@/assets/logo/เทศบาลนครขอนแก่น.png";
 import logoPhrae from "@/assets/logo/เทศบาลเมืองแพร่.jpeg";
-
+import logoBpt from "@/assets/logo/บพท.jpg";
+import logotsri from "@/assets/logo/สทสว.png"
+import logoOCN from "@/assets/logotest.png"
 
 const slides = [
   {
@@ -126,7 +129,7 @@ export default function Homepage() {
 
   return (
     <div className="w-full min-h-screen inset-0 bg-black bg-opacity-50 ">
-    {/* <div className="container mx-auto py-4">  */}
+      {/* <div className="container mx-auto py-4">  */}
       <section className="relative w-full h-screen flex items-center justify-center overflow-hidden ">
         <AnimatePresence exitBeforeEnter>
           {slides.map((slide, i) =>
@@ -161,7 +164,7 @@ export default function Homepage() {
 
         {/* โลโก้ที่มุมซ้ายบน */}
         <div className="absolute top-1 left-2">
-          <img src="src/assets/logotest.png" alt="Logo" className="w-20" />
+          <img src={logoOCN} alt="Logo" className="w-20" />
         </div>
 
         {/* ข้อความที่มุมซ้ายล่าง */}
@@ -275,23 +278,19 @@ export default function Homepage() {
 
           {/* ด้านขวา: โลโก้ */}
           <div className="flex items-center space-x-4">
+            <img src={logoBpt} alt="บพท" className="h-10 object-contain" />
             <img
-              src="src/assets/logo/บพท.jpg"
-              alt="บพท"
-              className="h-10 object-contain"
-            />
-            <img
-              src="src/assets/logo/สทสว.png"
+              src={logotsri}
               alt="สทสว"
               className="h-10 object-contain"
             />
             <img
-              src="src/assets/logo/logo.jpg"
+              src={logo}
               alt="logo"
               className="h-10 object-contain"
             />
             <img
-              src="src/assets/logo/อว.jpg"
+              src={logoAw}
               alt="อว"
               className="h-10 object-contain"
             />
