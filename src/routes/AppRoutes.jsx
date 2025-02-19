@@ -10,7 +10,8 @@ import Dashboard from "@/pages/Dashboard";
 import Datatable from "@/pages/admin/Datatable";
 import LayoutMapLayerOne from "@/layouts/LayoutMapLayerOne";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router";
-import Map from "@/pages/Map"
+import Map from "@/pages/Map";
+import RegistrationForm from "@/pages/registerpage";
 
 const AppRoutes = () => {
   return (
@@ -22,10 +23,11 @@ const AppRoutes = () => {
           {/* <Route path="createuser" element={<CreateUser/>} /> */}
           <Route path="markerinformation" element={<Markerinformation />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="register" element={<RegistrationForm />} />
         </Route>
 
         <Route element={<LayoutMapLayerOne />}>
-          <Route path="/map" element={<Map/>} />
+          <Route path="/map" element={<Map />} />
         </Route>
 
         {/* private */}
