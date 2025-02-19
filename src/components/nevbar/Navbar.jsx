@@ -10,7 +10,9 @@ const Navbar = () => {
     <nav className="bg-greenLight shadow-md">
       <div className="container mx-auto flex justify-between items-center md:px-4 p-4">
         <div>
-          <p className="text-2xl font-bold text-white">OCN</p>
+          <NavLink to="/">
+            <p className="text-2xl font-bold text-white">OCN</p>
+          </NavLink>
         </div>
         <div className="hidden md:flex space-x-8">
           <NavLink
@@ -64,7 +66,7 @@ const Navbar = () => {
               isActive ? "text-white font-bold" : "text-greenSoft"
             }
             onClick={() => setIsOpen(false)}
-            style={{ width: "100%", "textAlign": "center" }}
+            style={{ width: "100%", textAlign: "center" }}
           >
             ข้อมูลเมือง
           </NavLink>
@@ -75,7 +77,7 @@ const Navbar = () => {
               isActive ? "text-white font-bold" : "text-greenSoft"
             }
             onClick={() => setIsOpen(false)}
-            style={{ width: "100%", "textAlign": "center" }}
+            style={{ width: "100%", textAlign: "center" }}
           >
             แผนที่
           </NavLink>

@@ -287,8 +287,8 @@ export default function MapLayerTwo(props) {
     const { lat, lng } = e.latlng;
 
     setPointSelected([lat, lng]);
-    const { community } = e.target.feature.properties; // Access the feature properties
-    const zoneName = community; // Assuming 'community' is the zone name
+    const { community, comunity } = e.target.feature.properties; // Access the feature properties
+    const zoneName = community || comunity; // Assuming 'community' is the zone name
     const zoneId = e.target.feature._id; // Access the feature ID
     setZoneSelected({
       zoneName: zoneName,
