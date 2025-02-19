@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo/logo.jpg"
+import logoFooter from "@/assets/logo/logo.jpg"
 import logoSaishunee from "@/assets/logo/สายสุนีย์ พันธุ์พานิช.jpeg";
 import logoAw from "@/assets/logo/อว.jpg";
 import definitionImage from "@/assets/logo/คำนิยาม.jpg";
@@ -285,7 +285,7 @@ export default function Homepage() {
               className="h-10 object-contain"
             />
             <img
-              src={logo}
+              src={logoFooter}
               alt="logo"
               className="h-10 object-contain"
             />
