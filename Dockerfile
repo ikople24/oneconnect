@@ -31,10 +31,12 @@ FROM nginx:alpine
 # Copy custom nginx configuration if you have one
 COPY .nginx.conf /etc/nginx/nginx.conf
 
+COPY ssl /etc/nginx/ssl
+
 # Copy the built frontend files from the build stage
 COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
 
 # Expose port 80 for the Nginx server
-EXPOSE 80 
+EXPOSE 80 443 
 # Start the Nginx server
 CMD ["nginx", "-g", "daemon off;"]
