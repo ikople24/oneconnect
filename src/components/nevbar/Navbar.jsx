@@ -14,7 +14,7 @@ const Navbar = () => {
             <p className="text-2xl font-bold text-white">OCN</p>
           </NavLink>
         </div>
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden md:flex space-x-8 items-center">
           <NavLink
             to="/"
             end
@@ -33,24 +33,6 @@ const Navbar = () => {
           >
             แผนที่
           </NavLink>
-          {/* <NavLink
-            to=""
-            end
-            className={({ isActive }) =>
-              isActive ? "text-white font-bold" : "text-greenSoft"
-            }
-          >
-            ของดีในเมือง
-          </NavLink> */}
-          {/* <NavLink
-            to=""
-            end
-            className={({ isActive }) =>
-              isActive ? "text-white font-bold" : "text-greenSoft"
-            }
-          >
-            สุขภาพคนเมือง
-          </NavLink> */}
           <DropdownListMenu />
         </div>
         <button className="md:hidden px-4" onClick={() => setIsOpen(!isOpen)}>
@@ -81,26 +63,7 @@ const Navbar = () => {
           >
             แผนที่
           </NavLink>
-          {/* <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              isActive ? "text-cyan-400 font-bold" : "text-cyan-50"
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            ของดีในเมือง
-          </NavLink>
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              isActive ? "text-cyan-400 font-bold" : "text-cyan-50"
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            สุขภาพคนเมือง
-          </NavLink> */}
+
           <DropdownListMenu />
         </div>
       )}

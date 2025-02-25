@@ -6,68 +6,117 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlignJustify } from "lucide-react";
+import { AlignJustify, DotIcon } from "lucide-react";
 import { links } from "@/utils/links";
 import Usericon from "./Usericon";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import SignOutLink from "@/components/nevbar/SignOutLink";
+import { Fragment, useEffect, useState } from "react";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
   SignUpButton,
+  useAuth,
+  useClerk,
   UserButton,
+  UserProfile,
+  useUser,
 } from "@clerk/clerk-react";
+import { Dropdown, Menu, Space } from "antd";
+import { DownOutlined, UserOutlined } from "@ant-design/icons";
 
 const DropdownListMenu = () => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild className="bg-transparent hover:bg-transparent">
-        {/* ปุ่มด้านขวา user pro file  */}
-        <div className="cursor-pointer">
-          {/* <AlignJustify/> */}
-          <Usericon />
-        </div>
-      </DropdownMenuTrigger>
+  const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
 
-      <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {links.map((item, index) => {
-          console.log(item.href);
-          return (
-            <DropdownMenuItem key={index}>
-              <Link to={item.href}>{item.label}</Link>
-            </DropdownMenuItem>
-          );
-        })}
-        <DropdownMenuSeparator />
-
+  const handleMenuClick = (e) => {
+    e.preventDefault();
+  };
+  const items = [
+    {
+      key: "1",
+      label: <div className="text-start p-1">หน้าแรก</div>,
+      style: { padding: 0 },
+    },
+    {
+      key: "2",
+      label: <div className="text-start p-1">เพิ่มข้อมูลเมือง</div>,
+      style: { padding: 0 },
+    },
+    {
+      key: "signIn",
+      label: (
         <SignedOut>
-          <DropdownMenuItem>
-            {/* กรณีทียังไม่ได้ล็อกอิน */}
-            <SignInButton mode="modal">
-              <button>เข้าสู่ระบบ</button>
-            </SignInButton>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <SignUpButton mode="modal">
-              <button>สมัครสมาชิก</button>
-            </SignUpButton>
-          </DropdownMenuItem>
+          <SignInButton mode="modal">
+            <button className="w-full p-1 text-start">เข้าสู่ระบบ</button>
+          </SignInButton>
         </SignedOut>
-
-        {/* กรณีที่ล็อคอินแล้ว */}
+      ),
+      style: { padding: 0 },
+    },
+    {
+      key: "signUp",
+      label: (
+        <SignedOut>
+          <SignUpButton mode="modal">
+            <button className="w-full p-1 text-start">สมัครสมาชิก</button>
+          </SignUpButton>
+        </SignedOut>
+      ),
+      style: { padding: 0 },
+    },
+    {
+      key: "userButton",
+      label: (
         <SignedIn>
-          <DropdownMenuItem>
-            <UserButton />
-            {/* <SignOutButton /> */}
+          <div
+            className="flex gap-2 p-1"
+            onClick={(e) => e.stopPropagation()} // Prevent closing dropdown when clicking on these elements
+          >
+            <UserButton userProfileMode="modal" />
             <SignOutLink />
-          </DropdownMenuItem>
+          </div>
         </SignedIn>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      ),
+      style: { padding: 0 },
+    },
+  ];
+
+  return (
+    <>
+      <SignedOut>
+        <Dropdown
+          autoAdjustOverflow
+          destroyPopupOnHide
+          menu={{ items }}
+          trigger={["click"]}
+          open={visible}
+          onOpenChange={(newVisible) => setVisible(newVisible)}
+        >
+          <a onClick={(e) => e.preventDefault()}>
+            <Usericon />
+          </a>
+        </Dropdown>
+      </SignedOut>
+      <SignedIn>
+        <UserButton>
+          <UserButton.MenuItems>
+            <UserButton.Action
+              label="หน้าแรก"
+              labelIcon={<DotIcon />}
+              onClick={() => navigate("/")}
+            />
+            <UserButton.Action
+              label="เพิ่มข้อมูลเมือง"
+              labelIcon={<DotIcon />}
+              onClick={() => navigate("/map")}
+            />
+          </UserButton.MenuItems>
+        </UserButton>
+      </SignedIn>
+    </>
   );
 };
+
 export default DropdownListMenu;
