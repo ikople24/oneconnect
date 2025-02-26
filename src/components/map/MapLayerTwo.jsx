@@ -23,11 +23,15 @@ import rescueIcon from "@/assets/markerIcon/rescue.png";
 import { useGlobalContext } from "@/context/Context";
 import TableEditMarkerAdmin from "./MapLayerTwo/TableEditMarkerAdmin";
 import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
+import { useUser } from "@clerk/clerk-react";
+import Role from "@/enum/role.enum";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { TEST, setTest } = useGlobalContext();
   const markerRef = useRef(null);
-  const [isAdmin, setIsAdmin] = useState(0);
+
+  const user = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [pointSelected, setPointSelected] = useState(
     isAdmin && place?.location?.coordinates
   );
@@ -43,6 +47,23 @@ export default function MapLayerTwo(props) {
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
 
+  console.log("user info from clerk", user);
+  useEffect(() => {
+    if (user?.user?.publicMetadata?.role) {
+      const userRole = user.user.publicMetadata.role;
+      const userPlaceId = user.user.publicMetadata.placeId;
+
+      if (userRole === Role.SUPER_ADMIN) {
+        setIsAdmin(true);
+      } else if (userRole === Role.ADMIN && place?._id === userPlaceId) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user, place]);
   useEffect(() => {
     console.log("FROM CONTEXT", TEST);
     fetchData();
