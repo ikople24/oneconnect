@@ -53,10 +53,10 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
 
   return (
     <div className=" bg-gray-100">
-      <Row gutter={20}>
-        <Col xl={16} xs={0} md={24} order={1}>
+      <Row gutter={0}>
+        <Col xl={16} md={24} order={1}>
           {/* <div className="map-section flex-grow h-[60vh] lg:h-[90vh] w-full lg:w-3/4 rounded-lg shadow-lg"> */}
-          <div className="flex flex-col items-center md:h-[92.5vh] lg:h-[93vh] xl:h-[93vh]">
+          <div className="flex flex-col items-center h-[80vh]">
             <MapContainer
               center={[13.885556744960699, 100.63529495228143]}
               zoom={6}
@@ -126,7 +126,7 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
           xl={8}
           md={24}
           order={2}
-          className="flex flex-col justify-center items-center"
+          className="flex flex-col justify-center items-center p-5"
         >
           {/* -------- Sidebar -------- */}
           <MapLayerOneSidebar
