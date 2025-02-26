@@ -42,7 +42,7 @@ export default function MapLayerTwoSidebar({ place, isAdmin, setIsAdmin }) {
         </Flex>
 
         {/* Render place.summary items inside CardBox */}
-        {place?.summary.map((summary, idx) => (
+        {/* {place?.summary.map((summary, idx) => (
           <div key={idx} className="text-gray-600 text-lg py-1">
             <Flex gap={10} align="center" wrap>
               <div>
@@ -61,7 +61,7 @@ export default function MapLayerTwoSidebar({ place, isAdmin, setIsAdmin }) {
               </span>
             </Flex>
           </div>
-        ))}
+        ))} */}
       </CardBox>
 
       {/* <CardBox
