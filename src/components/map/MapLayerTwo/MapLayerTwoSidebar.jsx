@@ -1,9 +1,10 @@
 import { SwitchMode } from "../../admin/SwitchMode";
-import { Flex } from "antd";
+import { Card, Flex } from "antd";
 import olderIcon from "@/assets/markerIcon/older_person.png";
 import philosopherIcon from "@/assets/markerIcon/philosopher.png";
 import leaderIcon from "@/assets/markerIcon/community_leader.png";
 import rescueIcon from "@/assets/markerIcon/rescue.png";
+import CardBox from "@/components/ui/Card";
 export default function MapLayerTwoSidebar({ place, isAdmin, setIsAdmin }) {
   const mapIconMarker = (type) => {
     switch (type) {
@@ -23,21 +24,62 @@ export default function MapLayerTwoSidebar({ place, isAdmin, setIsAdmin }) {
   return (
     <>
       <SwitchMode isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
-      <h2 className="text-xl font-bold text-gray-700">ข้อมูลสรุป</h2>
 
-      <p className="text-gray-600 text-lg py-1">
-        จำนวนประชากร:{" "}
-        <span className="font-semibold text-blue-600">
-          {place.population} คน
-        </span>
-      </p>
-      <p className="text-gray-600 text-lg py-1">
-        จำนวนครัวเรือน:{" "}
-        <span className="font-semibold text-blue-600">
-          {place.household} ครัวเรือน
-        </span>
-      </p>
+      <CardBox
+        title="ข้อมูลพื้นฐาน"
+        backgroundColor={"#0FA4AF"}
+        fontColor={"white"}
+      >
+        <Flex gap={20} className="mx-5 my-1 font-semibold">
+          <div>
+            <li>ประชากร</li>
+            <li>ครัวเรือน</li>
+          </div>
+          <div>
+            <p>{place.population} คน</p>
+            <p>{place.household} ครัวเรือน</p>
+          </div>
+        </Flex>
 
+        {/* Render place.summary items inside CardBox */}
+        {/* {place?.summary.map((summary, idx) => (
+          <div key={idx} className="text-gray-600 text-lg py-1">
+            <Flex gap={10} align="center" wrap>
+              <div>
+                {mapIconMarker(summary.name) !== false ? (
+                  <img
+                    className="w-10 h-10"
+                    src={mapIconMarker(summary.name)}
+                    alt={summary.name}
+                  />
+                ) : (
+                  summary.name
+                )}
+              </div>
+              <span className="font-semibold text-blue-600">
+                {summary.count} หมุด
+              </span>
+            </Flex>
+          </div>
+        ))} */}
+      </CardBox>
+
+      {/* <CardBox
+        title="ข้อมูลพื้นฐาน"
+        backgroundColor={"#0FA4AF"}
+        fontColor={"white"}
+      >
+        <Flex gap={20} className="mx-5 my-1 font-semibold">
+          <div>
+            <li>ประชากร</li>
+            <li>ครัวเรือน</li>
+          </div>
+          <div>
+            <p>{place.population} คน</p>
+            <p>{place.household} ครัวเรือน</p>
+          </div>
+        </Flex>
+      </CardBox>
       {place?.summary.map((summary, idx) => {
         return (
           <div key={idx} className="text-gray-600 text-lg py-1">
@@ -58,7 +100,7 @@ export default function MapLayerTwoSidebar({ place, isAdmin, setIsAdmin }) {
             </Flex>
           </div>
         );
-      })}
+      })} */}
 
       {/* <h2 className="text-xl font-bold text-gray-700 mt-4">
             ข้อมูลตามชุมชน

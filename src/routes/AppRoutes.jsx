@@ -12,6 +12,7 @@ import LayoutMapLayerOne from "@/layouts/LayoutMapLayerOne";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router";
 import Map from "@/pages/Map";
 import RegistrationForm from "@/pages/registerpage";
+import User from "@/pages/admin/user/User";
 
 const AppRoutes = () => {
   return (
@@ -33,6 +34,7 @@ const AppRoutes = () => {
         {/* private */}
         <Route path="admin" element={<LayoutAdmin />}>
           <Route index element={<MainApps />} />
+          <Route path="user-manage" element={<User />} />
           <Route path="createuser" element={<CreateUser />} />
           <Route path="mainapps" element={<MainApps />} />
           <Route path="manageinfo" element={<Manageinfo />} />

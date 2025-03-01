@@ -1,5 +1,13 @@
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ENDPOINT = {
+  // TODO: Users
+  GET_ALL_USER: `${baseUrl}/users`,
+  UPDATE_USER : `${baseUrl}/users`,
+
+  // TODO: Role
+  GET_ALL_ROLE: `${baseUrl}/role`,
+
+
   //TODO: Places
   //POST
   CREATE_PLACE: `${baseUrl}/places`,

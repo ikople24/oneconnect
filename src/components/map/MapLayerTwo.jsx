@@ -23,11 +23,14 @@ import rescueIcon from "@/assets/markerIcon/rescue.png";
 import { useGlobalContext } from "@/context/Context";
 import TableEditMarkerAdmin from "./MapLayerTwo/TableEditMarkerAdmin";
 import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
+import { useUser } from "@clerk/clerk-react";
+import Role from "@/enum/role.enum";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
-  const { TEST, setTest } = useGlobalContext();
+  const { checkIsAdminPlace } = useGlobalContext();
   const markerRef = useRef(null);
-  const [isAdmin, setIsAdmin] = useState(0);
+
+  const [isAdmin, setIsAdmin] = useState(checkIsAdminPlace(place?._id));
   const [pointSelected, setPointSelected] = useState(
     isAdmin && place?.location?.coordinates
   );
@@ -44,7 +47,6 @@ export default function MapLayerTwo(props) {
   const [isTriggerReq, setIsTriggerReq] = useState(false);
 
   useEffect(() => {
-    console.log("FROM CONTEXT", TEST);
     fetchData();
   }, [isAdmin]);
   const fetchData = async () => {

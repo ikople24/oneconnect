@@ -164,7 +164,8 @@ export default function Homepage() {
 
         {/* โลโก้ที่มุมซ้ายบน */}
         <div className="absolute top-1 left-2">
-          <img src={logoOCN} alt="Logo" className="w-20" />
+	  {/*<img src={logoOCN} alt="Logo" className="w-21" /> */}
+          {/* <img src="src/assets/logotest.png" alt="Logo" className="w-20" /> */}
         </div>
 
         {/* ข้อความที่มุมซ้ายล่าง */}
