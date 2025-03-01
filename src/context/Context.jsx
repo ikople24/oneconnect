@@ -8,7 +8,7 @@ export const ContextProvider = ({ children }) => {
   const { signOut } = useAuth();
   const isAdmin = user?.publicMetadata?.role === Role.SUPER_ADMIN;
   const role = user?.publicMetadata?.role;
-  const userPlaceId = user?.publicMetadata?.placeId;
+  const userPlaceId = user?.publicMetadata?.places;
   const checkIsAdminPlace = (placeId) => {
     if (role === Role.SUPER_ADMIN) {
       return true;

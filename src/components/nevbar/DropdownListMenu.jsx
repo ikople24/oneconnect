@@ -11,6 +11,7 @@ import { links } from "@/utils/links";
 import Usericon from "./Usericon";
 import { Link, useNavigate } from "react-router";
 import SignOutLink from "@/components/nevbar/SignOutLink";
+import { useGlobalContext } from "@/context/Context";
 import { Fragment, useEffect, useState } from "react";
 import {
   SignedIn,
@@ -27,6 +28,7 @@ import { Dropdown, Menu, Space } from "antd";
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
 
 const DropdownListMenu = () => {
+  const { checkIsAdminPlace } = useGlobalContext();
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -107,6 +109,13 @@ const DropdownListMenu = () => {
               labelIcon={<DotIcon />}
               onClick={() => navigate("/")}
             />
+            {checkIsAdminPlace() && (
+              <UserButton.Action
+                label="จัดการผู้ใช้งาน"
+                labelIcon={<DotIcon />}
+                onClick={() => navigate("/admin/user-manage")}
+              />
+            )}
             <UserButton.Action
               label="เพิ่มข้อมูลเมือง"
               labelIcon={<DotIcon />}
