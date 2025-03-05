@@ -12,6 +12,9 @@ export const ENDPOINT = {
   CREATE_PLACE: `${baseUrl}/places`,
   //PATCH
   UPDATE_PLACE: `${baseUrl}/places/`, // PARAM
+  ADD_PLACE_MARKER_TYPE : `${baseUrl}/places/add-marker`,
+  REMOVE_PLACE_MARKER_TYPE : `${baseUrl}/places/remove-marker`,
+
   //GET
   // dropdown
   GET_ALL_PROVINCE: `${baseUrl}/places/province`,
@@ -32,6 +35,7 @@ export const ENDPOINT = {
   GET_ALL_MARKER_TYPE: `${baseUrl}/marker-type`,
   CREATE_MARKER_TYPE: `${baseUrl}/marker-type`,
   DELETE_MARKER_TYPE: `${baseUrl}/marker-type`,
+  GET_PLACE_MARKER_TYPE : `${baseUrl}/marker-type/place`,
 
   //TODO: Marker
   // POST

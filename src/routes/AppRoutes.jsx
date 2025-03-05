@@ -14,6 +14,7 @@ import Map from "@/pages/Map";
 import RegistrationForm from "@/pages/registerpage";
 import User from "@/pages/admin/user/User";
 import MarkerTypePage from "@/pages/admin/Marker-Type/MarkerType";
+import Places from "@/pages/admin/Places/Places";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const AppRoutes = () => {
           <Route index element={<MainApps />} />
           <Route path="user-manage" element={<User />} />
           <Route path="marker-manage" element={<MarkerTypePage />} />
+          <Route path="place-manage" element={<Places/>} />
           <Route path="createuser" element={<CreateUser />} />
           <Route path="mainapps" element={<MainApps />} />
           <Route path="manageinfo" element={<Manageinfo />} />

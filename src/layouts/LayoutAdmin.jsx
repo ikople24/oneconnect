@@ -22,6 +22,7 @@ const LayoutAdmin = () => {
     {
       icon: <ApartmentOutlined />,
       label: "เมือง",
+      onClick: () => navigate("/admin/place-manage"), 
     },
     {
       icon: <TeamOutlined />,
