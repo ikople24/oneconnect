@@ -134,7 +134,7 @@ const ModalCreate = ({
           <Input />
         </Form.Item>
         <Form.Item
-          label="ประเภทหมุกหลัก"
+          label="ประเภทหมุดหลัก"
           name="type"
           rules={[{ required: true, message: "กรุณาเลือกประเภทหมุด" }]}
         >

@@ -26,15 +26,27 @@ import {
 } from "@clerk/clerk-react";
 import { Dropdown, Menu, Space } from "antd";
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
+import Role from "@/enum/role.enum";
 
 const DropdownListMenu = () => {
-  const { checkIsAdminPlace } = useGlobalContext();
+  const { role, isLoaded } = useGlobalContext();
   const [visible, setVisible] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoaded) {
+      setIsReady(true);
+    }
+  }, [isLoaded, role]);
+
+  if (!isReady) {
+    return <div>Loading...</div>;
+  }
 
   const handleMenuClick = (e) => {
     e.preventDefault();
   };
+
   const items = [
     {
       key: "1",
@@ -109,7 +121,7 @@ const DropdownListMenu = () => {
               labelIcon={<DotIcon />}
               onClick={() => navigate("/")}
             />
-            {checkIsAdminPlace() && (
+            {isLoaded && role === Role.SUPER_ADMIN && (
               <UserButton.Action
                 label="จัดการผู้ใช้งาน"
                 labelIcon={<DotIcon />}
