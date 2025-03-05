@@ -2,17 +2,19 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ENDPOINT = {
   // TODO: Users
   GET_ALL_USER: `${baseUrl}/users`,
-  UPDATE_USER : `${baseUrl}/users`,
+  UPDATE_USER: `${baseUrl}/users`,
 
   // TODO: Role
   GET_ALL_ROLE: `${baseUrl}/role`,
-
 
   //TODO: Places
   //POST
   CREATE_PLACE: `${baseUrl}/places`,
   //PATCH
   UPDATE_PLACE: `${baseUrl}/places/`, // PARAM
+  ADD_PLACE_MARKER_TYPE : `${baseUrl}/places/add-marker`,
+  REMOVE_PLACE_MARKER_TYPE : `${baseUrl}/places/remove-marker`,
+
   //GET
   // dropdown
   GET_ALL_PROVINCE: `${baseUrl}/places/province`,
@@ -25,10 +27,21 @@ export const ENDPOINT = {
   // DELETE
   DELETE_PLACE: `${baseUrl}/places`, // PARAM
 
+  // TODO: Marker Type
+  GET_ALL_MAIN_MARKER: `${baseUrl}/marker-type/main`,
+  CREATE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
+  UPDATE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
+  DELETE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
+  GET_ALL_MARKER_TYPE: `${baseUrl}/marker-type`,
+  CREATE_MARKER_TYPE: `${baseUrl}/marker-type`,
+  DELETE_MARKER_TYPE: `${baseUrl}/marker-type`,
+  GET_PLACE_MARKER_TYPE : `${baseUrl}/marker-type/place`,
+
   //TODO: Marker
   // POST
   CREATE_MARKER: `${baseUrl}/markers`,
   // ADMIN
+
   // GET
   GET_ALL_MARKER_ADMIN_DATA: `${baseUrl}/markers/private/admin/data`,
   GET_ALL_MARKER_ADMIN: `${baseUrl}/markers/private/admin`,

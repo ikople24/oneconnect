@@ -1,11 +1,10 @@
 import UserManageTable from "@/components/admin/user-manage/ui/UserManageTable";
+import TitlePage from "@/components/ui/Admin/TitlePage";
 
 const User = () => {
   return (
     <>
-      <div className="mb-5">
-        <div className="text-2xl">จัดการผู้ใช้งาน</div>
-      </div>
+      <TitlePage title={"จัดการผู้ใช้งาน"} />
       <div>
         <UserManageTable />
       </div>

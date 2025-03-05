@@ -1,7 +1,7 @@
 import React from "react";
 import AppRoutes from "./routes/AppRoutes";
 import { ContextProvider } from "./context/Context";
-import { Button, ConfigProvider, Space } from "antd";
+import { ConfigProvider, App as AntApp } from "antd";
 
 function App() {
   return (
@@ -19,7 +19,9 @@ function App() {
       }}
     >
       <ContextProvider>
-        <AppRoutes />
+        <AntApp>
+          <AppRoutes />
+        </AntApp>
       </ContextProvider>
     </ConfigProvider>
   );
