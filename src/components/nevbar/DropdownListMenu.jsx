@@ -26,26 +26,38 @@ import {
 } from "@clerk/clerk-react";
 import { Dropdown, Menu, Space } from "antd";
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
+import Role from "@/enum/role.enum";
 
 const DropdownListMenu = () => {
-  const { checkIsAdminPlace } = useGlobalContext();
+  const { role, isLoaded } = useGlobalContext();
   const [visible, setVisible] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoaded) {
+      setIsReady(true);
+    }
+  }, [isLoaded, role]);
+
+  if (!isReady) {
+    return <div>Loading...</div>;
+  }
 
   const handleMenuClick = (e) => {
     e.preventDefault();
   };
+
   const items = [
     {
       key: "1",
       label: <div className="text-start p-1">หน้าแรก</div>,
       style: { padding: 0 },
     },
-    {
-      key: "2",
-      label: <div className="text-start p-1">เพิ่มข้อมูลเมือง</div>,
-      style: { padding: 0 },
-    },
+    // {
+    //   key: "2",
+    //   label: <div className="text-start p-1">เพิ่มข้อมูลเมือง</div>,
+    //   style: { padding: 0 },
+    // },
     {
       key: "signIn",
       label: (
@@ -109,18 +121,18 @@ const DropdownListMenu = () => {
               labelIcon={<DotIcon />}
               onClick={() => navigate("/")}
             />
-            {checkIsAdminPlace() && (
+            {isLoaded && (role === Role.SUPER_ADMIN || role === Role.ADMIN) && (
               <UserButton.Action
-                label="จัดการผู้ใช้งาน"
+                label="Dashboard"
                 labelIcon={<DotIcon />}
-                onClick={() => navigate("/admin/user-manage")}
+                onClick={() => navigate("/admin/marker-manage")}
               />
             )}
-            <UserButton.Action
+            {/* <UserButton.Action
               label="เพิ่มข้อมูลเมือง"
               labelIcon={<DotIcon />}
               onClick={() => navigate("/map")}
-            />
+            /> */}
           </UserButton.MenuItems>
         </UserButton>
       </SignedIn>

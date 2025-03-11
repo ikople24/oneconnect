@@ -1,14 +1,18 @@
 import { ENDPOINT } from "@/components/endpoint";
 import TitlePage from "@/components/ui/Admin/TitlePage";
+import { useGlobalContext } from "@/context/Context";
+import Role from "@/enum/role.enum";
+import { useUser } from "@clerk/clerk-react";
 import { Select, Table, Space, Form, Button, Modal, App, Flex } from "antd";
-import { useEffect, useState } from "react";
-const PlaceDropdown = ({ places, setPlaceSelected, placeSelected }) => {
+import { useContext, useEffect, useState } from "react";
+const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
   return (
     <Select
       placeholder="เลือกเมือง"
       style={{ width: 200, marginBottom: 20 }}
       onChange={(value) => setPlaceSelected(value)}
       value={placeSelected}
+      disabled={role === Role.ADMIN}
     >
       {places.map((place) => (
         <Select.Option key={place._id} value={place._id}>
@@ -92,10 +96,18 @@ const Places = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const { message, modal } = App.useApp();
+  const { role, userPlaceId } = useGlobalContext();
 
   useEffect(() => {
+    console.log(role, userPlaceId);
+    if (role && role === Role.ADMIN && userPlaceId) {
+      console.log(userPlaceId);
+      fetchPlaceList();
+      setPlaceSelected(userPlaceId);
+      return;
+    }
     fetchPlaceList();
-  }, []);
+  }, [role, userPlaceId]);
 
   useEffect(() => {
     if (placeSelected) {
@@ -201,6 +213,7 @@ const Places = () => {
           places={places}
           setPlaceSelected={setPlaceSelected}
           placeSelected={placeSelected}
+          role={role}
         />
 
         <Button

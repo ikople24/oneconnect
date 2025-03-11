@@ -12,8 +12,8 @@ const TableMainMarker = ({ mainMarker, handleDelete, handleEdit }) => {
       width: 200,
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => handleEdit(record)}>แก้ไข</a>
-          <a onClick={() => handleDelete(record._id)}>ลบ</a>
+          {/* <a onClick={() => handleEdit(record)}>แก้ไข</a> */}
+          {/* <a onClick={() => handleDelete(record._id)}>ลบ</a> */}
         </Space>
       ),
     },

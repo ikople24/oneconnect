@@ -7,12 +7,14 @@ import {
   TeamOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
+import { useGlobalContext } from "@/context/Context";
+import Role from "@/enum/role.enum";
 
 const { Sider, Content } = Layout;
 
 const LayoutAdmin = () => {
   const navigate = useNavigate(); // Move this above the onClickMenu function
-
+  const { role } = useGlobalContext();
   const items = [
     {
       icon: <PushpinFilled />,
@@ -22,14 +24,14 @@ const LayoutAdmin = () => {
     {
       icon: <ApartmentOutlined />,
       label: "เมือง",
-      onClick: () => navigate("/admin/place-manage"), 
+      onClick: () => navigate("/admin/place-manage"),
     },
-    {
+    role && role !== Role.ADMIN && role === Role.SUPER_ADMIN && {
       icon: <TeamOutlined />,
       label: "ผู้ใช้งาน",
       onClick: () => navigate("/admin/user-manage"),
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <Layout className="min-h-screen">
