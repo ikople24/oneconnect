@@ -25,18 +25,22 @@ import TableEditMarkerAdmin from "./MapLayerTwo/TableEditMarkerAdmin";
 import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
 import { useUser } from "@clerk/clerk-react";
 import Role from "@/enum/role.enum";
+import MainMarkerTypeEnum from "@/enum/main-marker-type";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
-  const { checkIsAdminPlace } = useGlobalContext();
+  const { checkIsAdminPlace, isLoaded } = useGlobalContext();
   const markerRef = useRef(null);
 
-  const [isAdmin, setIsAdmin] = useState(checkIsAdminPlace(place?._id));
+  const [isAdmin, setIsAdmin] = useState(
+    checkIsAdminPlace(place?._id) || false
+  );
   const [pointSelected, setPointSelected] = useState(
     isAdmin && place?.location?.coordinates
   );
   const [map, setMap] = useState(null);
   const [zoneSelected, setZoneSelected] = useState();
   const [markers, setMaker] = useState([]);
+  const [summaryPlaceMarker, setSummaryPlaceMarker] = useState([]);
   const [pinTypes, setPinTypes] = useState([]);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -45,17 +49,26 @@ export default function MapLayerTwo(props) {
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
-
+  const [enabledMarkers, setEnabledMarkers] = useState([]);
+  useEffect(() => {
+    console.log(enabledMarkers);
+    if (isAdmin) {
+      fetchMarkerAdmin(place?._id);
+    } else {
+      fetchMarkers(place?._id);
+    }
+  }, [enabledMarkers]);
   useEffect(() => {
     fetchData();
-  }, [isAdmin]);
+  }, []);
   const fetchData = async () => {
     if (isAdmin) {
-      await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
+      fetchMarkerAdmin(place?._id);
     } else {
-      await Promise.allSettled([fetchMarkers(place?._id)]);
+      fetchMarkers(place?._id);
     }
     await fetchPinTypes(place?._id);
+    await fetchPlaceSummaryMarker(place?._id);
   };
   const getLocation = () => {
     setIsTriggerReq(true);
@@ -218,36 +231,64 @@ export default function MapLayerTwo(props) {
 
   const fetchMarkers = async (placeId) => {
     try {
-      // console.log(placeId);
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-      // console.log(params);
 
       const markers = await fetch(
-        `${ENDPOINT.GET_MARKERS}?${params.toString()}`
+        `${ENDPOINT.GET_MARKERS}?${params.toString()}`,
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            markerTypeFilter: enabledMarkers,
+          }),
+        }
       );
       const response = await markers.json();
-      // console.log(response);
 
       setMaker(response ?? []);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const fetchPlaceSummaryMarker = async (placeId) => {
+    try {
+      const getPlaceSummary = await fetch(
+        `${ENDPOINT.GET_SUMMARY_PLACE}/${placeId.toString()}`
+      );
+      const response = await getPlaceSummary.json();
+      setSummaryPlaceMarker(response);
+      setEnabledMarkers(response.map((type) => type._id));
+      console.log(response);
+    } catch (error) {}
+  };
+
   const fetchMarkerAdmin = async (placeId) => {
     try {
       console.log(placeId);
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-      // console.log(params);
 
       const markers = await fetch(
-        `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`
+        `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`,
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            markerTypeFilter: enabledMarkers,
+          }),
+        }
       );
       const response = await markers.json();
       // console.log(response);
+      console.log(response);
 
       setMaker(response ?? []);
     } catch (error) {
@@ -285,6 +326,7 @@ export default function MapLayerTwo(props) {
   };
 
   const handleMapClick = (e) => {
+    if(!isAdmin) return;
     console.log(e);
     const { lat, lng } = e.latlng;
 
@@ -299,92 +341,84 @@ export default function MapLayerTwo(props) {
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
   };
 
-  const addIconByMarkerType = (type) => {
-    switch (type) {
-      case "ผู้สูงอายุ":
-        const older = L.icon({
-          iconUrl: olderIcon, // Replace with your own icon URL
-          iconSize: [32, 32], // Size of the icon
-          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-          popupAnchor: [0, -32], // Position of the popup relative to the icon
-        });
-        return older;
-      case "ปราชญ์ชุมชน":
-        const philosopher = L.icon({
-          iconUrl: philosopherIcon,
-          iconSize: [32, 32], // Size of the icon
-          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-          popupAnchor: [0, -32], // Position of the popup relative to the icon
-        });
-        return philosopher;
-      case "ผู้นำชุมชน":
-        const leader = L.icon({
-          iconUrl: leaderIcon, // Replace with your own icon URL
-          iconSize: [32, 32], // Size of the icon
-          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-          popupAnchor: [0, -32], // Position of the popup relative to the icon
-        });
-        return leader;
-      case "กู้ภัย":
-        const rescue = L.icon({
-          iconUrl: rescueIcon, // Replace with your own icon URL
-          iconSize: [32, 32], // Size of the icon
-          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-          popupAnchor: [0, -32], // Position of the popup relative to the icon
-        });
-        return rescue;
+  // const addIconByMarkerType = (type) => {
+  //   switch (type) {
+  //     case "ผู้สูงอายุ":
+  //       const older = L.icon({
+  //         iconUrl: olderIcon, // Replace with your own icon URL
+  //         iconSize: [32, 32], // Size of the icon
+  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
+  //       });
+  //       return older;
+  //     case "ปราชญ์ชุมชน":
+  //       const philosopher = L.icon({
+  //         iconUrl: philosopherIcon,
+  //         iconSize: [32, 32], // Size of the icon
+  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
+  //       });
+  //       return philosopher;
+  //     case "ผู้นำชุมชน":
+  //       const leader = L.icon({
+  //         iconUrl: leaderIcon, // Replace with your own icon URL
+  //         iconSize: [32, 32], // Size of the icon
+  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
+  //       });
+  //       return leader;
+  //     case "กู้ภัย":
+  //       const rescue = L.icon({
+  //         iconUrl: rescueIcon, // Replace with your own icon URL
+  //         iconSize: [32, 32], // Size of the icon
+  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
+  //       });
+  //       return rescue;
 
-      default:
-        return L.icon({
-          iconUrl: "https://cdn-icons-png.flaticon.com/512/1397/1397898.png",
-          iconSize: [32, 32], // Size of the icon
-          iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-          popupAnchor: [0, -32], // Position of the popup relative to the icon
-        });
-    }
-  };
+  //     default:
+  //       return L.icon({
+  //         iconUrl: "https://cdn-icons-png.flaticon.com/512/1397/1397898.png",
+  //         iconSize: [32, 32], // Size of the icon
+  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
+  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
+  //       });
+  //   }
+  // };
 
-  const LayerControllerFilterHandler = (type) => {
-    const markerTypeFilter = markers.filter(
-      (marker) => marker.properties.markerType === type
+  const RenderMarker = ({ markers }) => {
+    return (
+      <>
+        {markers.map((marker) => {
+          return (
+            <Marker
+              key={marker._id}
+              position={marker.geometry.coordinates}
+              // icon={addIconByMarkerType(marker.properties.markerType)}
+            >
+              <Popup>
+                <div className="py-2">ชื่อ : {marker.properties?.markerInfo.name}</div>
+                <div className="py-2">ประเภท : {marker.properties?.markerType?.name}</div>
+                {/* <div>
+                    ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
+                    {marker.properties?.users?.lastName}
+                  </div>
+                  <div>เพศ: {marker.properties?.users?.gender}</div>
+                  <div>อายุ: {marker.properties?.users?.age}</div>
+                  <div>ชุมชน : {marker.properties?.users?.zoneName}</div> */}
+              </Popup>
+            </Marker>
+          );
+        })}
+      </>
     );
-
-    const markerInLayer = markerTypeFilter.map((marker) => (
-      <Marker
-        key={marker._id}
-        position={marker.geometry.coordinates}
-        icon={addIconByMarkerType(marker.properties.markerType)}
-      >
-        {isAdmin ? (
-          <Popup>
-            <div className="py-2">{marker.properties?.name}</div>
-            <div className="border p-2 rounded-xl">
-              <div>
-                ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
-                {marker.properties?.users?.lastName}
-              </div>
-              <div>เพศ: {marker.properties?.users?.gender}</div>
-              <div>อายุ: {marker.properties?.users?.age}</div>
-              <div>ชุมชน : {marker.properties?.users?.zoneName}</div>
-            </div>
-          </Popup>
-        ) : (
-          <Popup>{marker.properties.name}</Popup>
-        )}
-      </Marker>
-    ));
-
-    return markerInLayer;
   };
 
   // fetch ข้อมูลประเภทหมุดแต่ละเมือง
   const fetchPinTypes = async (placeId) => {
     try {
-      const params = new URLSearchParams({
-        placeId: placeId ?? "",
-      });
       const response = await fetch(
-        `${ENDPOINT.GET_ALL_PINTYPES}?${params?.toString()}`
+        `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`
       );
 
       if (!response.ok) {
@@ -401,19 +435,49 @@ export default function MapLayerTwo(props) {
 
   // method สำหรับ เพิ่มหมุด
   const handleAddMarker = async (values) => {
+    console.log(values);
+    const markerTypeName = values?.typeName;
     try {
-      const bodyData = {
-        geometry: {
-          type: "Point",
-          coordinates: [
-            parseFloat(values.longitude),
-            parseFloat(values.latitude),
-          ],
-        },
-        properties: {
-          name: values.name,
-          markerType: values.pinType,
-          users: {
+      let bodyData = {};
+
+      if (markerTypeName === MainMarkerTypeEnum.PLACES) {
+        bodyData = {
+          place: values.placeId,
+          zone: values.zone,
+          markerType: values.markerType,
+          geometry: {
+            type: "Point",
+            coordinates: [
+              parseFloat(values.longitude),
+              parseFloat(values.latitude),
+            ],
+          },
+          markerInfo: {
+            name: values.name,
+            description: values.description,
+          },
+          properties: {
+            openingDate: values.openingDate,
+            openingTime: values.openingTime,
+          },
+        };
+      } else if (markerTypeName === MainMarkerTypeEnum.PERSON) {
+        bodyData = {
+          place: values.placeId,
+          zone: values.zone,
+          markerType: values.markerType,
+          geometry: {
+            type: "Point",
+            coordinates: [
+              parseFloat(values.longitude),
+              parseFloat(values.latitude),
+            ],
+          },
+          markerInfo: {
+            name: values.name,
+            description: "",
+          },
+          properties: {
             firstName: values.firstName,
             lastName: values.lastName,
             placeName: values.zone,
@@ -424,12 +488,9 @@ export default function MapLayerTwo(props) {
             birthdate: values.birthdate.format("YYYY-MM-DD"),
             age: parseInt(values.age, 10),
           },
-          places: {
-            placeId: place._id,
-            zoneId: place._id,
-          },
-        },
-      };
+        };
+      }
+      console.log(bodyData);
 
       if (!isAdmin) {
         const latlng = L.latLng(
@@ -518,17 +579,8 @@ export default function MapLayerTwo(props) {
                   />
                 </>
               )}
-              <LayersControl position="topright">
-                {pinTypes[0]?.pinTypes.map((type, idx) => {
-                  return (
-                    <LayersControl.Overlay key={idx} name={type} checked>
-                      <LayerGroup>
-                        {LayerControllerFilterHandler(type)}
-                      </LayerGroup>
-                    </LayersControl.Overlay>
-                  );
-                })}
-              </LayersControl>
+              <RenderMarker markers={markers} />
+
               <LocationMarker
                 isAdmin={isAdmin}
                 setPointSelected={setPointSelected}
@@ -542,7 +594,7 @@ export default function MapLayerTwo(props) {
                     style={{
                       color: "#f0ff",
                       weight: 1,
-                      fillColor: "#D6D6DA",
+                      fillColor: "transparent",
                       fillOpacity: 0.5,
                     }}
                   />
@@ -552,12 +604,10 @@ export default function MapLayerTwo(props) {
                     style={{
                       color: "#f0ff",
                       weight: 1,
-                      fillColor: "#D6D6DA",
+                      fillColor: "transparent",
                       fillOpacity: 0.5,
                     }}
                     onEachFeature={(feature, layer) => {
-                      console.log(feature);
-                      console.log("LAYER:", layer);
                       layer.on({
                         click: handleMapClick,
                       });
@@ -565,7 +615,8 @@ export default function MapLayerTwo(props) {
                   />
                 </React.Fragment>
               }
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+              <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg" />
             </MapContainer>
           </div>
         </div>
@@ -575,17 +626,20 @@ export default function MapLayerTwo(props) {
             place={place}
             isAdmin={isAdmin}
             setIsAdmin={setIsAdmin}
+            summaryMarker={summaryPlaceMarker}
+            setEnabledMarkers={setEnabledMarkers}
+            enabledMarkers={enabledMarkers}
           />
         </div>
       </div>
-      <TableEditMarkerAdmin
+      {/* <TableEditMarkerAdmin
         markers={markers}
         isAdmin={isAdmin}
         setModalMarkerIsVisible={setModalMarkerIsVisible}
         setSelectedRecord={setSelectedRecord}
         modalMarkerIsVisible={modalMarkerIsVisible}
         fetchData={fetchData}
-      />
+      /> */}
 
       <ModalMarkerDetail
         visible={modalMarkerIsVisible}
@@ -595,7 +649,7 @@ export default function MapLayerTwo(props) {
       <ModalAddMarker
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(!isModalVisible)}
-        data={pinTypes[0]}
+        data={pinTypes}
         handleOK={handleAddMarker}
         pointSelected={pointSelected}
         zoneSelected={zoneSelected}

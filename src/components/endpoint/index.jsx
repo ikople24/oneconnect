@@ -12,8 +12,8 @@ export const ENDPOINT = {
   CREATE_PLACE: `${baseUrl}/places`,
   //PATCH
   UPDATE_PLACE: `${baseUrl}/places/`, // PARAM
-  ADD_PLACE_MARKER_TYPE : `${baseUrl}/places/add-marker`,
-  REMOVE_PLACE_MARKER_TYPE : `${baseUrl}/places/remove-marker`,
+  ADD_PLACE_MARKER_TYPE: `${baseUrl}/places/add-marker`,
+  REMOVE_PLACE_MARKER_TYPE: `${baseUrl}/places/remove-marker`,
 
   //GET
   // dropdown
@@ -24,6 +24,7 @@ export const ENDPOINT = {
   GET_ALL_PROVINCE_NAME: `${baseUrl}/places/province/name`,
   GET_ALL_GEOGRAPHY: `${baseUrl}/places/geography`,
   GET_ALL_PINTYPES: `${baseUrl}/places/pin`,
+  GET_SUMMARY_PLACE: `${baseUrl}/places/summary`,
   // DELETE
   DELETE_PLACE: `${baseUrl}/places`, // PARAM
 
@@ -33,9 +34,10 @@ export const ENDPOINT = {
   UPDATE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
   DELETE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
   GET_ALL_MARKER_TYPE: `${baseUrl}/marker-type`,
+  GET_ALL_MARKER_TYPE_PLACE: `${baseUrl}/marker-type/all`,
   CREATE_MARKER_TYPE: `${baseUrl}/marker-type`,
   DELETE_MARKER_TYPE: `${baseUrl}/marker-type`,
-  GET_PLACE_MARKER_TYPE : `${baseUrl}/marker-type/place`,
+  GET_PLACE_MARKER_TYPE: `${baseUrl}/marker-type/place`,
 
   //TODO: Marker
   // POST
@@ -53,6 +55,6 @@ export const ENDPOINT = {
   DELETE_MARKER_ADMIN: `${baseUrl}/markers/private/admin/`, // PARAM
   // User
   //GET
-  GET_MARKERS: `${baseUrl}/markers`,
+  GET_MARKERS: `${baseUrl}/markers/get`,
   GET_ONE_MARKER: `${baseUrl}/markers/`, // PARAM
 };

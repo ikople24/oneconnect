@@ -53,11 +53,11 @@ const DropdownListMenu = () => {
       label: <div className="text-start p-1">หน้าแรก</div>,
       style: { padding: 0 },
     },
-    {
-      key: "2",
-      label: <div className="text-start p-1">เพิ่มข้อมูลเมือง</div>,
-      style: { padding: 0 },
-    },
+    // {
+    //   key: "2",
+    //   label: <div className="text-start p-1">เพิ่มข้อมูลเมือง</div>,
+    //   style: { padding: 0 },
+    // },
     {
       key: "signIn",
       label: (
@@ -121,18 +121,18 @@ const DropdownListMenu = () => {
               labelIcon={<DotIcon />}
               onClick={() => navigate("/")}
             />
-            {isLoaded && role === Role.SUPER_ADMIN && (
+            {isLoaded && (role === Role.SUPER_ADMIN || role === Role.ADMIN) && (
               <UserButton.Action
-                label="จัดการผู้ใช้งาน"
+                label="Dashboard"
                 labelIcon={<DotIcon />}
-                onClick={() => navigate("/admin/user-manage")}
+                onClick={() => navigate("/admin/marker-manage")}
               />
             )}
-            <UserButton.Action
+            {/* <UserButton.Action
               label="เพิ่มข้อมูลเมือง"
               labelIcon={<DotIcon />}
               onClick={() => navigate("/map")}
-            />
+            /> */}
           </UserButton.MenuItems>
         </UserButton>
       </SignedIn>
