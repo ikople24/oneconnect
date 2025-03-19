@@ -1,4 +1,5 @@
 import { ENDPOINT } from "@/components/endpoint";
+import { UploadOutlined } from "@ant-design/icons";
 import {
   Table,
   Space,
@@ -10,6 +11,7 @@ import {
   Flex,
   Select,
   App,
+  Upload,
 } from "antd";
 import { name } from "dayjs/locale/th";
 import { useEffect, useState } from "react";
@@ -47,6 +49,8 @@ const ModalEdit = ({
   form,
   initialData,
   mainMarker,
+  beforeUpload,
+  handleFileChange,
 }) => {
   useEffect(() => {
     if (initialData) {
@@ -75,7 +79,13 @@ const ModalEdit = ({
           <Input />
         </Form.Item>
         <Form.Item label="รูปหมุด" name="icon">
-          <Input />
+          <Upload
+            beforeUpload={beforeUpload}
+            maxCount={1}
+            onChange={(info) => handleFileChange(info)}
+          >
+            <Button icon={<UploadOutlined />}>อัพโหลดรูปหมุด</Button>
+          </Upload>
         </Form.Item>
         <Form.Item
           label="ประเภทหมุดหลัก"
@@ -110,6 +120,8 @@ const ModalCreate = ({
   handleCreate,
   loading,
   form,
+  beforeUpload,
+  handleFileChange,
 }) => {
   return (
     <Modal
@@ -131,7 +143,13 @@ const ModalCreate = ({
           name="icon"
           //   rules={[{ required: true, message: "กรุณากรอกชื่อประเภทหมุด" }]}
         >
-          <Input />
+          <Upload
+            beforeUpload={beforeUpload}
+            maxCount={1}
+            onChange={(info) => handleFileChange(info)}
+          >
+            <Button icon={<UploadOutlined />}>อัพโหลดรูปหมุด</Button>
+          </Upload>
         </Form.Item>
         <Form.Item
           label="ประเภทหมุดหลัก"
@@ -166,16 +184,23 @@ const MarkerType = ({ mainMarker }) => {
   const [form] = Form.useForm();
   const [editData, setEditData] = useState(null);
   const { message, modal } = App.useApp();
+  const [file, setFile] = useState(null);
+
   useEffect(() => {
     fetchMarkerType();
   }, []);
+
   const handleCreate = async (values) => {
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("icon", file);
+      formData.append("type", values.type);
+
       const response = await fetch(ENDPOINT.CREATE_MARKER_TYPE, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: formData
       });
 
       if (!response.ok) throw new Error("Failed to create marker");
@@ -219,12 +244,21 @@ const MarkerType = ({ mainMarker }) => {
   const handleEdit = async (values) => {
     setLoading(true);
     try {
+      if (!file) {
+        message.error("กรุณาอัปโหลดรูปหมุด");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("icon", file);
+      formData.append("type", values.type);
+
       const response = await fetch(
         `${ENDPOINT.EDIT_MARKER_TYPE}/${editData._id}`,
         {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          method: "PATCH",
+          body: formData,
         }
       );
 
@@ -251,6 +285,26 @@ const MarkerType = ({ mainMarker }) => {
     console.log(data);
     setMarkerType(data);
   };
+
+  const beforeUpload = (file) => {
+    const isImage =
+      file.type === "image/jpeg" ||
+      file.type === "image/png" ||
+      file.type === "image/jpg";
+
+    if (!isImage) {
+      message.error("กรุณาเลือกไฟล์รูปภาพเท่านั้น (JPEG หรือ PNG)");
+    }
+
+    return !isImage;
+  };
+
+  const handleFileChange = (info) => {
+    const file = info.file;
+    console.log('file', file);
+    setFile(file);
+  };
+
   return (
     <>
       <div className="text-xl">ประเภทหมุด</div>
@@ -271,6 +325,8 @@ const MarkerType = ({ mainMarker }) => {
         handleCreate={handleCreate}
         loading={loading}
         form={form}
+        beforeUpload={beforeUpload}
+        handleFileChange={handleFileChange}
       />
       <ModalEdit
         isModalOpen={isEditModalOpen}
@@ -280,6 +336,8 @@ const MarkerType = ({ mainMarker }) => {
         form={form}
         initialData={editData}
         mainMarker={mainMarker}
+        beforeUpload={beforeUpload}
+        handleFileChange={handleFileChange}
       />
     </>
   );

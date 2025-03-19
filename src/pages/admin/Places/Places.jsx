@@ -5,6 +5,8 @@ import Role from "@/enum/role.enum";
 import { useUser } from "@clerk/clerk-react";
 import { Select, Table, Space, Form, Button, Modal, App, Flex } from "antd";
 import { useContext, useEffect, useState } from "react";
+import CreatePlaceForm from "../../../components/Form/Place/CreatePlaceForm";
+
 const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
   return (
     <Select
@@ -87,6 +89,7 @@ const ModalCreate = ({
     </Modal>
   );
 };
+
 const Places = () => {
   const [placeMarkerType, setPlaceMarkerType] = useState([]);
   const [markerType, setMarkerType] = useState([]);
@@ -204,8 +207,10 @@ const Places = () => {
       },
     });
   };
+
   return (
     <>
+      <CreatePlaceForm />
       <TitlePage title={"จัดการหมุดเมือง"} />
 
       <div className="flex justify-between my-2">
