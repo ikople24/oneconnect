@@ -38,6 +38,7 @@ export const ENDPOINT = {
   CREATE_MARKER_TYPE: `${baseUrl}/marker-type`,
   DELETE_MARKER_TYPE: `${baseUrl}/marker-type`,
   GET_PLACE_MARKER_TYPE: `${baseUrl}/marker-type/place`,
+  EDIT_MARKER_TYPE : `${baseUrl}/marker-type`,
 
   //TODO: Marker
   // POST

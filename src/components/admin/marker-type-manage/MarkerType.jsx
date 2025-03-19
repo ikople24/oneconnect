@@ -257,7 +257,7 @@ const MarkerType = ({ mainMarker }) => {
       const response = await fetch(
         `${ENDPOINT.EDIT_MARKER_TYPE}/${editData._id}`,
         {
-          method: "PUT",
+          method: "PATCH",
           body: formData,
         }
       );
@@ -292,7 +292,7 @@ const MarkerType = ({ mainMarker }) => {
       file.type === "image/png" ||
       file.type === "image/jpg";
 
-    if (isImage) {
+    if (!isImage) {
       message.error("กรุณาเลือกไฟล์รูปภาพเท่านั้น (JPEG หรือ PNG)");
     }
 

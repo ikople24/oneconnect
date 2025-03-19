@@ -387,6 +387,30 @@ export default function MapLayerTwo(props) {
   // };
 
   const RenderMarker = ({ markers }) => {
+    const iconBaseUrl = import.meta.env.VITE_API_PUBLIC_URL;
+    const getIcon = (iconUrl) => {
+      console.log(iconBaseUrl+'/'+iconUrl);
+      console.log(iconUrl);
+      if (!iconUrl) {
+        // Return a default icon when iconUrl is missing
+        return L.icon({
+          iconUrl:
+            "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+        });
+      }
+
+      return L.icon({
+        // iconUrl: iconBaseUrl + iconUrl,
+        iconUrl: `${iconBaseUrl+'/'+iconUrl}`,
+        iconSize: [32, 32], // Adjust size [width, height]
+        iconAnchor: [16, 32], // Point of the icon that corresponds to marker's location
+        popupAnchor: [0, -32],
+      });
+    };
+
     return (
       <>
         {markers.map((marker) => {
@@ -394,11 +418,15 @@ export default function MapLayerTwo(props) {
             <Marker
               key={marker._id}
               position={marker.geometry.coordinates}
-              // icon={addIconByMarkerType(marker.properties.markerType)}
+              icon={getIcon(marker.properties?.markerType?.icon)}
             >
               <Popup>
-                <div className="py-2">ชื่อ : {marker.properties?.markerInfo.name}</div>
-                <div className="py-2">ประเภท : {marker.properties?.markerType?.name}</div>
+                <div className="py-2">
+                  ชื่อ : {marker.properties?.markerInfo.name}
+                </div>
+                <div className="py-2">
+                  ประเภท : {marker.properties?.markerType?.name}
+                </div>
                 {/* <div>
                     ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
                     {marker.properties?.users?.lastName}
