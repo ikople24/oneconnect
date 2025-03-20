@@ -549,6 +549,8 @@ export default function MapLayerTwo(props) {
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
+
+     await fetchPlaceSummaryMarker(place?._id); 
       setIsModalVisible(!isModalVisible);
     } catch (error) {
       console.log("error", error);
@@ -644,7 +646,7 @@ export default function MapLayerTwo(props) {
                 </React.Fragment>
               }
               {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-              <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg" />
+              <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg" maxZoom={20} />
             </MapContainer>
           </div>
         </div>
