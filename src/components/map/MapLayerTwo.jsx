@@ -387,9 +387,7 @@ export default function MapLayerTwo(props) {
   // };
 
   const RenderMarker = ({ markers }) => {
-    const iconBaseUrl = import.meta.env.VITE_API_PUBLIC_URL;
     const getIcon = (iconUrl) => {
-      console.log(iconBaseUrl+'/'+iconUrl);
       console.log(iconUrl);
       if (!iconUrl) {
         // Return a default icon when iconUrl is missing
@@ -404,7 +402,7 @@ export default function MapLayerTwo(props) {
 
       return L.icon({
         // iconUrl: iconBaseUrl + iconUrl,
-        iconUrl: `${iconBaseUrl+'/'+iconUrl}`,
+        iconUrl: iconUrl,
         iconSize: [32, 32], // Adjust size [width, height]
         iconAnchor: [16, 32], // Point of the icon that corresponds to marker's location
         popupAnchor: [0, -32],
@@ -549,6 +547,8 @@ export default function MapLayerTwo(props) {
       } else {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
+
+     await fetchPlaceSummaryMarker(place?._id); 
       setIsModalVisible(!isModalVisible);
     } catch (error) {
       console.log("error", error);
@@ -644,7 +644,7 @@ export default function MapLayerTwo(props) {
                 </React.Fragment>
               }
               {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-              <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg" />
+              <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg" maxZoom={20} />
             </MapContainer>
           </div>
         </div>
