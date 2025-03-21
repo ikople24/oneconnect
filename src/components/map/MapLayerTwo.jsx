@@ -645,7 +645,7 @@ export default function MapLayerTwo(props) {
               }
               {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
               <TileLayer
-                url="http://mt0.google.com/vt/lyrs=y&x={x}y={y}&z={z}"
+                url="http://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
                 maxZoom={20}
               />
             </MapContainer>
