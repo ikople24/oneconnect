@@ -644,7 +644,10 @@ export default function MapLayerTwo(props) {
                 </React.Fragment>
               }
               {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-              <TileLayer url="https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg" maxZoom={20} />
+              <TileLayer
+                url="http://mt1.google.com/vt/lyrs=y&x={x}y={y}&z={z}"
+                maxZoom={20}
+              />
             </MapContainer>
           </div>
         </div>
