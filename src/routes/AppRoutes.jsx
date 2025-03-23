@@ -27,9 +27,9 @@ const AppRoutes = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Homepage />} />
           {/* <Route path="createuser" element={<CreateUser/>} /> */}
-          <Route path="markerinformation" element={<Markerinformation />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="register" element={<RegistrationForm />} />
+          {/* <Route path="markerinformation" element={<Markerinformation />} /> */}
+          {/* <Route path="dashboard" element={<Dashboard />} /> */}
+          {/* <Route path="register" element={<RegistrationForm />} /> */}
         </Route>
 
         <Route element={<LayoutMapLayerOne />}>
@@ -46,10 +46,10 @@ const AppRoutes = () => {
               <Route index element={<MainApps />} />
               <Route path="marker-manage" element={<MarkerTypePage />} />
               <Route path="place-manage" element={<Places />} />
-              <Route path="createuser" element={<CreateUser />} />
+              {/* <Route path="createuser" element={<CreateUser />} />
               <Route path="mainapps" element={<MainApps />} />
               <Route path="manageinfo" element={<Manageinfo />} />
-              <Route path="datatable" element={<Datatable />} />
+              <Route path="datatable" element={<Datatable />} /> */}
             </Route>
             <Route element={<RoleGuard requiredRoles={[Role.SUPER_ADMIN]} />}>
               <Route path="user-manage" element={<User />} />
