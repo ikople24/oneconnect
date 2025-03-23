@@ -1,17 +1,17 @@
 import Layout from "@/layouts/Layout";
 import LayoutAdmin from "@/layouts/LayoutAdmin";
-import CreateUser from "@/pages/admin/CreateUser";
-import MainApps from "@/pages/admin/MainApps";
-import Manageinfo from "@/pages/admin/Manageinfo";
+// import CreateUser from "@/pages/admin/CreateUser";
+// import MainApps from "@/pages/admin/MainApps";
+// import Manageinfo from "@/pages/admin/Manageinfo";
 import Homepage from "@/pages/Homepage";
-import Notfound from "@/pages/Notfound";
-import Markerinformation from "@/pages/Markerinformation";
-import Dashboard from "@/pages/Dashboard";
-import Datatable from "@/pages/admin/Datatable";
+// import Notfound from "@/pages/Notfound";
+// import Markerinformation from "@/pages/Markerinformation";
+// import Dashboard from "@/pages/Dashboard";
+// import Datatable from "@/pages/admin/Datatable";
 import LayoutMapLayerOne from "@/layouts/LayoutMapLayerOne";
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router";
 import Map from "@/pages/Map";
-import RegistrationForm from "@/pages/registerpage";
+// import RegistrationForm from "@/pages/registerpage";
 import User from "@/pages/admin/user/User";
 import MarkerTypePage from "@/pages/admin/Marker-Type/MarkerType";
 import Places from "@/pages/admin/Places/Places";
@@ -43,7 +43,7 @@ const AppRoutes = () => {
                 <RoleGuard requiredRoles={[Role.SUPER_ADMIN, Role.ADMIN]} />
               }
             >
-              <Route index element={<MainApps />} />
+              {/* <Route index element={<MainApps />} /> */}
               <Route path="marker-manage" element={<MarkerTypePage />} />
               <Route path="place-manage" element={<Places />} />
               {/* <Route path="createuser" element={<CreateUser />} />
