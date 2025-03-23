@@ -111,6 +111,7 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
       const response = await fetch(ENDPOINT.CREATE_MAIN_MARKER, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(values),
       });
 
@@ -135,6 +136,7 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
+          credentials: "include",
         }
       );
 
@@ -164,6 +166,7 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
             `${ENDPOINT.DELETE_MAIN_MARKER}/${mainMarkerId}`,
             {
               method: "DELETE",
+              credentials: "include",
             }
           );
           if (!response.ok) throw new Error("Failed to delete marker");

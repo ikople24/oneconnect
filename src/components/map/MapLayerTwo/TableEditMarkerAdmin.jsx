@@ -80,6 +80,7 @@ export default function TableEditMarkerAdmin({
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
   };
 

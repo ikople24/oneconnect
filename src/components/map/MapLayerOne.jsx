@@ -22,7 +22,7 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
 
   const fetchPlacePolygon = async () => {
     try {
-      const placePolygon = await fetch(ENDPOINT.GET_ALL_PLACE);
+      const placePolygon = await fetch(ENDPOINT.GET_ALL_PLACE,{credentials: 'include'});
       const response = await placePolygon.json();
       setPlacePolygon(response.data ?? []);
     } catch (error) {

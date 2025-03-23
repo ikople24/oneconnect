@@ -30,6 +30,8 @@ export default function MapLayerOneSidebar({
       );
       const province = await fetch(
         `${ENDPOINT.GET_ALL_PROVINCE}?${params.toString()}`
+        ,
+        {credentials: 'include'}
       );
       const response = await province.json();
       setProvinceList(response);
@@ -39,7 +41,7 @@ export default function MapLayerOneSidebar({
   };
   const fetchRegion = async (geographyId) => {
     try {
-      const region = await fetch(`${ENDPOINT.GET_ALL_GEOGRAPHY}`);
+      const region = await fetch(`${ENDPOINT.GET_ALL_GEOGRAPHY}`,{credentials: 'include'});
       const response = await region.json();
       setRegionList(response);
     } catch (error) {
@@ -56,7 +58,8 @@ export default function MapLayerOneSidebar({
       console.log(params);
 
       const places = await fetch(
-        `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`
+        `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`,
+        {credentials: 'include'}
       );
       const response = await places.json();
       setPlaceList(response.data ?? []);

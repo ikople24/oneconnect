@@ -45,6 +45,7 @@ const CreatePlaceForm = () => {
       const response = await fetch(ENDPOINT.GET_ALL_PLACE, {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("ไม่สามารถสร้างเมืองได้");
@@ -72,6 +73,7 @@ const CreatePlaceForm = () => {
       try {
         const response = await fetch(ENDPOINT.GET_ALL_PROVINCE_NAME, {
           method: "GET",
+          credentials: "include",
         });
         const data = await response.json();
         setProvince(data);

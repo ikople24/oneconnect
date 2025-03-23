@@ -122,7 +122,7 @@ const Places = () => {
 
   const fetchPlaceList = async () => {
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_PLACE);
+      const response = await fetch(ENDPOINT.GET_ALL_PLACE,{credentials: 'include'});
       const data = await response.json();
       console.log(data.data);
       setPlaces(data.data || []);
@@ -133,6 +133,7 @@ const Places = () => {
   const fetchMarkerType = async () => {
     const fetchMarkerType = await fetch(
       `${ENDPOINT.GET_ALL_MARKER_TYPE}?placeId=${placeSelected || ""}`
+      ,{credentials: 'include'}
     );
     const data = await fetchMarkerType.json();
     console.log(data);
@@ -143,6 +144,7 @@ const Places = () => {
     try {
       const response = await fetch(
         `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeSelected}`
+        ,{credentials: 'include'}
       );
       const data = await response.json();
       console.log(data);
@@ -164,6 +166,7 @@ const Places = () => {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(markerTypes),
+          credentials: "include",
         }
       );
 
@@ -195,6 +198,7 @@ const Places = () => {
               method: "PATCH",
               body: JSON.stringify({ markerTypes: markerTypeId }),
               headers: { "Content-Type": "application/json" },
+              credentials: "include",
             }
           );
           if (!response.ok) throw new Error("Failed to delete marker");

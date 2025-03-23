@@ -65,7 +65,7 @@ const UserManageTable = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_USER);
+      const response = await fetch(ENDPOINT.GET_ALL_USER,{credentials: 'include'});
       const data = await response.json();
       console.log(data);
       setUsers(data.data || []);
@@ -95,6 +95,7 @@ const UserManageTable = () => {
           headers: {
             "Content-Type": "application/json", // Set the content type to JSON
           },
+          credentials: 'include',
           body: JSON.stringify(updatedData), // Convert the updated data to a JSON string
         }
       );

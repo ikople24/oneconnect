@@ -201,6 +201,7 @@ const MarkerType = ({ mainMarker }) => {
       const response = await fetch(ENDPOINT.CREATE_MARKER_TYPE, {
         method: "POST",
         body: formData
+        ,credentials: 'include'
       });
 
       if (!response.ok) throw new Error("Failed to create marker");
@@ -228,6 +229,8 @@ const MarkerType = ({ mainMarker }) => {
             `${ENDPOINT.DELETE_MARKER_TYPE}/${markerTypeId}`,
             {
               method: "DELETE",
+              credentials: 'include'
+              
             }
           );
           if (!response.ok) throw new Error("Failed to delete marker");
@@ -258,6 +261,7 @@ const MarkerType = ({ mainMarker }) => {
         `${ENDPOINT.EDIT_MARKER_TYPE}/${editData._id}`,
         {
           method: "PATCH",
+          credentials: 'include',
           body: formData,
         }
       );
@@ -280,7 +284,7 @@ const MarkerType = ({ mainMarker }) => {
   };
 
   const fetchMarkerType = async () => {
-    const fetchMarkerType = await fetch(ENDPOINT.GET_ALL_MARKER_TYPE);
+    const fetchMarkerType = await fetch(ENDPOINT.GET_ALL_MARKER_TYPE,{credentials:  'include'});
     const data = await fetchMarkerType.json();
     console.log(data);
     setMarkerType(data);

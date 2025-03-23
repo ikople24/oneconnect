@@ -243,6 +243,7 @@ export default function MapLayerTwo(props) {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             markerTypeFilter: enabledMarkers,
           }),
@@ -259,7 +260,10 @@ export default function MapLayerTwo(props) {
   const fetchPlaceSummaryMarker = async (placeId) => {
     try {
       const getPlaceSummary = await fetch(
-        `${ENDPOINT.GET_SUMMARY_PLACE}/${placeId.toString()}`
+        `${ENDPOINT.GET_SUMMARY_PLACE}/${placeId.toString()}`,
+        {
+          credentials: "include",
+        }
       );
       const response = await getPlaceSummary.json();
       setSummaryPlaceMarker(response);
@@ -282,6 +286,7 @@ export default function MapLayerTwo(props) {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             markerTypeFilter: enabledMarkers,
           }),
@@ -327,7 +332,7 @@ export default function MapLayerTwo(props) {
   };
 
   const handleMapClick = (e) => {
-    if(!isAdmin) return;
+    if (!isAdmin) return;
     console.log(e);
     const { lat, lng } = e.latlng;
 
@@ -445,7 +450,8 @@ export default function MapLayerTwo(props) {
   const fetchPinTypes = async (placeId) => {
     try {
       const response = await fetch(
-        `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`
+        `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`,
+        { credentials: "include" }
       );
 
       if (!response.ok) {
@@ -536,6 +542,7 @@ export default function MapLayerTwo(props) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(bodyData),
       });
 
@@ -549,7 +556,7 @@ export default function MapLayerTwo(props) {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
 
-     await fetchPlaceSummaryMarker(place?._id); 
+      await fetchPlaceSummaryMarker(place?._id);
       setIsModalVisible(!isModalVisible);
     } catch (error) {
       console.log("error", error);
@@ -664,17 +671,15 @@ export default function MapLayerTwo(props) {
           />
         </div>
       </div>
-      <ComponentGuard allowedRoles={[Role.ADMIN,Role.SUPER_ADMIN]}>
-
-      <TableEditMarkerAdmin
-        markers={markers}
-        isAdmin={isAdmin}
-        setModalMarkerIsVisible={setModalMarkerIsVisible}
-        setSelectedRecord={setSelectedRecord}
-        modalMarkerIsVisible={modalMarkerIsVisible}
-        fetchData={fetchData}
-      />
-
+      <ComponentGuard allowedRoles={[Role.ADMIN, Role.SUPER_ADMIN]}>
+        <TableEditMarkerAdmin
+          markers={markers}
+          isAdmin={isAdmin}
+          setModalMarkerIsVisible={setModalMarkerIsVisible}
+          setSelectedRecord={setSelectedRecord}
+          modalMarkerIsVisible={modalMarkerIsVisible}
+          fetchData={fetchData}
+        />
       </ComponentGuard>
 
       <ModalMarkerDetail

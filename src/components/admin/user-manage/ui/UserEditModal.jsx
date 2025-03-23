@@ -31,7 +31,7 @@ const UserEditModal = ({ visible, onCancel, onSubmit, user }) => {
   const fetchRoles = async () => {
     setLoading(true);
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_ROLE); // Update with actual endpoint
+      const response = await fetch(ENDPOINT.GET_ALL_ROLE,{credentials: 'include'}); // Update with actual endpoint
       const data = await response.json();
       console.log(data);
       setRoles(data || []); // Assuming data contains the roles array
@@ -44,7 +44,7 @@ const UserEditModal = ({ visible, onCancel, onSubmit, user }) => {
   const fetchPlaces = async () => {
     setLoading(true);
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_PLACE); // Update with actual endpoint
+      const response = await fetch(ENDPOINT.GET_ALL_PLACE,{credentials: 'include'}); // Update with actual endpoint
       const data = await response.json();
       console.log(data);
       setPlaces(data.data || []); // Assuming data contains the roles array
