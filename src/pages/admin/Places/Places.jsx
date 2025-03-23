@@ -6,6 +6,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Select, Table, Space, Form, Button, Modal, App, Flex } from "antd";
 import { useContext, useEffect, useState } from "react";
 import CreatePlaceForm from "../../../components/Form/Place/CreatePlaceForm";
+import ComponentGuard from "@/routes/ComponentGuard";
 
 const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
   return (
@@ -210,7 +211,9 @@ const Places = () => {
 
   return (
     <>
-      <CreatePlaceForm />
+      <ComponentGuard allowedRoles={[Role.SUPER_ADMIN]}>
+        <CreatePlaceForm />
+      </ComponentGuard>
       <TitlePage title={"จัดการหมุดเมือง"} />
 
       <div className="flex justify-between my-2">
