@@ -26,6 +26,7 @@ import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
 import { useUser } from "@clerk/clerk-react";
 import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
+import ComponentGuard from "@/routes/ComponentGuard";
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { checkIsAdminPlace, isLoaded } = useGlobalContext();
@@ -663,14 +664,18 @@ export default function MapLayerTwo(props) {
           />
         </div>
       </div>
-      {/* <TableEditMarkerAdmin
+      <ComponentGuard allowedRoles={[Role.ADMIN,Role.SUPER_ADMIN]}>
+
+      <TableEditMarkerAdmin
         markers={markers}
         isAdmin={isAdmin}
         setModalMarkerIsVisible={setModalMarkerIsVisible}
         setSelectedRecord={setSelectedRecord}
         modalMarkerIsVisible={modalMarkerIsVisible}
         fetchData={fetchData}
-      /> */}
+      />
+
+      </ComponentGuard>
 
       <ModalMarkerDetail
         visible={modalMarkerIsVisible}

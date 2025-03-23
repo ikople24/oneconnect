@@ -162,10 +162,6 @@ export default function Homepage() {
           )}
         </AnimatePresence>
 
-        {/* โลโก้ที่มุมซ้ายบน */}
-        <div className="absolute top-1 left-2">
-          {/* <img src="src/assets/logotest.png" alt="Logo" className="w-20" /> */}
-        </div>
 
         {/* ข้อความที่มุมซ้ายล่าง */}
         <div className="absolute bottom-8 left-8 text-white p-4 rounded-lg">
