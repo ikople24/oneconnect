@@ -33,7 +33,7 @@ export const ContextProvider = ({ children }) => {
 
   const checkIsAdminPlace = (placeId) => {
     if (role === Role.SUPER_ADMIN) return true;
-    if (role === Role.ADMIN && userPlaceId) {
+    if (role === Role.ADMIN && userPlaceId === placeId) {
       return true;
     }
     return false;
