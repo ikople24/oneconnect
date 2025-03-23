@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Spin } from "antd";
 import { ENDPOINT } from "@/components/endpoint"; // Assuming you have an endpoint for fetching roles
+import ApiClient from "@/utils/apiClient";
 
 const { Option } = Select;
 
@@ -9,6 +10,7 @@ const UserEditModal = ({ visible, onCancel, onSubmit, user }) => {
   const [roles, setRoles] = useState([]); // State to store roles
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state while fetching roles
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     if (visible) {
@@ -31,10 +33,9 @@ const UserEditModal = ({ visible, onCancel, onSubmit, user }) => {
   const fetchRoles = async () => {
     setLoading(true);
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_ROLE); // Update with actual endpoint
-      const data = await response.json();
-      console.log(data);
-      setRoles(data || []); // Assuming data contains the roles array
+      const url = ENDPOINT.GET_ALL_ROLE;
+      const response = await apiClient.get(url);
+      setRoles(response || []); // Assuming data contains the roles array
     } catch (error) {
       console.error("Failed to fetch roles:", error);
     } finally {
@@ -44,10 +45,9 @@ const UserEditModal = ({ visible, onCancel, onSubmit, user }) => {
   const fetchPlaces = async () => {
     setLoading(true);
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_PLACE); // Update with actual endpoint
-      const data = await response.json();
-      console.log(data);
-      setPlaces(data.data || []); // Assuming data contains the roles array
+      const url = ENDPOINT.GET_ALL_PLACE;
+      const response = await apiClient.get(url);
+      setPlaces(response.data || []); // Assuming data contains the roles array
     } catch (error) {
       console.error("Failed to fetch roles:", error);
     } finally {
@@ -76,16 +76,16 @@ const UserEditModal = ({ visible, onCancel, onSubmit, user }) => {
         <Form.Item
           label="อีเมลล์"
           name="email"
-        //   rules={[{ required: true, message: "กรุณากรอกอีเมลล์!" }]}
+          //   rules={[{ required: true, message: "กรุณากรอกอีเมลล์!" }]}
         >
-          <Input disabled/>
+          <Input disabled />
         </Form.Item>
         <Form.Item
           label="Username"
           name="username"
-        //   rules={[{ required: true, message: "กรุณากรอกชื่อผู้ใช้!" }]}
+          //   rules={[{ required: true, message: "กรุณากรอกชื่อผู้ใช้!" }]}
         >
-          <Input disabled/>
+          <Input disabled />
         </Form.Item>
         <Form.Item
           label="ชื่อ"

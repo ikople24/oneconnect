@@ -2,6 +2,7 @@ import { Table, Space, Tooltip, Button, App } from "antd";
 import { useState } from "react";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { ENDPOINT } from "../../endpoint";
+import ApiClient from "@/utils/apiClient";
 export default function TableEditMarkerAdmin({
   markers,
   isAdmin,
@@ -10,6 +11,7 @@ export default function TableEditMarkerAdmin({
   modalMarkerIsVisible,
   fetchData,
 }) {
+  const apiClient = new ApiClient();
   const { message, modal } = App.useApp();
   const columns = [
     {
@@ -75,12 +77,8 @@ export default function TableEditMarkerAdmin({
   });
   const deleteMarker = async (id) => {
     console.log("ID", id);
-    return await fetch(`${ENDPOINT.DELETE_MARKER_ADMIN}${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const url = `${ENDPOINT.DELETE_MARKER_ADMIN}${id}`;
+    return await apiClient.delete(url);
   };
 
   const handleDelete = (record) => {

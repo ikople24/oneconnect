@@ -27,6 +27,8 @@ import { useUser } from "@clerk/clerk-react";
 import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import ComponentGuard from "@/routes/ComponentGuard";
+import ApiClient from "@/utils/ApiClient";
+
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { checkIsAdminPlace, isLoaded } = useGlobalContext();
@@ -51,6 +53,7 @@ export default function MapLayerTwo(props) {
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
   const [enabledMarkers, setEnabledMarkers] = useState([]);
+  const apiClient = new ApiClient();
   useEffect(() => {
     console.log(enabledMarkers);
     if (isAdmin) {
@@ -235,21 +238,10 @@ export default function MapLayerTwo(props) {
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-
-      const markers = await fetch(
-        `${ENDPOINT.GET_MARKERS}?${params.toString()}`,
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            markerTypeFilter: enabledMarkers,
-          }),
-        }
-      );
-      const response = await markers.json();
-
+      const url = `${ENDPOINT.GET_MARKERS}?${params.toString()}`;
+      const response = await apiClient.post(url, {
+        markerTypeFilter: enabledMarkers,
+      });
       setMaker(response ?? []);
     } catch (error) {
       console.error(error);
@@ -258,45 +250,28 @@ export default function MapLayerTwo(props) {
 
   const fetchPlaceSummaryMarker = async (placeId) => {
     try {
-      const getPlaceSummary = await fetch(
-        `${ENDPOINT.GET_SUMMARY_PLACE}/${placeId.toString()}`
-      );
-      const response = await getPlaceSummary.json();
+      const url = `${ENDPOINT.GET_SUMMARY_PLACE}/${placeId.toString()}`;
+      const response = await apiClient.get(url);
       setSummaryPlaceMarker(response);
       setEnabledMarkers(response.map((type) => type._id));
-      console.log(response);
     } catch (error) {}
   };
 
   const fetchMarkerAdmin = async (placeId) => {
     try {
-      console.log(placeId);
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
-
-      const markers = await fetch(
-        `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`,
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            markerTypeFilter: enabledMarkers,
-          }),
-        }
-      );
-      const response = await markers.json();
-      // console.log(response);
-      console.log(response);
+      const url = `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`;
+      const response = await apiClient.post(url, {
+        markerTypeFilter: enabledMarkers,
+      });
 
       setMaker(response ?? []);
     } catch (error) {
       console.error(error);
     }
   };
-
   const LocationMarker = ({ isAdmin, setPointSelected, pointSelected }) => {
     const LeafIcon = L.Icon.extend({
       options: {},
@@ -327,7 +302,7 @@ export default function MapLayerTwo(props) {
   };
 
   const handleMapClick = (e) => {
-    if(!isAdmin) return;
+    if (!isAdmin) return;
     console.log(e);
     const { lat, lng } = e.latlng;
 
@@ -444,17 +419,9 @@ export default function MapLayerTwo(props) {
   // fetch ข้อมูลประเภทหมุดแต่ละเมือง
   const fetchPinTypes = async (placeId) => {
     try {
-      const response = await fetch(
-        `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`
-      );
-
-      if (!response.ok) {
-        console.log("Can not fetch :: pinTypes");
-      }
-
-      const data = await response.json();
-      console.log("Pin types:", data);
-      setPinTypes(data);
+      const url = `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`;
+      const response = await apiClient.get(url);
+      setPinTypes(response);
     } catch (error) {
       console.log("error", error);
     }
@@ -531,17 +498,9 @@ export default function MapLayerTwo(props) {
           );
         }
       }
-      const response = await fetch(`${ENDPOINT.CREATE_MARKER}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const url = `${ENDPOINT.CREATE_MARKER}`;
+      const body = bodyData;
+      const response = await apiClient.post(url, body);
 
       if (isAdmin) {
         await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
@@ -549,7 +508,7 @@ export default function MapLayerTwo(props) {
         await Promise.allSettled([fetchMarkers(place?._id)]);
       }
 
-     await fetchPlaceSummaryMarker(place?._id); 
+      await fetchPlaceSummaryMarker(place?._id);
       setIsModalVisible(!isModalVisible);
     } catch (error) {
       console.log("error", error);
@@ -664,17 +623,15 @@ export default function MapLayerTwo(props) {
           />
         </div>
       </div>
-      <ComponentGuard allowedRoles={[Role.ADMIN,Role.SUPER_ADMIN]}>
-
-      <TableEditMarkerAdmin
-        markers={markers}
-        isAdmin={isAdmin}
-        setModalMarkerIsVisible={setModalMarkerIsVisible}
-        setSelectedRecord={setSelectedRecord}
-        modalMarkerIsVisible={modalMarkerIsVisible}
-        fetchData={fetchData}
-      />
-
+      <ComponentGuard allowedRoles={[Role.ADMIN, Role.SUPER_ADMIN]}>
+        <TableEditMarkerAdmin
+          markers={markers}
+          isAdmin={isAdmin}
+          setModalMarkerIsVisible={setModalMarkerIsVisible}
+          setSelectedRecord={setSelectedRecord}
+          modalMarkerIsVisible={modalMarkerIsVisible}
+          fetchData={fetchData}
+        />
       </ComponentGuard>
 
       <ModalMarkerDetail

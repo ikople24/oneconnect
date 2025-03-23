@@ -7,6 +7,7 @@ import { Select, Table, Space, Form, Button, Modal, App, Flex } from "antd";
 import { useContext, useEffect, useState } from "react";
 import CreatePlaceForm from "../../../components/Form/Place/CreatePlaceForm";
 import ComponentGuard from "@/routes/ComponentGuard";
+import ApiClient from "@/utils/apiClient";
 
 const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
   return (
@@ -101,6 +102,7 @@ const Places = () => {
   const [form] = Form.useForm();
   const { message, modal } = App.useApp();
   const { role, userPlaceId } = useGlobalContext();
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     console.log(role, userPlaceId);
@@ -122,31 +124,26 @@ const Places = () => {
 
   const fetchPlaceList = async () => {
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_PLACE);
-      const data = await response.json();
-      console.log(data.data);
-      setPlaces(data.data || []);
+      const url = ENDPOINT.GET_ALL_PLACE;
+      const response = await apiClient.get(url);
+      setPlaces(response.data || []);
     } catch (error) {
       console.error("Error fetching places:", error);
     }
   };
   const fetchMarkerType = async () => {
-    const fetchMarkerType = await fetch(
-      `${ENDPOINT.GET_ALL_MARKER_TYPE}?placeId=${placeSelected || ""}`
-    );
-    const data = await fetchMarkerType.json();
-    console.log(data);
-    setMarkerType(data);
+    const url = `${ENDPOINT.GET_ALL_MARKER_TYPE}?placeId=${
+      placeSelected || ""
+    }`;
+    const response = await apiClient.get(url);
+    setMarkerType(response);
   };
 
   const fetchPlaceMarkerType = async () => {
     try {
-      const response = await fetch(
-        `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeSelected}`
-      );
-      const data = await response.json();
-      console.log(data);
-      setPlaceMarkerType(data || []);
+      const url = `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeSelected}`;
+      const response = await apiClient.get(url);
+      setPlaceMarkerType(response || []);
     } catch (error) {
       console.error("Error fetching place marker types:", error);
     }
@@ -158,16 +155,8 @@ const Places = () => {
       markerTypes: [values.type],
     };
     try {
-      const response = await fetch(
-        `${ENDPOINT.ADD_PLACE_MARKER_TYPE}/${placeSelected}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(markerTypes),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to create marker");
+      const url = `${ENDPOINT.ADD_PLACE_MARKER_TYPE}/${placeSelected}`;
+      const response = await apiClient.patch(url, markerTypes);
 
       message.success("สร้างประเภทหมุดสำเร็จ!");
       form.resetFields();
@@ -189,15 +178,12 @@ const Places = () => {
       onOk: async () => {
         setLoading(true);
         try {
-          const response = await fetch(
-            `${ENDPOINT.REMOVE_PLACE_MARKER_TYPE}/${placeSelected}`,
-            {
-              method: "PATCH",
-              body: JSON.stringify({ markerTypes: markerTypeId }),
-              headers: { "Content-Type": "application/json" },
-            }
-          );
-          if (!response.ok) throw new Error("Failed to delete marker");
+          const url = `${ENDPOINT.REMOVE_PLACE_MARKER_TYPE}/${placeSelected}`;
+          const body = {
+            markerTypes: markerTypeId,
+          };
+          const response = await apiClient.patch(url,body);
+
           message.success("ยกเลิกการเชื่อมหมุดสำเร็จ!");
           fetchPlaceMarkerType();
         } catch (error) {

@@ -1,4 +1,5 @@
 import { ENDPOINT } from "@/components/endpoint";
+import ApiClient from "@/utils/apiClient";
 import { Table, Space, Form, Modal, Input, Button, Flex, App } from "antd";
 import { useEffect, useState } from "react";
 
@@ -64,8 +65,8 @@ const ModalEdit = ({
   initialData,
 }) => {
   useEffect(() => {
-    if(initialData){
-    form.setFieldsValue(initialData);
+    if (initialData) {
+      form.setFieldsValue(initialData);
     }
   }, [form, initialData]);
 
@@ -104,18 +105,13 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
   const [form] = Form.useForm();
   const [editData, setEditData] = useState(null);
   const { message, modal } = App.useApp();
-
+  const apiClient = new ApiClient();
   const handleCreate = async (values) => {
     setLoading(true);
     try {
-      const response = await fetch(ENDPOINT.CREATE_MAIN_MARKER, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) throw new Error("Failed to create marker");
-
+      const url = `${ENDPOINT.CREATE_MAIN_MARKER}`;
+      const body = values;
+      const response = await apiClient.post(url, body);
       message.success("สร้างประเภทหมุดหลักสำเร็จ!");
       form.resetFields();
       setIsModalOpen(false);
@@ -129,14 +125,9 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
   const handleEdit = async (values) => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `${ENDPOINT.UPDATE_MAIN_MARKER}/${editData._id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        }
-      );
+      const url = `${ENDPOINT.UPDATE_MAIN_MARKER}/${editData._id}`;
+      const body = values;
+      const response = await apiClient.patch(url, body);
 
       if (!response.ok) throw new Error("Failed to update marker");
 
@@ -160,13 +151,8 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
       onOk: async () => {
         setLoading(true);
         try {
-          const response = await fetch(
-            `${ENDPOINT.DELETE_MAIN_MARKER}/${mainMarkerId}`,
-            {
-              method: "DELETE",
-            }
-          );
-          if (!response.ok) throw new Error("Failed to delete marker");
+          const url = `${ENDPOINT.DELETE_MAIN_MARKER}/${mainMarkerId}`;
+          const response = await apiClient.delete(url);
           message.success("ลบหมุดหลักสำเร็จ!");
           fetchMainMarker(); // Refresh table
         } catch (error) {

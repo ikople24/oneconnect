@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Space, Table } from "antd";
 import { ENDPOINT } from "@/components/endpoint";
 import UserEditModal from "@/components/admin/user-manage/ui/UserEditModal";
+import ApiClient from "@/utils/apiClient";
 const columns = (onEditClick) => [
   { title: "username", dataIndex: "username", key: "username" },
   {
@@ -58,6 +59,7 @@ const UserManageTable = () => {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     fetchUsers();
@@ -65,10 +67,10 @@ const UserManageTable = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_USER);
-      const data = await response.json();
-      console.log(data);
-      setUsers(data.data || []);
+      const url = ENDPOINT.GET_ALL_USER;
+      const response = await apiClient.get(url);
+      console.log(response);
+      setUsers(response.data || []);
     } catch (error) {
       console.error(error);
     }
@@ -88,26 +90,11 @@ const UserManageTable = () => {
     console.log("Updated user data:", updatedData);
 
     try {
-      const response = await fetch(
-        `${ENDPOINT.UPDATE_USER}/${selectedUser._id}`,
-        {
-          method: "PATCH", // Use PATCH method
-          headers: {
-            "Content-Type": "application/json", // Set the content type to JSON
-          },
-          body: JSON.stringify(updatedData), // Convert the updated data to a JSON string
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update user");
-      }
-
-      const responseData = await response.json();
-      console.log("Updated user:", responseData);
+      const url = `${ENDPOINT.UPDATE_USER}/${selectedUser._id}`;
+      const response = await apiClient.patch(url, updatedData);
       fetchUsers();
 
-      setIsModalOpen(false); // Close the modal after successful update
+      setIsModalOpen(false); 
     } catch (error) {
       console.error("Error updating user:", error);
     }
