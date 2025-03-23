@@ -1,4 +1,5 @@
 import { ENDPOINT } from "@/components/endpoint";
+import ApiClient from "@/utils/apiClient";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   Table,
@@ -185,6 +186,7 @@ const MarkerType = ({ mainMarker }) => {
   const [editData, setEditData] = useState(null);
   const { message, modal } = App.useApp();
   const [file, setFile] = useState(null);
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     fetchMarkerType();
@@ -198,13 +200,9 @@ const MarkerType = ({ mainMarker }) => {
       formData.append("icon", file);
       formData.append("type", values.type);
 
-      const response = await fetch(ENDPOINT.CREATE_MARKER_TYPE, {
-        method: "POST",
-        body: formData
-        ,credentials: 'include'
-      });
-
-      if (!response.ok) throw new Error("Failed to create marker");
+      const url = ENDPOINT.CREATE_MARKER_TYPE;
+      const body = formData;
+      const response = await apiClient.postBuffer(url, body);
 
       message.success("สร้างประเภทหมุดสำเร็จ!");
       form.resetFields();
@@ -225,15 +223,8 @@ const MarkerType = ({ mainMarker }) => {
       onOk: async () => {
         setLoading(true);
         try {
-          const response = await fetch(
-            `${ENDPOINT.DELETE_MARKER_TYPE}/${markerTypeId}`,
-            {
-              method: "DELETE",
-              credentials: 'include'
-              
-            }
-          );
-          if (!response.ok) throw new Error("Failed to delete marker");
+          const url = `${ENDPOINT.DELETE_MARKER_TYPE}/${markerTypeId}`;
+          const response = await apiClient.delete(url);
           message.success("ลบหมุดสำเร็จ!");
           fetchMarkerType();
         } catch (error) {
@@ -256,18 +247,10 @@ const MarkerType = ({ mainMarker }) => {
       formData.append("name", values.name);
       formData.append("icon", file);
       formData.append("type", values.type);
-
-      const response = await fetch(
-        `${ENDPOINT.EDIT_MARKER_TYPE}/${editData._id}`,
-        {
-          method: "PATCH",
-          credentials: 'include',
-          body: formData,
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to edit marker");
-
+      const url = `${ENDPOINT.EDIT_MARKER_TYPE}/${editData._id}`;
+      const body = formData;
+      const response = await apiClient.patchBuffer(url, body);
+      console.log(response);
       message.success("แก้ไขประเภทหมุดสำเร็จ!");
       form.resetFields();
       fetchMarkerType();
@@ -284,10 +267,9 @@ const MarkerType = ({ mainMarker }) => {
   };
 
   const fetchMarkerType = async () => {
-    const fetchMarkerType = await fetch(ENDPOINT.GET_ALL_MARKER_TYPE,{credentials:  'include'});
-    const data = await fetchMarkerType.json();
-    console.log(data);
-    setMarkerType(data);
+    const url = ENDPOINT.GET_ALL_MARKER_TYPE;
+    const response = await apiClient.get(url);
+    setMarkerType(response);
   };
 
   const beforeUpload = (file) => {
@@ -305,7 +287,7 @@ const MarkerType = ({ mainMarker }) => {
 
   const handleFileChange = (info) => {
     const file = info.file;
-    console.log('file', file);
+    console.log("file", file);
     setFile(file);
   };
 

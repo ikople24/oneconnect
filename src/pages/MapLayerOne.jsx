@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Select, Row, Col, Flex, Button } from "antd";
 import { ENDPOINT } from "@/components/endpoint";
+import ApiClient from "@/utils/apiClient";
 
 export default function ServiceAreaSelection() {
   const [regionList, setRegionList] = useState([]);
@@ -17,6 +18,7 @@ export default function ServiceAreaSelection() {
   const [flyToLatLng, setFlyToLatLng] = useState([]);
   const [clearTrigger, setClearTrigger] = useState(0);
   const navigate = useNavigate();
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,10 +39,10 @@ export default function ServiceAreaSelection() {
       const params = new URLSearchParams(
         geographyId && { geographyId: geographyId }
       );
-      const province = await fetch(
-        `${ENDPOINT.GET_ALL_PROVINCE}?${params.toString()}`
-      );
-      const response = await province.json();
+
+      const url = `${ENDPOINT.GET_ALL_PROVINCE}?${params.toString()}`;
+      const response = await apiClient.get(url);
+
       setProvinceList(response);
     } catch (error) {
       console.error("ERROR FETCH PROVINCE:", error);
@@ -62,12 +64,8 @@ export default function ServiceAreaSelection() {
         provinceId: provinceId ?? "",
         geographyId: geographyId ?? "",
       });
-      console.log(params);
-
-      const places = await fetch(
-        `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`
-      );
-      const response = await places.json();
+      const url = `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`;
+      const response = await apiClient.get(url);
       setPlaceList(response.data ?? []);
     } catch (error) {
       console.error("ERROR FETCH PLACES:", error);
@@ -75,8 +73,8 @@ export default function ServiceAreaSelection() {
   };
   const fetchPlacePolygon = async () => {
     try {
-      const placePolygon = await fetch(ENDPOINT.GET_ALL_PLACE);
-      const response = await placePolygon.json();
+      const url = `${ENDPOINT.GET_ALL_PLACE_POLYGON}`;
+      const response = await apiClient.get(url);
       setPlacePolygon(response.data ?? []);
     } catch (error) {
       console.error("ERROR FETCH PLACES:", error);

@@ -1,61 +1,61 @@
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ENDPOINT = {
   // TODO: Users
-  GET_ALL_USER: `${baseUrl}/users`,
-  UPDATE_USER: `${baseUrl}/users`,
+  GET_ALL_USER: `/users`,
+  UPDATE_USER: `/users`,
 
   // TODO: Role
-  GET_ALL_ROLE: `${baseUrl}/role`,
+  GET_ALL_ROLE: `/role`,
 
   //TODO: Places
   //POST
-  CREATE_PLACE: `${baseUrl}/places`,
+  CREATE_PLACE: `/places`,
   //PATCH
-  UPDATE_PLACE: `${baseUrl}/places/`, // PARAM
-  ADD_PLACE_MARKER_TYPE: `${baseUrl}/places/add-marker`,
-  REMOVE_PLACE_MARKER_TYPE: `${baseUrl}/places/remove-marker`,
+  UPDATE_PLACE: `/places/`, // PARAM
+  ADD_PLACE_MARKER_TYPE: `/places/add-marker`,
+  REMOVE_PLACE_MARKER_TYPE: `/places/remove-marker`,
 
   //GET
   // dropdown
-  GET_ALL_PROVINCE: `${baseUrl}/places/province`,
-  GET_ALL_CITY: `${baseUrl}/places/city`,
-  GET_ALL_ZONE: `${baseUrl}/places/zone`,
-  GET_ALL_PLACE: `${baseUrl}/places`,
-  GET_ALL_PROVINCE_NAME: `${baseUrl}/places/province/name`,
-  GET_ALL_GEOGRAPHY: `${baseUrl}/places/geography`,
-  GET_ALL_PINTYPES: `${baseUrl}/places/pin`,
-  GET_SUMMARY_PLACE: `${baseUrl}/places/summary`,
+  GET_ALL_PROVINCE: `/places/province`,
+  GET_ALL_CITY: `/places/city`,
+  GET_ALL_ZONE: `/places/zone`,
+  GET_ALL_PLACE: `/places`,
+  GET_ALL_PROVINCE_NAME: `/places/province/name`,
+  GET_ALL_GEOGRAPHY: `/places/geography`,
+  GET_ALL_PINTYPES: `/places/pin`,
+  GET_SUMMARY_PLACE: `/places/summary`,
   // DELETE
-  DELETE_PLACE: `${baseUrl}/places`, // PARAM
+  DELETE_PLACE: `/places`, // PARAM
 
   // TODO: Marker Type
-  GET_ALL_MAIN_MARKER: `${baseUrl}/marker-type/main`,
-  CREATE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
-  UPDATE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
-  DELETE_MAIN_MARKER: `${baseUrl}/marker-type/main`,
-  GET_ALL_MARKER_TYPE: `${baseUrl}/marker-type`,
-  GET_ALL_MARKER_TYPE_PLACE: `${baseUrl}/marker-type/all`,
-  CREATE_MARKER_TYPE: `${baseUrl}/marker-type`,
-  DELETE_MARKER_TYPE: `${baseUrl}/marker-type`,
-  GET_PLACE_MARKER_TYPE: `${baseUrl}/marker-type/place`,
-  EDIT_MARKER_TYPE : `${baseUrl}/marker-type`,
+  GET_ALL_MAIN_MARKER: `/marker-type/main`,
+  CREATE_MAIN_MARKER: `/marker-type/main`,
+  UPDATE_MAIN_MARKER: `/marker-type/main`,
+  DELETE_MAIN_MARKER: `/marker-type/main`,
+  GET_ALL_MARKER_TYPE: `/marker-type`,
+  GET_ALL_MARKER_TYPE_PLACE: `/marker-type/all`,
+  CREATE_MARKER_TYPE: `/marker-type`,
+  DELETE_MARKER_TYPE: `/marker-type`,
+  GET_PLACE_MARKER_TYPE: `/marker-type/place`,
+  EDIT_MARKER_TYPE: `/marker-type`,
 
   //TODO: Marker
   // POST
-  CREATE_MARKER: `${baseUrl}/markers`,
+  CREATE_MARKER: `/markers`,
   // ADMIN
 
   // GET
-  GET_ALL_MARKER_ADMIN_DATA: `${baseUrl}/markers/private/admin/data`,
-  GET_ALL_MARKER_ADMIN: `${baseUrl}/markers/private/admin`,
-  GET_ONE_MARKER_ADMIN: `${baseUrl}/markers/private/admin/`, // PARAM
-  GET_COUNT_MARKER_ADMIN: `${baseUrl}/markers/private/admin/count`,
+  GET_ALL_MARKER_ADMIN_DATA: `/markers/private/admin/data`,
+  GET_ALL_MARKER_ADMIN: `/markers/private/admin`,
+  GET_ONE_MARKER_ADMIN: `/markers/private/admin/`, // PARAM
+  GET_COUNT_MARKER_ADMIN: `/markers/private/admin/count`,
   // PATCH
-  PATCH_MARKERS_ADMIN: `${baseUrl}/markers/private/admin/`, // PARAM
+  PATCH_MARKERS_ADMIN: `/markers/private/admin/`, // PARAM
   // DELETE
-  DELETE_MARKER_ADMIN: `${baseUrl}/markers/private/admin/`, // PARAM
+  DELETE_MARKER_ADMIN: `/markers/private/admin/`, // PARAM
   // User
   //GET
-  GET_MARKERS: `${baseUrl}/markers/get`,
-  GET_ONE_MARKER: `${baseUrl}/markers/`, // PARAM
+  GET_MARKERS: `/markers/get`,
+  GET_ONE_MARKER: `/markers/`, // PARAM
 };

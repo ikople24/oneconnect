@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Upload, message, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { ENDPOINT } from "@/components/endpoint";
+import ApiClient from "@/utils/apiClient";
 
 const { Option } = Select;
 
@@ -11,6 +12,7 @@ const CreatePlaceForm = () => {
   const [cityFile, setCityFile] = useState(null);
   const [zoneFile, setZoneFile] = useState(null);
   const [province, setProvince] = useState([]);
+  const apiClient = new ApiClient();
 
   const handleFileChange = (info, type) => {
     const file = info.file;
@@ -42,14 +44,9 @@ const CreatePlaceForm = () => {
     formData.append("zone", zoneFile);
 
     try {
-      const response = await fetch(ENDPOINT.GET_ALL_PLACE, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("ไม่สามารถสร้างเมืองได้");
-      }
+      const url = ENDPOINT.CREATE_PLACE;
+      const body = formData;
+      const response = await apiClient.post(url, body);
       message.success("สร้างเมืองสำเร็จ!");
       form.resetFields();
       setCityFile(null);
@@ -71,12 +68,9 @@ const CreatePlaceForm = () => {
   useEffect(() => {
     const fetchProvinces = async () => {
       try {
-        const response = await fetch(ENDPOINT.GET_ALL_PROVINCE_NAME, {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await response.json();
-        setProvince(data);
+        const url = ENDPOINT.GET_ALL_PROVINCE_NAME;
+        const response = await apiClient.get(url);
+        setProvince(response);
       } catch (error) {
         console.log("Error fetching provinces:::");
       }

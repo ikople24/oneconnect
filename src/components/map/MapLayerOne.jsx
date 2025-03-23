@@ -6,12 +6,14 @@ import thailandPolygon from "@/components/data/thailand.json";
 import { Row, Col } from "antd";
 import { ENDPOINT } from "@/components/endpoint";
 import MapLayerOneSidebar from "./MapLayerOne/MapLayerOneSidebar";
+import ApiClient from "@/utils/apiClient";
 
 export default function ServiceAreaSelection({ changePage, setPlace }) {
   const [placeSelected, setPlaceSelected] = useState();
   const [placePolygon, setPlacePolygon] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [flyToLatLng, setFlyToLatLng] = useState([]);
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +24,8 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
 
   const fetchPlacePolygon = async () => {
     try {
-      const placePolygon = await fetch(ENDPOINT.GET_ALL_PLACE,{credentials: 'include'});
-      const response = await placePolygon.json();
+      const url = ENDPOINT.GET_ALL_PLACE;
+      const response = await apiClient.get(url);
       setPlacePolygon(response.data ?? []);
     } catch (error) {
       console.error("ERROR FETCH PLACES:", error);

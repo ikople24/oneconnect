@@ -1,6 +1,7 @@
 import { Row, Flex, Col, Select, Button } from "antd";
 import { useEffect, useState } from "react";
 import { ENDPOINT } from "@/components/endpoint";
+import ApiClient from "@/utils/apiClient";
 export default function MapLayerOneSidebar({
   changePage,
   selectedProvince,
@@ -14,6 +15,7 @@ export default function MapLayerOneSidebar({
   const [regionSelected, setRegion] = useState(null);
   const [placeList, setPlaceList] = useState([]);
   const [provinceList, setProvinceList] = useState([]);
+  const apiClient = new ApiClient();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,12 +30,8 @@ export default function MapLayerOneSidebar({
       const params = new URLSearchParams(
         geographyId && { geographyId: geographyId }
       );
-      const province = await fetch(
-        `${ENDPOINT.GET_ALL_PROVINCE}?${params.toString()}`
-        ,
-        {credentials: 'include'}
-      );
-      const response = await province.json();
+      const url = `${ENDPOINT.GET_ALL_PROVINCE}?${params.toString()}`;
+      const response = await apiClient.get(url);
       setProvinceList(response);
     } catch (error) {
       console.error("ERROR FETCH PROVINCE:", error);
@@ -41,8 +39,8 @@ export default function MapLayerOneSidebar({
   };
   const fetchRegion = async (geographyId) => {
     try {
-      const region = await fetch(`${ENDPOINT.GET_ALL_GEOGRAPHY}`,{credentials: 'include'});
-      const response = await region.json();
+      const url = `${ENDPOINT.GET_ALL_GEOGRAPHY}`;
+      const response = await apiClient.get(url);
       setRegionList(response);
     } catch (error) {
       console.error("ERROR FETCH REGION:", error);
@@ -55,13 +53,8 @@ export default function MapLayerOneSidebar({
         provinceId: provinceId ?? "",
         geographyId: geographyId ?? "",
       });
-      console.log(params);
-
-      const places = await fetch(
-        `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`,
-        {credentials: 'include'}
-      );
-      const response = await places.json();
+      const url = `${ENDPOINT.GET_ALL_PLACE}?${params.toString()}`;
+      const response = await apiClient.get(url);
       setPlaceList(response.data ?? []);
     } catch (error) {
       console.error("ERROR FETCH PLACES:", error);
