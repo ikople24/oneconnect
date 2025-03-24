@@ -64,7 +64,7 @@ const ModalAddPlace = ({
             label="วันทำการ"
             rules={[{ required: true, message: "กรุณาเลือกวันทำการ" }]}
           >
-            <Select placeholder="e.g., ทุกวัน" defaultValue={"ทุกวัน"}>
+            <Select placeholder="e.g., ทุกวัน">
               <Option key={"ทุกวัน"} value={"ทุกวัน"}>
                 ทุกวัน
               </Option>
@@ -85,14 +85,6 @@ const ModalAddPlace = ({
               rules={[{ required: true, message: "กรุณาเลือกเวลาเปิดปิด" }]}
             >
               <TimePicker.RangePicker />
-
-              {/* <DatePicker
-                placeholder="e.g., 08:00 - 17.00"
-                onChange={(e) => handleBirthdateChange(e)}
-                format="DD/MM/BBBB"
-                locale={buddhistLocale}
-                disabledDate={disabledDate}
-              /> */}
             </Form.Item>
           </Col>
         </Row>
@@ -111,94 +103,6 @@ const ModalAddPlace = ({
           </Form.Item>
         </Col>
       </Row>
-      {/* <Row gutter={8}>
-        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
-          <Form.Item
-            name="address"
-            label="ที่อยู่"
-            rules={[{ required: true, message: "กรุณากรอกที่อยู่" }]}
-          >
-            <Input placeholder="e.g., 123/456 หมู่ 1 " />
-          </Form.Item>
-        </Col>
-      </Row> */}
-      {/* <Row gutter={8}>
-        <Col span={24} sm={24} md={12} xl={12} xxl={12}>
-          <Form.Item
-            name="amphurName"
-            label="อำเภอ"
-            rules={[{ required: true, message: "กรุณาเลือกอำเภอ" }]}
-          >
-            <Select placeholder="e.g., เมือง">
-              <Option key={"สามพราน"} value={"สามพราน"}>
-                สามพราน
-              </Option>
-              <Option key={"เมือง"} value={"เมือง"}>
-                เมือง
-              </Option>
-              <Option key={"ละหานทราย"} value={"ละหานทราย"}>
-                ละหานทราย
-              </Option>
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col span={24} sm={24} md={12} xl={12} xxl={12}>
-          <Form.Item
-            name="tumbolName"
-            label="ตำบล"
-            rules={[{ required: true, message: "กรุณาเลือกตำบล" }]}
-          >
-            <Select placeholder="e.g., ในเมือง">
-              <Option key={"บ้านเป็ด"} value={"บ้านเป็ด"}>
-                บ้านเป็ด
-              </Option>
-              <Option key={"พระลับ"} value={"พระลับ"}>
-                พระลับ
-              </Option>
-              <Option key={"แวงใหญ่"} value={"แวงใหญ่"}>
-                แวงใหญ่
-              </Option>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row> */}
-      {/* 
-      <Row gutter={8}>
-        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
-          <Form.Item
-            name="provinceName"
-            label="จังหวัด"
-            rules={[{ required: true, message: "กรุณาเลือกจังหวัด" }]}
-          >
-            <Select placeholder="e.g., ขอนแก่น">
-              <Option key={"ขอนแก่น"} value={"ขอนแก่น"}>
-                ขอนแก่น
-              </Option>
-              <Option key={"อุดรธานี"} value={"อุดรธานี"}>
-                อุดรธานี
-              </Option>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row> */}
-      {/* <Row gutter={8}>
-        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
-          <Form.Item name="linkMap" label="Url สำหรับแผนที่">
-            <Input
-              placeholder="e.g., https://www.google.co.th/maps"
-              maxLength={10}
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={8}>
-        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
-          <Form.Item name="image" label="รูปภาพ">
-            <Input type="file" />
-          </Form.Item>
-        </Col>
-      </Row> */}
-
       <Row gutter={8}>
         <Col span={24} sm={24} md={24} xl={24} xxl={24}>
           <Form.Item
