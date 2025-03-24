@@ -19,7 +19,12 @@ import th_TH from "antd/lib/locale/th_TH";
 import ModalAddMaker from "../Form/Person/ModalAddMarker";
 import ModalAddPlace from "../Form/Place/ModalAddPlace";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
-import { FacebookOutlined, LinkedinOutlined, TwitterOutlined, YoutubeOutlined } from "@ant-design/icons";
+import {
+  FacebookOutlined,
+  LinkedinOutlined,
+  TwitterOutlined,
+  YoutubeOutlined,
+} from "@ant-design/icons";
 
 const ModalAddMarker = ({
   visible,
@@ -55,6 +60,7 @@ const ModalAddMarker = ({
   const handleAddMarker = () => {
     form.validateFields().then((values) => {
       const selectedType = data.find((item) => item._id === values.markerType);
+      console.log(values);
 
       const updatedValues = {
         ...values,
@@ -65,6 +71,7 @@ const ModalAddMarker = ({
       form.resetFields();
     });
   };
+
 
   const onSelectMarkerType = (value) => {
     const selectedType = data.find((item) => item._id === value);
@@ -110,7 +117,7 @@ const ModalAddMarker = ({
           xl: "35%",
           xxl: "35%",
         }}
-        className="max-h-[70vh] overflow-y-auto rounded-xl"
+        bodyStyle={{ overflowY: "auto", maxHeight: "calc(100vh - 40vh)" }}
       >
         <div className="p-4">
           <Form form={form} layout="vertical">
@@ -125,24 +132,6 @@ const ModalAddMarker = ({
                 </Form.Item>
               </Col>
             </Row>
-            {/* <Row>
-              <Col>
-                <Flex gap="4px 0" wrap>
-                  <Tag icon={<TwitterOutlined/>} className="cursor-pointer" color="#55acee">
-                    Twitter
-                  </Tag>
-                  <Tag icon={<YoutubeOutlined/>} color="#cd201f">
-                    Youtube
-                  </Tag>
-                  <Tag icon={<FacebookOutlined/>} color="#3b5999">
-                    Facebook
-                  </Tag>
-                  <Tag icon={<LinkedinOutlined/>} color="#55acee">
-                    LinkedIn
-                  </Tag>
-                </Flex>
-              </Col>
-            </Row> */}
             <Row gutter={8}>
               <Col span={24} sm={24} md={24} xl={24} xxl={24}>
                 <Form.Item
@@ -201,29 +190,12 @@ const ModalAddMarker = ({
               }
               return null;
             })()}
-
-            {/* <ModalAddMaker
-              form={form}
-              data={data}
-              zoneSelected={zoneSelected}
-              place={place}
-              pointSelected={pointSelected}
-              getLocation={getLocation}
-              isLoadingLatLng={isLoadingLatLng}
-              isLatLngError={isLatLngError}
-              isTriggerReq={isTriggerReq}
-              isAdmin={isAdmin}
-            /> */}
           </Form>
         </div>
       </Modal>
     </ConfigProvider>
   );
 };
-<style>
-  .radio-gap{
-
-  }
-</style>
+<style>.radio-gap{}</style>;
 
 export default ModalAddMarker;
