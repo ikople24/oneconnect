@@ -15,7 +15,12 @@ const renderIcon = (marker) => {
 };
 
 const ModalPlaceDetail = ({ marker }) => {
-  const [open, close] = marker.properties.markerInfo.data.openingTime;
+  const openingTime = marker?.properties?.markerInfo?.data?.openingTime ?? [
+    null,
+    null,
+  ];
+  const [open, close] = openingTime;
+
   return (
     <div className="">
       <div className="space-y-4">
@@ -73,7 +78,6 @@ const ModalPlaceDetail = ({ marker }) => {
 };
 
 const ModalPersonDetail = ({ marker }) => {
-  console.log(marker);
   return (
     <div className="">
       <div className="space-y-4">
