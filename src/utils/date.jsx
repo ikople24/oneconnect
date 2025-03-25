@@ -15,20 +15,16 @@ const thaiMonths = [
 ];
 
 export const convertToThaiLocalTimeRange = (startIso, endIso) => {
-  const startTime = moment(startIso)
-    .utcOffset("+07:00")
-    .format("HH:mm");
+  if (!startIso || !endIso) return `08:00 น. - 16:00 น.`;
+  const startTime = moment(startIso).utcOffset("+07:00").format("HH:mm");
 
-  const endTime = moment(endIso)
-    .utcOffset("+07:00")
-    .format("HH:mm");
+  const endTime = moment(endIso).utcOffset("+07:00").format("HH:mm");
 
   return `${startTime} น. - ${endTime} น.`;
 };
 
-
-
 export const convertToThaiFullDateWithTime = (isoDate) => {
+  if (!isoDate) return null;
   // Get moment object with UTC offset of +7 (Thai time zone)
   const date = moment(isoDate).utcOffset("+07:00");
 
