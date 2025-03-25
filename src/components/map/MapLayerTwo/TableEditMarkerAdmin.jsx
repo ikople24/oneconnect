@@ -28,14 +28,14 @@ export default function TableEditMarkerAdmin({
     },
     {
       title: "ชื่อข้อมูล",
-      dataIndex: ["properties", "name"],
+      dataIndex: ["properties", "markerInfo","name"],
       key: "name",
       align: "center",
       width: 200,
     },
     {
       title: "ประเภทข้อมูล",
-      dataIndex: ["properties", "markerType"],
+      dataIndex: ["properties", "markerType","name"],
       key: "markerType",
       align: "center",
       width: 200,
