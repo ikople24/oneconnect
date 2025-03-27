@@ -1,6 +1,6 @@
 import { Table, Space, Tooltip, Button, App } from "antd";
 import { useState } from "react";
-import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EyeOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ENDPOINT } from "../../endpoint";
 import ApiClient from "@/utils/apiClient";
 export default function TableEditMarkerAdmin({
@@ -9,6 +9,8 @@ export default function TableEditMarkerAdmin({
   setSelectedRecord,
   setModalMarkerIsVisible,
   modalMarkerIsVisible,
+  modalEditMarkerIsVisible,
+  setModalEditMarkerIsVisible,
   fetchData,
 }) {
   const apiClient = new ApiClient();
@@ -28,14 +30,14 @@ export default function TableEditMarkerAdmin({
     },
     {
       title: "ชื่อข้อมูล",
-      dataIndex: ["properties", "markerInfo","name"],
+      dataIndex: ["properties", "markerInfo", "name"],
       key: "name",
       align: "center",
       width: 200,
     },
     {
       title: "ประเภทข้อมูล",
-      dataIndex: ["properties", "markerType","name"],
+      dataIndex: ["properties", "markerType", "name"],
       key: "markerType",
       align: "center",
       width: 200,
@@ -55,6 +57,16 @@ export default function TableEditMarkerAdmin({
               onClick={() => handleView(record)}
             />
           </Tooltip>
+          <Tooltip title="แก้ไข" open={false}>
+            <Button
+              color="yellow"
+              variant="solid"
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+            />
+          </Tooltip>
+
           <Tooltip title="ลบ" open={false}>
             <Button
               color="danger"
@@ -120,6 +132,11 @@ export default function TableEditMarkerAdmin({
     console.log("ดูรายละเอียด", record);
     setSelectedRecord(record);
     setModalMarkerIsVisible(!modalMarkerIsVisible);
+  };
+  const handleEdit = (record) => {
+    console.log("แก้ไข", record);
+    setSelectedRecord(record);
+    setModalEditMarkerIsVisible(!modalEditMarkerIsVisible);
   };
   return (
     <>

@@ -28,6 +28,7 @@ import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import ComponentGuard from "@/routes/ComponentGuard";
 import ApiClient from "@/utils/ApiClient";
+import ModalEditMarkerDetail from "../modal/ModalEditMarker";
 
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
@@ -48,6 +49,8 @@ export default function MapLayerTwo(props) {
   const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMarkerIsVisible, setModalMarkerIsVisible] = useState(false);
+  const [modalEditMarkerIsVisible, setModalEditMarkerIsVisible] =
+    useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
   const [isLatLngError, setIsLatLngError] = useState(false);
@@ -317,51 +320,6 @@ export default function MapLayerTwo(props) {
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
   };
 
-  // const addIconByMarkerType = (type) => {
-  //   switch (type) {
-  //     case "ผู้สูงอายุ":
-  //       const older = L.icon({
-  //         iconUrl: olderIcon, // Replace with your own icon URL
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return older;
-  //     case "ปราชญ์ชุมชน":
-  //       const philosopher = L.icon({
-  //         iconUrl: philosopherIcon,
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return philosopher;
-  //     case "ผู้นำชุมชน":
-  //       const leader = L.icon({
-  //         iconUrl: leaderIcon, // Replace with your own icon URL
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return leader;
-  //     case "กู้ภัย":
-  //       const rescue = L.icon({
-  //         iconUrl: rescueIcon, // Replace with your own icon URL
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return rescue;
-
-  //     default:
-  //       return L.icon({
-  //         iconUrl: "https://cdn-icons-png.flaticon.com/512/1397/1397898.png",
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //   }
-  // };
-
   const RenderMarker = ({ markers }) => {
     const getIcon = (iconUrl) => {
       console.log(iconUrl);
@@ -628,8 +586,10 @@ export default function MapLayerTwo(props) {
           markers={markers}
           isAdmin={isAdmin}
           setModalMarkerIsVisible={setModalMarkerIsVisible}
+          setModalEditMarkerIsVisible={setModalEditMarkerIsVisible}
           setSelectedRecord={setSelectedRecord}
           modalMarkerIsVisible={modalMarkerIsVisible}
+          modalEditMarkerIsVisible={modalEditMarkerIsVisible}
           fetchData={fetchData}
         />
       </ComponentGuard>
@@ -638,6 +598,11 @@ export default function MapLayerTwo(props) {
         visible={modalMarkerIsVisible}
         onCancel={() => setModalMarkerIsVisible(false)}
         data={selectedRecord}
+      />
+      <ModalEditMarkerDetail
+        visible={modalEditMarkerIsVisible}
+        onCancel={() => setModalEditMarkerIsVisible(false)}
+        data={selectedRecord || null}
       />
       <ModalAddMarker
         visible={isModalVisible}
