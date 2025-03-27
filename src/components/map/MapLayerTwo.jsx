@@ -241,6 +241,7 @@ export default function MapLayerTwo(props) {
       const params = new URLSearchParams({
         placeId: placeId ?? "",
       });
+      console.log(params.toString());
       const url = `${ENDPOINT.GET_MARKERS}?${params.toString()}`;
       const response = await apiClient.post(url, {
         markerTypeFilter: enabledMarkers,

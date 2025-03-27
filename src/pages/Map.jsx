@@ -1,23 +1,29 @@
-import { useState} from "react";
-import React from "react";
+import { useState } from "react";
 import "leaflet/dist/leaflet.css";
 import MapLayerOne from "@/components/map/MapLayerOne";
 import MapLayerTwo from "@/components/map/MapLayerTwo";
-export default function ServiceAreaSelection() {
-  const [stage, setStage] = useState(1);
-  const [place, setPlace] = useState({});
+import { MapContextProvider, useGlobalMapContext } from "@/context/MapContext";
 
-  const changePage = () => {
-    setStage(!stage);
-  };
-
+const MapContent = ({ setPlace, place }) => {
+  const { layer } = useGlobalMapContext();
+  
   return (
-    <div className=" bg-gray-100  ">
-      {stage ? (
-        <MapLayerOne changePage={changePage} setPlace={setPlace} />
+    <div className="bg-gray-100">
+      {layer ? (
+        <MapLayerOne setPlace={setPlace} />
       ) : (
-        <MapLayerTwo place={place} changePage={changePage} />
+        <MapLayerTwo place={place} />
       )}
     </div>
+  );
+};
+
+export default function ServiceAreaSelection() {
+  const [place, setPlace] = useState({});
+
+  return (
+    <MapContextProvider>
+      <MapContent place={place} setPlace={setPlace} />
+    </MapContextProvider>
   );
 }

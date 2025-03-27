@@ -1,132 +1,68 @@
-import { Row, Flex, Col, Select, Button } from "antd";
-import { useEffect, useMemo, useState, useCallback } from "react";
-import { ENDPOINT } from "@/components/endpoint";
-import ApiClient from "@/utils/apiClient";
+import { Row, Col, Select, Button } from "antd";
+import { useRegions } from "@/hooks/use-regions";
+import { useProvince } from "@/hooks/use-province";
+import { usePlace } from "@/hooks/user-places";
+import { useGlobalMapContext } from "@/context/MapContext";
 const DEFAULT_CENTER = [13.885556744960699, 100.63529495228143];
 
-const useFetchData = (apiClient) => {
-  const [regionList, setRegionList] = useState([]);
-  const [provinceList, setProvinceList] = useState([]);
-  const [placeList, setPlaceList] = useState([]);
+export default function MapLayerOneSidebar({  }) {
+   const {
+     placeSelected,
+     setPlaceSelected,
+     provinceSelected,
+     setProvinceSelected,
+     regionSelected,
+     setRegionSelected,
+     layer,
+     changeLayer,
+     coordinateSelected,
+     setCoordinateSelected, 
+   } = useGlobalMapContext();
+  const { data: regionList, isLoading: regionListLoading } = useRegions();
+  const { data: provinceList, isLoading: provinceListLoading } = useProvince(regionSelected);
+  const { data: placeList, isLoading: placeListLoading } = usePlace({
+    placeId: placeSelected?._id,
+    geographyId: regionSelected
+  });
 
-  const fetchRegion = useCallback(async () => {
-    try {
-      const response = await apiClient.get(ENDPOINT.GET_ALL_GEOGRAPHY);
-      setRegionList(response);
-    } catch (error) {
-      console.error("ERROR FETCH REGION:", error);
-    }
-  }, [apiClient]);
-
-  const fetchProvince = useCallback(
-    async (geographyId) => {
-      try {
-        const params = geographyId ? new URLSearchParams({ geographyId }) : "";
-        const url = `${ENDPOINT.GET_ALL_PROVINCE}?${params}`;
-        const response = await apiClient.get(url);
-        setProvinceList(response);
-      } catch (error) {
-        console.error("ERROR FETCH PROVINCE:", error);
-      }
-    },
-    [apiClient]
-  );
-
-  const fetchPlaces = useCallback(
-    async (provinceId, geographyId) => {
-      try {
-        const params = new URLSearchParams({
-          provinceId: provinceId ?? "",
-          geographyId: geographyId ?? "",
-        });
-        const url = `${ENDPOINT.GET_ALL_PLACE}?${params}`;
-        const response = await apiClient.get(url);
-        setPlaceList(response.data ?? []);
-      } catch (error) {
-        console.error("ERROR FETCH PLACES:", error);
-      }
-    },
-    [apiClient]
-  );
-
-  return {
-    regionList,
-    provinceList,
-    placeList,
-    fetchRegion,
-    fetchProvince,
-    fetchPlaces,
-  };
-};
-
-export default function MapLayerOneSidebar({
-  changePage,
-  selectedProvince,
-  placeSelected,
-  setFlyToLatLng,
-  setPlaceSelected,
-  setPlace,
-  setSelectedProvince,
-}) {
-  const apiClient = useMemo(() => new ApiClient(), []);
-  const {
-    regionList,
-    provinceList,
-    placeList,
-    fetchRegion,
-    fetchProvince,
-    fetchPlaces,
-  } = useFetchData(apiClient);
-
-  const [regionSelected, setRegion] = useState(null);
-
-  useEffect(() => {
-    fetchProvince();
-    fetchPlaces();
-    fetchRegion();
-  }, [fetchRegion]);
+  if (placeListLoading) return <div>Loading...</div>;
+  if (regionListLoading) return <div>Loading...</div>;
+  if (provinceListLoading) return <div>Loading...</div>;
 
   const onChangePlace = (value) => {
     setPlaceSelected(value);
-    setFlyToLatLng(value?.location?.coordinates);
-    setPlace(value);
+    setCoordinateSelected(value?.location?.coordinates);
   };
   const onChangeProvince = async (province) => {
-    setRegion(province?.geography_id);
-    setSelectedProvince(province);
-    setFlyToLatLng([province?.latitude, province?.longitude]);
-    await fetchPlaces(province?._id);
+    setRegionSelected(province?.geography_id);
+    setProvinceSelected(province);
+    setCoordinateSelected([province?.latitude, province?.longitude]);
   };
   const onChangeRegion = async (region) => {
-    setSelectedProvince(null);
+    console.log(region);
+    setRegionSelected(region.id);
+    setProvinceSelected(null);
     setPlaceSelected(null);
-    setRegion(region.id);
-    await Promise.allSettled([
-      fetchProvince(region.id),
-      fetchPlaces(null, region.id),
-    ]);
   };
 
   const handleConfirm = () => {
     if (placeSelected) {
-      changePage();
+      changeLayer(!layer);
     } else {
       alert("กรุณาเลือกพื้นที่ก่อนกดปุ่มยืนยัน");
     }
   };
   const onClearPlace = async () => {
-    await fetchPlaces();
     setPlaceSelected(null);
-    setRegion(null);
-    setFlyToLatLng([13.885556744960699, 100.63529495228143]);
+    setRegionSelected(null);
+    setCoordinateSelected(DEFAULT_CENTER);
   };
 
   const onClearProvince = async () => {
-    await Promise.allSettled([fetchProvince(), fetchPlaces()]);
-    setSelectedProvince(null);
-    setRegion(null);
+    setProvinceSelected(null);
     setPlaceSelected(null);
-    setFlyToLatLng(DEFAULT_CENTER);
+    setRegionSelected(null);
+    setCoordinateSelected(DEFAULT_CENTER);
   };
 
   return (
@@ -160,7 +96,7 @@ export default function MapLayerOneSidebar({
                 const province = provinceList.find((p) => p._id === value);
                 onChangeProvince(province);
               }}
-              value={selectedProvince?._id ?? null}
+              value={provinceSelected?._id ?? null}
               options={provinceList.map((province) => ({
                 label: province.name_th,
                 value: province._id,
