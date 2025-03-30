@@ -27,7 +27,7 @@ import { useUser } from "@clerk/clerk-react";
 import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import ComponentGuard from "@/routes/ComponentGuard";
-import ApiClient from "@/utils/ApiClient";
+import ApiClient from "@/utils/apiClient";
 
 export default function MapLayerTwo(props) {
   const { place, changePage } = props;
