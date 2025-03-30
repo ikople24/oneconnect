@@ -98,7 +98,7 @@ const ModalAddPlace = ({
               rows={4}
               type=""
               placeholder="e.g., กรอกรายละเอียดพื้นที่"
-              maxLength={20}
+              maxLength={200}
             />
           </Form.Item>
         </Col>
