@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -65,6 +65,7 @@ export default function MapLayerTwo(props) {
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     if (isAdmin) {
       fetchMarkerAdmin(place?._id);
@@ -317,51 +318,6 @@ export default function MapLayerTwo(props) {
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
   };
 
-  // const addIconByMarkerType = (type) => {
-  //   switch (type) {
-  //     case "ผู้สูงอายุ":
-  //       const older = L.icon({
-  //         iconUrl: olderIcon, // Replace with your own icon URL
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return older;
-  //     case "ปราชญ์ชุมชน":
-  //       const philosopher = L.icon({
-  //         iconUrl: philosopherIcon,
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return philosopher;
-  //     case "ผู้นำชุมชน":
-  //       const leader = L.icon({
-  //         iconUrl: leaderIcon, // Replace with your own icon URL
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return leader;
-  //     case "กู้ภัย":
-  //       const rescue = L.icon({
-  //         iconUrl: rescueIcon, // Replace with your own icon URL
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //       return rescue;
-
-  //     default:
-  //       return L.icon({
-  //         iconUrl: "https://cdn-icons-png.flaticon.com/512/1397/1397898.png",
-  //         iconSize: [32, 32], // Size of the icon
-  //         iconAnchor: [16, 32], // Anchor point of the icon (half of width for centering)
-  //         popupAnchor: [0, -32], // Position of the popup relative to the icon
-  //       });
-  //   }
-  // };
-
   const RenderMarker = ({ markers }) => {
     const getIcon = (iconUrl) => {
       console.log(iconUrl);
@@ -515,6 +471,33 @@ export default function MapLayerTwo(props) {
     }
   };
 
+  const LayerControllerHandler = () => {
+    const layers = useMemo(
+      () => (
+        <LayersControl position="bottomleft">
+          <LayersControl.BaseLayer checked name="แผนที่ภาพถ่ายดาวเทียม">
+            <TileLayer
+              url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+              attribution="&copy; Google Maps"
+              subdomains={["mt0", "mt1", "mt2", "mt3"]}
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="แผนที่ถนน">
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+      ),
+      []
+    );
+
+    return layers;
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -568,7 +551,7 @@ export default function MapLayerTwo(props) {
                 </>
               )}
               <RenderMarker markers={markers} />
-
+              <LayerControllerHandler />
               <LocationMarker
                 isAdmin={isAdmin}
                 setPointSelected={setPointSelected}
@@ -599,15 +582,31 @@ export default function MapLayerTwo(props) {
                       layer.on({
                         click: handleMapClick,
                       });
+                      if (
+                        feature.properties &&
+                        (feature.properties.Shot_Name ||
+                          feature.properties.community)
+                      ) {
+                        layer.bindTooltip(
+                          feature.properties.Shot_Name ||
+                            feature.properties.community,
+                          {
+                            permanent: true,
+                            direction: "center",
+                            className: "labelstyle",
+                            // style: labelStyle.zoneLabel,
+                          }
+                        );
+                      }
                     }}
                   />
                 </React.Fragment>
               }
               {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-              <TileLayer
+              {/* <TileLayer
                 url="http://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
                 maxZoom={20}
-              />
+              /> */}
             </MapContainer>
           </div>
         </div>
