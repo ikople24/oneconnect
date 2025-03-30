@@ -10,7 +10,7 @@ const MapContent = ({ setPlace, place }) => {
   return (
     <div className="bg-gray-100">
       {layer ? (
-        <MapLayerOne setPlace={setPlace} />
+        <MapLayerOne  />
       ) : (
         <MapLayerTwo place={place} />
       )}
