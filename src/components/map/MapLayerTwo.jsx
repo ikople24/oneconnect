@@ -1,11 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
   LayerGroup,
+  useMapEvents,
 } from "react-leaflet";
+import styles from "@/components/map/tooltip.module.css";
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
@@ -34,6 +36,7 @@ export default function MapLayerTwo(props) {
   const { place, changePage } = props;
   const { checkIsAdminPlace, isLoaded } = useGlobalContext();
   const markerRef = useRef(null);
+  const geoJsonLayerRef = useRef(null);
 
   const [isAdmin, setIsAdmin] = useState(
     checkIsAdminPlace(place?._id) || false
@@ -56,6 +59,7 @@ export default function MapLayerTwo(props) {
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
   const [enabledMarkers, setEnabledMarkers] = useState([]);
+  const [layerMap, setLayerMap] = useState("satellite");
   const apiClient = new ApiClient();
   useEffect(() => {
     console.log(enabledMarkers);
@@ -68,6 +72,7 @@ export default function MapLayerTwo(props) {
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     if (isAdmin) {
       fetchMarkerAdmin(place?._id);
@@ -347,7 +352,32 @@ export default function MapLayerTwo(props) {
     return (
       <>
         {markers.map((marker) => {
-          return (
+          return isAdmin ? (
+            <Marker
+              key={marker._id}
+              position={marker.geometry.coordinates}
+              icon={getIcon(marker.properties?.markerType?.icon)}
+            >
+              <Popup>
+                <Button type="primary" onClick={() => handleView(marker)}>
+                  ดูรายละเอียด
+                </Button>
+                {/* <div className="py-2">
+                  ชื่อ : {marker.properties?.markerInfo.name}
+                </div>
+                <div className="py-2">
+                  ประเภท : {marker.properties?.markerType?.name}
+                </div> */}
+                {/* <div>
+                    ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
+                    {marker.properties?.users?.lastName}
+                  </div>
+                  <div>เพศ: {marker.properties?.users?.gender}</div>
+                  <div>อายุ: {marker.properties?.users?.age}</div>
+                  <div>ชุมชน : {marker.properties?.users?.zoneName}</div> */}
+              </Popup>
+            </Marker>
+          ) : (
             <Marker
               key={marker._id}
               position={marker.geometry.coordinates}
@@ -474,6 +504,79 @@ export default function MapLayerTwo(props) {
     }
   };
 
+  const LayerChangeHandler = () => {
+    useMapEvents({
+      baselayerchange: (e) => {
+        let layerName = "";
+        console.log("e", e);
+        if (e.name === "แผนที่ภาพถ่ายดาวเทียม") {
+          layerName = "satellite";
+          setLayerMap("satellite");
+        } else if (e.name === "แผนที่ถนน") {
+          layerName = "roadmap";
+          setLayerMap("roadmap");
+        }
+        if (geoJsonLayerRef.current) {
+          console.log(layerName);
+          geoJsonLayerRef.current.eachLayer((layer) => {
+            const feature = layer.feature;
+            layer.unbindTooltip();
+            layer.bindTooltip(
+              feature.properties.Shot_Name || feature.properties.community,
+              {
+                permanent: true,
+                direction: "center",
+                className:
+                  layerName !== "satellite"
+                    ? styles.tooltipSatellite
+                    : styles.tooltipRoadmap,
+              }
+            );
+          });
+        }
+      },
+    });
+
+    return null;
+  };
+  const LayerControllerHandler = () => {
+    const layers = useMemo(
+      () => (
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer
+            name={"แผนที่ภาพถ่ายดาวเทียม"}
+            checked={layerMap === "satellite"}
+          >
+            <TileLayer
+              url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+              attribution="&copy; Google Maps"
+              subdomains={["mt0", "mt1", "mt2", "mt3"]}
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer
+            name={"แผนที่ถนน"}
+            checked={layerMap === "roadmap"}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+      ),
+      []
+    );
+
+    return layers;
+  };
+
+  const handleView = (record) => {
+    setSelectedRecord(record);
+    setModalMarkerIsVisible(!modalMarkerIsVisible);
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -527,7 +630,8 @@ export default function MapLayerTwo(props) {
                 </>
               )}
               <RenderMarker markers={markers} />
-
+              <LayerChangeHandler />
+              <LayerControllerHandler />
               <LocationMarker
                 isAdmin={isAdmin}
                 setPointSelected={setPointSelected}
@@ -539,10 +643,11 @@ export default function MapLayerTwo(props) {
                     key={`place`}
                     data={place.place.features}
                     style={{
-                      color: "#f0ff",
-                      weight: 1,
+                      color: "black",
+                      weight: 4,
                       fillColor: "transparent",
                       fillOpacity: 0.5,
+                      dashArray: "4 10",
                     }}
                   />
                   <GeoJSON
@@ -554,19 +659,38 @@ export default function MapLayerTwo(props) {
                       fillColor: "transparent",
                       fillOpacity: 0.5,
                     }}
+                    ref={geoJsonLayerRef}
                     onEachFeature={(feature, layer) => {
                       layer.on({
                         click: handleMapClick,
                       });
+                      if (
+                        feature.properties &&
+                        (feature.properties.Shot_Name ||
+                          feature.properties.community)
+                      ) {
+                        layer.bindTooltip(
+                          feature.properties.Shot_Name ||
+                            feature.properties.community,
+                          {
+                            permanent: true,
+                            direction: "center",
+                            className:
+                              layerMap !== "satellite"
+                                ? styles.tooltipSatellite
+                                : styles.tooltipRoadmap,
+                          }
+                        );
+                      }
                     }}
                   />
                 </React.Fragment>
               }
               {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-              <TileLayer
+              {/* <TileLayer
                 url="http://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
                 maxZoom={20}
-              />
+              /> */}
             </MapContainer>
           </div>
         </div>
