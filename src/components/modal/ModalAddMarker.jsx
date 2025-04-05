@@ -25,12 +25,12 @@ import {
   TwitterOutlined,
   YoutubeOutlined,
 } from "@ant-design/icons";
+import { usePlaceMarkerType } from "@/hooks/user-places";
 
 const ModalAddMarker = ({
   visible,
   onCancel,
   handleOK,
-  data,
   place,
   pointSelected,
   zoneSelected,
@@ -40,10 +40,11 @@ const ModalAddMarker = ({
   isTriggerReq,
   isAdmin,
 }) => {
+  const { data: placeMarkerType } = usePlaceMarkerType(place?._id);
   console.dir(place);
   console.log(pointSelected);
   console.log(zoneSelected);
-  console.log(data);
+  console.log(placeMarkerType);
   const [form] = Form.useForm();
   const [mainTypeSelected, setMainTypeSelected] = useState();
   useEffect(() => {
@@ -59,7 +60,7 @@ const ModalAddMarker = ({
 
   const handleAddMarker = () => {
     form.validateFields().then((values) => {
-      const selectedType = data.find((item) => item._id === values.markerType);
+      const selectedType =  placeMarkerType.find((item) => item._id === values.markerType);
       console.log(values);
 
       const updatedValues = {
@@ -74,7 +75,7 @@ const ModalAddMarker = ({
 
 
   const onSelectMarkerType = (value) => {
-    const selectedType = data.find((item) => item._id === value);
+    const selectedType = placeMarkerType.find((item) => item._id === value);
     const typeName = selectedType ? selectedType.type.name : undefined;
 
     setMainTypeSelected(typeName); // Update state (if needed)
@@ -141,11 +142,11 @@ const ModalAddMarker = ({
                     { required: true, message: "กรุณาเลือกประเภทของหมุด" },
                   ]}
                 >
-                  {data ? (
+                  {placeMarkerType ? (
                     <Select
                       onChange={onSelectMarkerType}
                       placeholder="ประเภทข้อมูล"
-                      options={data.map((type) => ({
+                      options={placeMarkerType.map((type) => ({
                         label: type.name,
                         value: type._id,
                       }))}
@@ -161,7 +162,6 @@ const ModalAddMarker = ({
                 return (
                   <ModalAddMaker
                     form={form}
-                    data={data}
                     zoneSelected={zoneSelected}
                     place={place}
                     pointSelected={pointSelected}
@@ -176,7 +176,6 @@ const ModalAddMarker = ({
                 return (
                   <ModalAddPlace
                     form={form}
-                    data={data}
                     zoneSelected={zoneSelected}
                     place={place}
                     pointSelected={pointSelected}

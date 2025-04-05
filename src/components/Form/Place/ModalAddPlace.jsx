@@ -16,7 +16,6 @@ import moment from "moment";
 
 const ModalAddPlace = ({
   form,
-  data,
   zoneSelected,
   place,
   isAdmin,

@@ -1,6 +1,21 @@
-import { ENDPOINT } from "@/components/endpoint";
+import {
+  useMainMarkerType,
+  useMainMarkerTypeCreate,
+  useMainMarkerTypeDelete,
+  useMainMarkerTypeEdit,
+} from "@/hooks/user-markers";
 import ApiClient from "@/utils/apiClient";
-import { Table, Space, Form, Modal, Input, Button, Flex, App } from "antd";
+import {
+  Table,
+  Space,
+  Form,
+  Modal,
+  Input,
+  Button,
+  Flex,
+  App,
+  Spin,
+} from "antd";
 import { useEffect, useState } from "react";
 
 const TableMainMarker = ({ mainMarker, handleDelete, handleEdit }) => {
@@ -13,8 +28,8 @@ const TableMainMarker = ({ mainMarker, handleDelete, handleEdit }) => {
       width: 200,
       render: (_, record) => (
         <Space size="middle">
-          {/* <a onClick={() => handleEdit(record)}>แก้ไข</a> */}
-          {/* <a onClick={() => handleDelete(record._id)}>ลบ</a> */}
+          <a onClick={() => handleEdit(record)}>แก้ไข</a>
+          <a onClick={() => handleDelete(record._id)}>ลบ</a>
         </Space>
       ),
     },
@@ -98,24 +113,28 @@ const ModalEdit = ({
   );
 };
 
-const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
+const MainMarkerType = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [mainMarkerTypeSelected, setMainMarkerTypeSelected] = useState(null);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const [editData, setEditData] = useState(null);
   const { message, modal } = App.useApp();
-  const apiClient = new ApiClient();
+  const { data: mainMarker, isLoading: isLoadingMainMarkerType } =
+    useMainMarkerType();
+  const { mutate: createMainMarker } = useMainMarkerTypeCreate();
+  const { mutate: updateMainMarker } = useMainMarkerTypeEdit();
+  const { mutate: deleteMainMarker } = useMainMarkerTypeDelete();
+  if (isLoadingMainMarkerType) return <Spin />;
+
   const handleCreate = async (values) => {
     setLoading(true);
     try {
-      const url = `${ENDPOINT.CREATE_MAIN_MARKER}`;
       const body = values;
-      const response = await apiClient.post(url, body);
+      createMainMarker(body);
       message.success("สร้างประเภทหมุดหลักสำเร็จ!");
       form.resetFields();
       setIsModalOpen(false);
-      fetchMainMarker(); // Refresh table
     } catch (error) {
       message.error("เกิดข้อผิดพลาดในการสร้างหมุดหลัก");
     } finally {
@@ -125,16 +144,12 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
   const handleEdit = async (values) => {
     setLoading(true);
     try {
-      const url = `${ENDPOINT.UPDATE_MAIN_MARKER}/${editData._id}`;
       const body = values;
-      const response = await apiClient.patch(url, body);
-
-      if (!response.ok) throw new Error("Failed to update marker");
-
+      updateMainMarker({ mainMarkerId: mainMarkerTypeSelected._id, body });
       message.success("แก้ไขประเภทหมุดหลักสำเร็จ!");
       form.resetFields();
+      setMainMarkerTypeSelected(null);
       setIsEditModalOpen(false);
-      fetchMainMarker(); // Refresh table
     } catch (error) {
       message.error("เกิดข้อผิดพลาดในการแก้ไขหมุดหลัก");
     } finally {
@@ -151,10 +166,8 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
       onOk: async () => {
         setLoading(true);
         try {
-          const url = `${ENDPOINT.DELETE_MAIN_MARKER}/${mainMarkerId}`;
-          const response = await apiClient.delete(url);
+          deleteMainMarker(mainMarkerId);
           message.success("ลบหมุดหลักสำเร็จ!");
-          fetchMainMarker(); // Refresh table
         } catch (error) {
           message.error("เกิดข้อผิดพลาดในการลบหมุดหลัก");
         } finally {
@@ -164,8 +177,8 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
     });
   };
   const handleEditClick = (record) => {
-    setEditData(record);
     setIsEditModalOpen(true);
+    setMainMarkerTypeSelected(record);
   };
   return (
     <>
@@ -193,7 +206,7 @@ const MainMarkerType = ({ mainMarker, fetchMainMarker }) => {
         handleEdit={handleEdit}
         loading={loading}
         form={form}
-        initialData={editData}
+        initialData={mainMarkerTypeSelected}
       />
     </>
   );

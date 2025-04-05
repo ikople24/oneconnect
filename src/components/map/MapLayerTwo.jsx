@@ -18,10 +18,6 @@ import "leaflet-easybutton";
 import * as L from "leaflet";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import ModalMarkerDetail from "@/components/modal/ModalMarkerDetail";
-import leaderIcon from "@/assets/markerIcon/community_leader.png";
-import olderIcon from "@/assets/markerIcon/older_person.png";
-import philosopherIcon from "@/assets/markerIcon/philosopher.png";
-import rescueIcon from "@/assets/markerIcon/rescue.png";
 import { useGlobalContext } from "@/context/Context";
 import TableEditMarkerAdmin from "./MapLayerTwo/TableEditMarkerAdmin";
 import MapLayerTwoSidebar from "./MapLayerTwo/MapLayerTwoSidebar";
@@ -30,55 +26,41 @@ import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import ComponentGuard from "@/routes/ComponentGuard";
 import ApiClient from "@/utils/ApiClient";
+import ModalEditMarkerDetail from "../modal/ModalEditMarker";
+import { useGlobalMapContext } from "@/context/MapContext";
+import { useMarkerCreate } from "@/hooks/user-markers";
 
-export default function MapLayerTwo(props) {
-  const { place, changePage } = props;
+export default function MapLayerTwo() {
   const { checkIsAdminPlace, isLoaded } = useGlobalContext();
+  const {
+    placeSelected,
+    setPlaceSelected,
+    markers,
+    changeLayer,
+    resetSelected,
+  } = useGlobalMapContext();
   const markerRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
 
   const [isAdmin, setIsAdmin] = useState(
-    checkIsAdminPlace(place?._id) || false
+    checkIsAdminPlace(placeSelected?._id) || false
   );
   const [pointSelected, setPointSelected] = useState(
-    isAdmin && place?.location?.coordinates
+    isAdmin && placeSelected?.location?.coordinates
   );
   const [map, setMap] = useState(null);
   const [zoneSelected, setZoneSelected] = useState();
-  const [markers, setMaker] = useState([]);
-  const [summaryPlaceMarker, setSummaryPlaceMarker] = useState([]);
-  const [pinTypes, setPinTypes] = useState([]);
-  const [currentMarker, setCurrentMarker] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMarkerIsVisible, setModalMarkerIsVisible] = useState(false);
+  const [modalEditMarkerIsVisible, setModalEditMarkerIsVisible] =
+    useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
   const [isLatLngError, setIsLatLngError] = useState(false);
   const [isTriggerReq, setIsTriggerReq] = useState(false);
-  const [enabledMarkers, setEnabledMarkers] = useState([]);
   const [layerMap, setLayerMap] = useState("satellite");
-  const apiClient = new ApiClient();
-  useEffect(() => {
-    console.log(enabledMarkers);
-    if (isAdmin) {
-      fetchMarkerAdmin(place?._id);
-    } else {
-      fetchMarkers(place?._id);
-    }
-  }, [enabledMarkers]);
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const fetchData = async () => {
-    if (isAdmin) {
-      fetchMarkerAdmin(place?._id);
-    } else {
-      fetchMarkers(place?._id);
-    }
-    await fetchPinTypes(place?._id);
-    await fetchPlaceSummaryMarker(place?._id);
-  };
+  const { mutate: mutateMarkerCreate } = useMarkerCreate();
   const getLocation = () => {
     setIsTriggerReq(true);
     setIsLoadingLatLng(true);
@@ -92,7 +74,7 @@ export default function MapLayerTwo(props) {
         const long = e.longitude;
         let isInsideZone = false;
 
-        for (const zoneGeoJSON of place.zones.features) {
+        for (const zoneGeoJSON of placeSelected?.zones?.features) {
           const zoneLayer = L.geoJSON(zoneGeoJSON);
           if (zoneLayer.getBounds().contains([lat, long])) {
             setZoneSelected({
@@ -221,8 +203,10 @@ export default function MapLayerTwo(props) {
         div.appendChild(icon);
 
         div.onclick = function () {
-          map.flyTo(place?.location?.coordinates, 13);
+          map.flyTo(placeSelected?.location?.coordinates, 13);
+          if (markerRef.current) {
           markerRef.current.remove();
+          }
         };
 
         return div;
@@ -236,46 +220,6 @@ export default function MapLayerTwo(props) {
     }, [map]);
 
     return null;
-  };
-
-  const fetchMarkers = async (placeId) => {
-    try {
-      const params = new URLSearchParams({
-        placeId: placeId ?? "",
-      });
-      const url = `${ENDPOINT.GET_MARKERS}?${params.toString()}`;
-      const response = await apiClient.post(url, {
-        markerTypeFilter: enabledMarkers,
-      });
-      setMaker(response ?? []);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchPlaceSummaryMarker = async (placeId) => {
-    try {
-      const url = `${ENDPOINT.GET_SUMMARY_PLACE}/${placeId.toString()}`;
-      const response = await apiClient.get(url);
-      setSummaryPlaceMarker(response);
-      setEnabledMarkers(response.map((type) => type._id));
-    } catch (error) {}
-  };
-
-  const fetchMarkerAdmin = async (placeId) => {
-    try {
-      const params = new URLSearchParams({
-        placeId: placeId ?? "",
-      });
-      const url = `${ENDPOINT.GET_ALL_MARKER_ADMIN}?${params.toString()}`;
-      const response = await apiClient.post(url, {
-        markerTypeFilter: enabledMarkers,
-      });
-
-      setMaker(response ?? []);
-    } catch (error) {
-      console.error(error);
-    }
   };
   const LocationMarker = ({ isAdmin, setPointSelected, pointSelected }) => {
     const LeafIcon = L.Icon.extend({
@@ -358,19 +302,6 @@ export default function MapLayerTwo(props) {
                 <Button type="primary" onClick={() => handleView(marker)}>
                   ดูรายละเอียด
                 </Button>
-                {/* <div className="py-2">
-                  ชื่อ : {marker.properties?.markerInfo.name}
-                </div>
-                <div className="py-2">
-                  ประเภท : {marker.properties?.markerType?.name}
-                </div> */}
-                {/* <div>
-                    ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
-                    {marker.properties?.users?.lastName}
-                  </div>
-                  <div>เพศ: {marker.properties?.users?.gender}</div>
-                  <div>อายุ: {marker.properties?.users?.age}</div>
-                  <div>ชุมชน : {marker.properties?.users?.zoneName}</div> */}
               </Popup>
             </Marker>
           ) : (
@@ -386,30 +317,12 @@ export default function MapLayerTwo(props) {
                 <div className="py-2">
                   ประเภท : {marker.properties?.markerType?.name}
                 </div>
-                {/* <div>
-                    ชื่อ - นามสกุล : {marker.properties?.users?.firstName}{" "}
-                    {marker.properties?.users?.lastName}
-                  </div>
-                  <div>เพศ: {marker.properties?.users?.gender}</div>
-                  <div>อายุ: {marker.properties?.users?.age}</div>
-                  <div>ชุมชน : {marker.properties?.users?.zoneName}</div> */}
               </Popup>
             </Marker>
           );
         })}
       </>
     );
-  };
-
-  // fetch ข้อมูลประเภทหมุดแต่ละเมือง
-  const fetchPinTypes = async (placeId) => {
-    try {
-      const url = `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`;
-      const response = await apiClient.get(url);
-      setPinTypes(response);
-    } catch (error) {
-      console.log("error", error);
-    }
   };
 
   // method สำหรับ เพิ่มหมุด
@@ -476,24 +389,17 @@ export default function MapLayerTwo(props) {
           parseFloat(values.latitude),
           parseFloat(values.longitude)
         );
-        const zoneLayer = L.geoJSON(place.zones);
+        const zoneLayer = L.geoJSON(placeSelected?.zones);
         if (!zoneLayer.getBounds().contains(latlng)) {
           throw new Error(
             "The provided latitude and longitude are outside the zone."
           );
         }
       }
-      const url = `${ENDPOINT.CREATE_MARKER}`;
+      // const url = `${ENDPOINT.CREATE_MARKER}`;
       const body = bodyData;
-      const response = await apiClient.post(url, body);
-
-      if (isAdmin) {
-        await Promise.allSettled([fetchMarkerAdmin(place?._id)]);
-      } else {
-        await Promise.allSettled([fetchMarkers(place?._id)]);
-      }
-
-      await fetchPlaceSummaryMarker(place?._id);
+      // mutate and refetch
+      mutateMarkerCreate(body);
       setIsModalVisible(!isModalVisible);
     } catch (error) {
       console.log("error", error);
@@ -572,6 +478,10 @@ export default function MapLayerTwo(props) {
     setSelectedRecord(record);
     setModalMarkerIsVisible(!modalMarkerIsVisible);
   };
+  const changePlace = () => {
+    resetSelected();
+    changeLayer((prev) => !prev);
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -582,7 +492,7 @@ export default function MapLayerTwo(props) {
             <div className="flex justify-start items-center w-1/3">
               <div
                 className="hover:cursor-pointer"
-                onClick={() => changePage()}
+                onClick={() => changePlace()}
               >
                 <span>
                   <ArrowLeftOutlined /> เลือกเมือง
@@ -591,7 +501,7 @@ export default function MapLayerTwo(props) {
             </div>
             <div className="flex justify-center items-center w-1/3">
               <h2 className="text-xl font-bold text-gray-700 ">
-                แผนที่ เมือง{place.amphurName}
+                แผนที่ เมือง{placeSelected?.amphurName}
               </h2>
             </div>
             <div className="flex justify-end items-center w-1/3">
@@ -606,7 +516,7 @@ export default function MapLayerTwo(props) {
 
           <div className="overflow-hidden rounded-lg border border-gray-200 relative">
             <MapContainer
-              center={place?.location?.coordinates}
+              center={placeSelected?.location?.coordinates}
               zoom={13}
               style={{ height: "600px", width: "100%" }}
               whenReady={(mapInstance) => setMap(mapInstance.target)}
@@ -616,12 +526,12 @@ export default function MapLayerTwo(props) {
                   <FindMyLocationButton
                     map={map}
                     setPointSelected={setPointSelected}
-                    zonesGeoJSON={place.zones.features}
+                    zonesGeoJSON={placeSelected?.zones?.features}
                   />
                   <FindMyPlace
                     map={map}
                     setPointSelected={setPointSelected}
-                    zonesGeoJSON={place.zones.features}
+                    zonesGeoJSON={placeSelected?.zones?.features}
                   />
                 </>
               )}
@@ -637,7 +547,7 @@ export default function MapLayerTwo(props) {
                 <React.Fragment key={`polygon`}>
                   <GeoJSON
                     key={`place`}
-                    data={place.place.features}
+                    data={placeSelected?.place?.features}
                     style={{
                       color: "black",
                       weight: 4,
@@ -648,7 +558,7 @@ export default function MapLayerTwo(props) {
                   />
                   <GeoJSON
                     key={`zone`}
-                    data={place.zones.features}
+                    data={placeSelected?.zones?.features}
                     style={{
                       color: "#f0ff",
                       weight: 1,
@@ -682,34 +592,21 @@ export default function MapLayerTwo(props) {
                   />
                 </React.Fragment>
               }
-              {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-              {/* <TileLayer
-                url="http://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
-                maxZoom={20}
-              /> */}
             </MapContainer>
           </div>
         </div>
         {/* ข้อมูลสรุปและข้อมูลตามชุมชน */}
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <MapLayerTwoSidebar
-            place={place}
-            isAdmin={isAdmin}
-            setIsAdmin={setIsAdmin}
-            summaryMarker={summaryPlaceMarker}
-            setEnabledMarkers={setEnabledMarkers}
-            enabledMarkers={enabledMarkers}
-          />
+          <MapLayerTwoSidebar />
         </div>
       </div>
       <ComponentGuard allowedRoles={[Role.ADMIN, Role.SUPER_ADMIN]}>
         <TableEditMarkerAdmin
-          markers={markers}
-          isAdmin={isAdmin}
           setModalMarkerIsVisible={setModalMarkerIsVisible}
+          setModalEditMarkerIsVisible={setModalEditMarkerIsVisible}
           setSelectedRecord={setSelectedRecord}
           modalMarkerIsVisible={modalMarkerIsVisible}
-          fetchData={fetchData}
+          modalEditMarkerIsVisible={modalEditMarkerIsVisible}
         />
       </ComponentGuard>
 
@@ -718,14 +615,18 @@ export default function MapLayerTwo(props) {
         onCancel={() => setModalMarkerIsVisible(false)}
         data={selectedRecord}
       />
+      <ModalEditMarkerDetail
+        visible={modalEditMarkerIsVisible}
+        onCancel={() => setModalEditMarkerIsVisible(false)}
+        data={selectedRecord || null}
+      />
       <ModalAddMarker
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(!isModalVisible)}
-        data={pinTypes}
         handleOK={handleAddMarker}
         pointSelected={pointSelected}
         zoneSelected={zoneSelected}
-        place={place}
+        place={placeSelected}
         getLocation={getLocation}
         isLoadingLatLng={isLoadingLatLng}
         isLatLngError={isLatLngError}
