@@ -3,14 +3,32 @@ import TitlePage from "@/components/ui/Admin/TitlePage";
 import { useGlobalContext } from "@/context/Context";
 import Role from "@/enum/role.enum";
 import { useUser } from "@clerk/clerk-react";
-import { Select, Table, Space, Form, Button, Modal, App, Flex } from "antd";
+import {
+  Select,
+  Table,
+  Space,
+  Form,
+  Button,
+  Modal,
+  App,
+  Flex,
+  Spin,
+} from "antd";
 import { useContext, useEffect, useState } from "react";
 import CreatePlaceForm from "../../../components/Form/Place/CreatePlaceForm";
 import ComponentGuard from "@/routes/ComponentGuard";
 import ApiClient from "@/utils/apiClient";
-import { usePlace } from "@/hooks/user-places";
+import {
+  usePlace,
+  usePlaceMarkerType,
+  usePlaceMarkerTypeCreate,
+  usePlaceMarkerTypeDelete,
+} from "@/hooks/user-places";
+import { useMarkerType } from "@/hooks/user-markers";
 
-const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
+const PlaceDropdown = ({ setPlaceSelected, placeSelected, role }) => {
+  const { data: places, isLoading: isLoadingPlaces } = usePlace();
+  if (isLoadingPlaces) return <Spin />;
   return (
     <Select
       placeholder="เลือกเมือง"
@@ -19,7 +37,7 @@ const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
       value={placeSelected}
       disabled={role === Role.ADMIN}
     >
-      {places.map((place) => (
+      {places?.map((place) => (
         <Select.Option key={place._id} value={place._id}>
           {place.municipalityName}
         </Select.Option>
@@ -29,13 +47,16 @@ const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
 };
 
 const PlaceMarkerTypeTable = ({
-  placeMarkerType,
   handleEdit,
   handleDelete,
+  placeSelected,
 }) => {
+  const { data: placeMarkerType, isLoading: isLoadingPlaceMarkerType } =
+    usePlaceMarkerType(placeSelected || "");
+  if (isLoadingPlaceMarkerType) return <Spin />;
+
   const columns = () => [
     { title: "ชื่อ", dataIndex: "name", key: "name" },
-
     {
       title: "จัดการ",
       key: "action",
@@ -52,13 +73,18 @@ const PlaceMarkerTypeTable = ({
   );
 };
 const ModalCreate = ({
-  markerType,
+  placeSelected,
   isModalOpen,
   setIsModalOpen,
   handleCreate,
   loading,
   form,
 }) => {
+  console.log("placeSelected", placeSelected);
+  const { data: markerType, isLoading: isLoadingMarkerType } =
+    useMarkerType(placeSelected);
+  if (isLoadingMarkerType) return <Spin />;
+
   return (
     <Modal
       title="เชื่อมโยงประเภทหมุดเมือง"
@@ -94,66 +120,24 @@ const ModalCreate = ({
 };
 
 const Places = () => {
-  const [placeMarkerType, setPlaceMarkerType] = useState([]);
-  const [markerType, setMarkerType] = useState([]);
-  const [placeSelected, setPlaceSelected] = useState();
-  const [places, setPlaces] = useState([]);
+  const [placeSelected, setPlaceSelected] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const { message, modal } = App.useApp();
   const { role, userPlaceId } = useGlobalContext();
   const apiClient = new ApiClient();
-
-  // const { data: places, isLoading: isLoadingPlaces } = usePlace();
-  
-
-
+  const { mutate: createPlaceMarkerType } = usePlaceMarkerTypeCreate();
+  const { mutate: deletePlaceMarkerType } = usePlaceMarkerTypeDelete();
 
   useEffect(() => {
-    console.log(role, userPlaceId);
     if (role && role === Role.ADMIN && userPlaceId) {
-      console.log(userPlaceId);
-      fetchPlaceList();
       setPlaceSelected(userPlaceId);
       return;
     }
-    fetchPlaceList();
   }, [role, userPlaceId]);
 
-  useEffect(() => {
-    if (placeSelected) {
-      fetchMarkerType();
-      fetchPlaceMarkerType();
-    }
-  }, [placeSelected]);
-
-  const fetchPlaceList = async () => {
-    try {
-      const url = ENDPOINT.GET_ALL_PLACE;
-      const response = await apiClient.get(url);
-      setPlaces(response.data || []);
-    } catch (error) {
-      console.error("Error fetching places:", error);
-    }
-  };
-  const fetchMarkerType = async () => {
-    const url = `${ENDPOINT.GET_ALL_MARKER_TYPE}?placeId=${
-      placeSelected || ""
-    }`;
-    const response = await apiClient.get(url);
-    setMarkerType(response);
-  };
-
-  const fetchPlaceMarkerType = async () => {
-    try {
-      const url = `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeSelected}`;
-      const response = await apiClient.get(url);
-      setPlaceMarkerType(response || []);
-    } catch (error) {
-      console.error("Error fetching place marker types:", error);
-    }
-  };
+ 
   const handleCreate = async (values) => {
     setLoading(true);
     console.log(values);
@@ -161,13 +145,11 @@ const Places = () => {
       markerTypes: [values.type],
     };
     try {
-      const url = `${ENDPOINT.ADD_PLACE_MARKER_TYPE}/${placeSelected}`;
-      const response = await apiClient.patch(url, markerTypes);
-
+   
+      createPlaceMarkerType({ placeId: placeSelected, body: markerTypes });
       message.success("สร้างประเภทหมุดสำเร็จ!");
       form.resetFields();
-      fetchPlaceMarkerType();
-      fetchMarkerType();
+
       setIsModalOpen(false);
     } catch (error) {
       message.error("เกิดข้อผิดพลาดในการสร้างหมุด");
@@ -184,14 +166,11 @@ const Places = () => {
       onOk: async () => {
         setLoading(true);
         try {
-          const url = `${ENDPOINT.REMOVE_PLACE_MARKER_TYPE}/${placeSelected}`;
-          const body = {
+          const markerTypes = {
             markerTypes: markerTypeId,
           };
-          const response = await apiClient.patch(url,body);
-
+          deletePlaceMarkerType({ placeId: placeSelected, body: markerTypes });
           message.success("ยกเลิกการเชื่อมหมุดสำเร็จ!");
-          fetchPlaceMarkerType();
         } catch (error) {
           message.error("เกิดข้อผิดพลาดในการยกเลิกการเชื่อม");
         } finally {
@@ -207,10 +186,8 @@ const Places = () => {
         <CreatePlaceForm />
       </ComponentGuard>
       <TitlePage title={"จัดการหมุดเมือง"} />
-
       <div className="flex justify-between my-2">
         <PlaceDropdown
-          places={places}
           setPlaceSelected={setPlaceSelected}
           placeSelected={placeSelected}
           role={role}
@@ -225,11 +202,11 @@ const Places = () => {
         </Button>
       </div>
       <PlaceMarkerTypeTable
-        placeMarkerType={placeMarkerType}
         handleDelete={handleDelete}
+        placeSelected={placeSelected}
       />
       <ModalCreate
-        markerType={markerType}
+        placeSelected={placeSelected}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         handleCreate={handleCreate}

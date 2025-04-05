@@ -129,12 +129,17 @@ export function useMainMarkerTypeDelete() {
 }
 
 
-export function useMarkerType() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["markerType"],
-    queryFn: async () => (await apiClient.get(`${ENDPOINT.GET_ALL_MARKER_TYPE}`)),
+export function useMarkerType(placeId) {
+  console.log('placeId',placeId)
+  const params = new URLSearchParams();
+  if (placeId) {
+    params.append("placeId", placeId);
+  }
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["markerType", placeId],
+    queryFn: async () => (await apiClient.get(`${ENDPOINT.GET_ALL_MARKER_TYPE}?${params.toString()}`)),
   });
-  return { data, isLoading, isError };
+  return { data, isLoading, isError, refetch };
 }
 
 export function useMarkerTypeCreate() {

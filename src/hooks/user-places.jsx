@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ApiClient from "@/utils/apiClient";
 import { ENDPOINT } from "@/components/endpoint";
 import { useGlobalMapContext } from "@/context/MapContext";
@@ -61,10 +61,48 @@ export const usePlaceSummaryMarker = (placeId) => {
 };
 
 export const usePlaceMarkerType = (placeId) => {
+  console.log("placeMarkerType", placeId);
   const url = `${ENDPOINT.GET_PLACE_MARKER_TYPE}/${placeId}`;
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["placeMarkerType", placeId],
-    queryFn: async () => await apiClient.get(url),
+    queryFn: async () => await apiClient.get(url).then((res) => res),
+    enabled: !!placeId,
   });
-  return { data, isLoading, isError };
+  return { data, isLoading, isError, refetch };
+};
+
+export const usePlaceMarkerTypeCreate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({placeId, body}) => {
+      console.log(placeId, body);
+      await apiClient.patch(
+        `${ENDPOINT.ADD_PLACE_MARKER_TYPE}/${placeId}`,
+        body
+      );
+      return {placeId};
+    },
+    onSuccess: ({placeId}) => {
+      queryClient.invalidateQueries({ queryKey: ["placeMarkerType", placeId] });
+      queryClient.invalidateQueries({ queryKey: ["markerType", placeId] });
+    },
+  });
+};
+
+export const usePlaceMarkerTypeDelete = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({placeId, body}) => {
+      console.log("payload", placeId, body);
+      await apiClient.patch(
+        `${ENDPOINT.REMOVE_PLACE_MARKER_TYPE}/${placeId}`,
+        body
+      );
+      return {placeId};
+    },
+    onSuccess: ({placeId}) => {
+      queryClient.invalidateQueries({ queryKey: ["placeMarkerType", placeId] });
+      queryClient.invalidateQueries({ queryKey: ["markerType", placeId] });
+    },
+  });
 };
