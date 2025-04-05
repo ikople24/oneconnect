@@ -6,7 +6,6 @@ import { useGlobalMapContext } from "@/context/MapContext";
 const apiClient = new ApiClient();
 
 export function useMarker(placeId) {
-
   // dont fetch markers if doesn't have placeId
   const { data, isLoading, isError } = useQuery({
     queryKey: ["markers", placeId],
@@ -87,3 +86,89 @@ export function useMarkerDelete() {
     },
   });
 }
+
+export function useMainMarkerType() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["mainMarkerType"],
+    queryFn: async () => (await apiClient.get(`${ENDPOINT.GET_ALL_MAIN_MARKER}`)),
+  });
+  return { data, isLoading, isError };
+}
+
+export function useMainMarkerTypeCreate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body) =>
+      await apiClient.post(ENDPOINT.CREATE_MAIN_MARKER, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mainMarkerType"] });
+    },
+  });
+}
+
+export function useMainMarkerTypeEdit() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({mainMarkerId, body}) =>
+      await apiClient.patch(`${ENDPOINT.UPDATE_MAIN_MARKER}/${mainMarkerId}`, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mainMarkerType"] });
+    },
+  });
+}
+
+export function useMainMarkerTypeDelete() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) =>
+      await apiClient.delete(`${ENDPOINT.DELETE_MAIN_MARKER}/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mainMarkerType"] });
+    },
+  });
+}
+
+
+export function useMarkerType() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["markerType"],
+    queryFn: async () => (await apiClient.get(`${ENDPOINT.GET_ALL_MARKER_TYPE}`)),
+  });
+  return { data, isLoading, isError };
+}
+
+export function useMarkerTypeCreate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body) =>
+      await apiClient.postBuffer(ENDPOINT.CREATE_MARKER_TYPE, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["markerType"] });
+    },
+  });
+}
+
+export function useMarkerTypeEdit() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({markerTypeId, body}) =>
+      await apiClient.patchBuffer(`${ENDPOINT.EDIT_MARKER_TYPE}/${markerTypeId}`, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["markerType"] });
+    },
+  });
+}
+
+export function useMarkerTypeDelete() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) =>
+      await apiClient.delete(`${ENDPOINT.DELETE_MARKER_TYPE}/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["markerType"] });
+    },
+  });
+}
+  
+
+  

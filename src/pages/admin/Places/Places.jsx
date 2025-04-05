@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import CreatePlaceForm from "../../../components/Form/Place/CreatePlaceForm";
 import ComponentGuard from "@/routes/ComponentGuard";
 import ApiClient from "@/utils/apiClient";
+import { usePlace } from "@/hooks/user-places";
 
 const PlaceDropdown = ({ places, setPlaceSelected, placeSelected, role }) => {
   return (
@@ -103,6 +104,11 @@ const Places = () => {
   const { message, modal } = App.useApp();
   const { role, userPlaceId } = useGlobalContext();
   const apiClient = new ApiClient();
+
+  // const { data: places, isLoading: isLoadingPlaces } = usePlace();
+  
+
+
 
   useEffect(() => {
     console.log(role, userPlaceId);

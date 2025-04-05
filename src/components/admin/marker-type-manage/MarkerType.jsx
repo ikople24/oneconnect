@@ -1,4 +1,10 @@
 import { ENDPOINT } from "@/components/endpoint";
+import {
+  useMarkerType,
+  useMarkerTypeCreate,
+  useMarkerTypeDelete,
+  useMarkerTypeEdit,
+} from "@/hooks/user-markers";
 import ApiClient from "@/utils/apiClient";
 import { UploadOutlined } from "@ant-design/icons";
 import {
@@ -13,6 +19,7 @@ import {
   Select,
   App,
   Upload,
+  Spin,
 } from "antd";
 import { name } from "dayjs/locale/th";
 import { useEffect, useState } from "react";
@@ -20,7 +27,15 @@ import { useEffect, useState } from "react";
 const TableMarkerType = ({ markerType, handleDelete, handleEdit }) => {
   const columns = (onEditClick) => [
     { title: "ชื่อ", dataIndex: "name", key: "name" },
-    { title: "รูปหมุด", dataIndex: "icon", key: "icon" },
+    {
+      title: "รูปหมุด",
+      dataIndex: "icon",
+      key: "icon",
+      render: (text, record) =>
+        record.icon ? (
+          <img src={record.icon} width={25} height={25} alt="icon" />
+        ) : null,
+    },
     {
       title: "ประเภทหมุดหลัก",
       dataIndex: "type",
@@ -79,13 +94,28 @@ const ModalEdit = ({
         >
           <Input />
         </Form.Item>
-        <Form.Item label="รูปหมุด" name="icon">
+        <Form.Item
+          label="รูปหมุด"
+          name="icon"
+          rules={[{ required: true, message: "กรุณาอัปโหลดรูปหมุด" }]}
+        >
           <Upload
             beforeUpload={beforeUpload}
             maxCount={1}
             onChange={(info) => handleFileChange(info)}
+            value={initialData?.icon}
           >
-            <Button icon={<UploadOutlined />}>อัพโหลดรูปหมุด</Button>
+            <div className="flex items-center gap-5">
+              {initialData?.icon && (
+                <img
+                  src={initialData?.icon}
+                  width={25}
+                  height={25}
+                  alt="icon"
+                />
+              )}
+              <Button icon={<UploadOutlined />}>อัพโหลดรูปหมุด</Button>
+            </div>
           </Upload>
         </Form.Item>
         <Form.Item
@@ -142,7 +172,7 @@ const ModalCreate = ({
         <Form.Item
           label="รูปหมุด"
           name="icon"
-          //   rules={[{ required: true, message: "กรุณากรอกชื่อประเภทหมุด" }]}
+          rules={[{ required: true, message: "กรุณาอัปโหลดรูปหมุด" }]}
         >
           <Upload
             beforeUpload={beforeUpload}
@@ -178,7 +208,7 @@ const ModalCreate = ({
   );
 };
 const MarkerType = ({ mainMarker }) => {
-  const [markerType, setMarkerType] = useState([]);
+  // const [markerType, setMarkerType] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -187,10 +217,20 @@ const MarkerType = ({ mainMarker }) => {
   const { message, modal } = App.useApp();
   const [file, setFile] = useState(null);
   const apiClient = new ApiClient();
+  const { data: markerType, isLoading: isLoadingMarkerType } = useMarkerType();
+  const { mutate: createMarkerType, isLoading: isLoadingCreateMarkerType } =
+    useMarkerTypeCreate();
+  const { mutate: editMarkerType, isLoading: isLoadingEditMarkerType } =
+    useMarkerTypeEdit();
+  const { mutate: deleteMarkerType, isLoading: isLoadingDeleteMarkerType } =
+    useMarkerTypeDelete();
+  if (isLoadingMarkerType) {
+    return <Spin />;
+  }
 
-  useEffect(() => {
-    fetchMarkerType();
-  }, []);
+  // useEffect(() => {
+  //   fetchMarkerType();
+  // }, []);
 
   const handleCreate = async (values) => {
     setLoading(true);
@@ -199,14 +239,9 @@ const MarkerType = ({ mainMarker }) => {
       formData.append("name", values.name);
       formData.append("icon", file);
       formData.append("type", values.type);
-
-      const url = ENDPOINT.CREATE_MARKER_TYPE;
-      const body = formData;
-      const response = await apiClient.postBuffer(url, body);
-
+      createMarkerType(formData);
       message.success("สร้างประเภทหมุดสำเร็จ!");
       form.resetFields();
-      fetchMarkerType();
       setIsModalOpen(false);
     } catch (error) {
       message.error("เกิดข้อผิดพลาดในการสร้างหมุด");
@@ -223,10 +258,8 @@ const MarkerType = ({ mainMarker }) => {
       onOk: async () => {
         setLoading(true);
         try {
-          const url = `${ENDPOINT.DELETE_MARKER_TYPE}/${markerTypeId}`;
-          const response = await apiClient.delete(url);
+          deleteMarkerType(markerTypeId);
           message.success("ลบหมุดสำเร็จ!");
-          fetchMarkerType();
         } catch (error) {
           message.error("เกิดข้อผิดพลาดในการลบหมุด");
         } finally {
@@ -242,18 +275,13 @@ const MarkerType = ({ mainMarker }) => {
         message.error("กรุณาอัปโหลดรูปหมุด");
         return;
       }
-
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("icon", file);
       formData.append("type", values.type);
-      const url = `${ENDPOINT.EDIT_MARKER_TYPE}/${editData._id}`;
-      const body = formData;
-      const response = await apiClient.patchBuffer(url, body);
-      console.log(response);
+      editMarkerType({ markerTypeId: editData._id, body: formData });
       message.success("แก้ไขประเภทหมุดสำเร็จ!");
       form.resetFields();
-      fetchMarkerType();
       setIsEditModalOpen(false);
     } catch (error) {
       message.error("เกิดข้อผิดพลาดในการแก้ไขหมุด");
@@ -264,12 +292,6 @@ const MarkerType = ({ mainMarker }) => {
   const handleEditClick = (data) => {
     setEditData(data); // Set the data for editing
     setIsEditModalOpen(true); // Open the edit modal
-  };
-
-  const fetchMarkerType = async () => {
-    const url = ENDPOINT.GET_ALL_MARKER_TYPE;
-    const response = await apiClient.get(url);
-    setMarkerType(response);
   };
 
   const beforeUpload = (file) => {
