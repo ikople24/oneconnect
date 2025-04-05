@@ -4,7 +4,7 @@ import MapLayerOne from "@/components/map/MapLayerOne";
 import MapLayerTwo from "@/components/map/MapLayerTwo";
 import { MapContextProvider, useGlobalMapContext } from "@/context/MapContext";
 
-const MapContent = ({ setPlace, place }) => {
+const MapContent = () => {
   const { layer } = useGlobalMapContext();
   
   return (
@@ -12,18 +12,16 @@ const MapContent = ({ setPlace, place }) => {
       {layer ? (
         <MapLayerOne  />
       ) : (
-        <MapLayerTwo place={place} />
+        <MapLayerTwo />
       )}
     </div>
   );
 };
 
 export default function ServiceAreaSelection() {
-  const [place, setPlace] = useState({});
-
   return (
     <MapContextProvider>
-      <MapContent place={place} setPlace={setPlace} />
+      <MapContent />
     </MapContextProvider>
   );
 }

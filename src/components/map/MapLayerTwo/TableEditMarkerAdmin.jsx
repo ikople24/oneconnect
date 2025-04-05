@@ -1,19 +1,19 @@
 import { Table, Space, Tooltip, Button, App } from "antd";
 import { useState } from "react";
 import { EyeOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { ENDPOINT } from "../../endpoint";
-import ApiClient from "@/utils/apiClient";
+import { useMarkerDelete } from "@/hooks/user-markers";
+import { useGlobalMapContext } from "@/context/MapContext";
+import { useGlobalContext } from "@/context/Context";
 export default function TableEditMarkerAdmin({
-  markers,
-  isAdmin,
   setSelectedRecord,
   setModalMarkerIsVisible,
   modalMarkerIsVisible,
   modalEditMarkerIsVisible,
   setModalEditMarkerIsVisible,
-  fetchData,
 }) {
-  const apiClient = new ApiClient();
+  const { mutate: mutateMarkerDelete } = useMarkerDelete();
+  const {markers} = useGlobalMapContext();
+  const {isAdmin} = useGlobalContext(); 
   const { message, modal } = App.useApp();
   const columns = [
     {
@@ -87,11 +87,7 @@ export default function TableEditMarkerAdmin({
       total: 0,
     },
   });
-  const deleteMarker = async (id) => {
-    console.log("ID", id);
-    const url = `${ENDPOINT.DELETE_MARKER_ADMIN}${id}`;
-    return await apiClient.delete(url);
-  };
+
 
   const handleDelete = (record) => {
     console.log("ลบ", record);
@@ -103,13 +99,14 @@ export default function TableEditMarkerAdmin({
       async onOk() {
         const { _id } = record;
         try {
-          await deleteMarker(_id);
+          // await deleteMarker(_id);
+          mutateMarkerDelete(_id);
 
           message.success({
             content: "ลบข้อมูลสำเร็จ!",
             duration: 3,
           });
-          await fetchData();
+          // await fetchData();
         } catch (error) {
           message.error({
             content: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล",

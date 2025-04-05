@@ -21,9 +21,10 @@ export default function MapLayerOneSidebar({  }) {
   const { data: regionList, isLoading: regionListLoading } = useRegions();
   const { data: provinceList, isLoading: provinceListLoading } = useProvince(regionSelected);
   const { data: placeList, isLoading: placeListLoading } = usePlace({
-    placeId: placeSelected?._id,
-    geographyId: regionSelected
+    placeId: placeSelected?._id ? placeSelected?._id : "",
+    geographyId: regionSelected ? regionSelected : ""
   });
+
 
   if (placeListLoading) return <div>Loading...</div>;
   if (regionListLoading) return <div>Loading...</div>;
