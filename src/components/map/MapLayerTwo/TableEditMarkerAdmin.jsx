@@ -1,17 +1,19 @@
 import { Table, Space, Tooltip, Button, App } from "antd";
 import { useState } from "react";
-import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
-import { ENDPOINT } from "../../endpoint";
-import ApiClient from "@/utils/apiClient";
+import { EyeOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useMarkerDelete } from "@/hooks/user-markers";
+import { useGlobalMapContext } from "@/context/MapContext";
+import { useGlobalContext } from "@/context/Context";
 export default function TableEditMarkerAdmin({
-  markers,
-  isAdmin,
   setSelectedRecord,
   setModalMarkerIsVisible,
   modalMarkerIsVisible,
-  fetchData,
+  modalEditMarkerIsVisible,
+  setModalEditMarkerIsVisible,
 }) {
-  const apiClient = new ApiClient();
+  const { mutate: mutateMarkerDelete } = useMarkerDelete();
+  const {markers} = useGlobalMapContext();
+  const {isAdmin} = useGlobalContext(); 
   const { message, modal } = App.useApp();
   const columns = [
     {
@@ -28,14 +30,14 @@ export default function TableEditMarkerAdmin({
     },
     {
       title: "ชื่อข้อมูล",
-      dataIndex: ["properties", "markerInfo","name"],
+      dataIndex: ["properties", "markerInfo", "name"],
       key: "name",
       align: "center",
       width: 200,
     },
     {
       title: "ประเภทข้อมูล",
-      dataIndex: ["properties", "markerType","name"],
+      dataIndex: ["properties", "markerType", "name"],
       key: "markerType",
       align: "center",
       width: 200,
@@ -55,6 +57,16 @@ export default function TableEditMarkerAdmin({
               onClick={() => handleView(record)}
             />
           </Tooltip>
+          <Tooltip title="แก้ไข" open={false}>
+            <Button
+              color="yellow"
+              variant="solid"
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+            />
+          </Tooltip>
+
           <Tooltip title="ลบ" open={false}>
             <Button
               color="danger"
@@ -75,11 +87,7 @@ export default function TableEditMarkerAdmin({
       total: 0,
     },
   });
-  const deleteMarker = async (id) => {
-    console.log("ID", id);
-    const url = `${ENDPOINT.DELETE_MARKER_ADMIN}${id}`;
-    return await apiClient.delete(url);
-  };
+
 
   const handleDelete = (record) => {
     console.log("ลบ", record);
@@ -91,13 +99,14 @@ export default function TableEditMarkerAdmin({
       async onOk() {
         const { _id } = record;
         try {
-          await deleteMarker(_id);
+          // await deleteMarker(_id);
+          mutateMarkerDelete(_id);
 
           message.success({
             content: "ลบข้อมูลสำเร็จ!",
             duration: 3,
           });
-          await fetchData();
+          // await fetchData();
         } catch (error) {
           message.error({
             content: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล",
@@ -120,6 +129,11 @@ export default function TableEditMarkerAdmin({
     console.log("ดูรายละเอียด", record);
     setSelectedRecord(record);
     setModalMarkerIsVisible(!modalMarkerIsVisible);
+  };
+  const handleEdit = (record) => {
+    console.log("แก้ไข", record);
+    setSelectedRecord(record);
+    setModalEditMarkerIsVisible(!modalEditMarkerIsVisible);
   };
   return (
     <>

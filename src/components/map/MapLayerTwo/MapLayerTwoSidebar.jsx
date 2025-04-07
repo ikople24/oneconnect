@@ -2,14 +2,17 @@ import { Card, Flex, Switch } from "antd";
 
 import CardBox from "@/components/ui/Card";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
+import { usePlaceSummaryMarker } from "@/hooks/user-places";
+import { useGlobalMapContext } from "@/context/MapContext";
 export default function MapLayerTwoSidebar({
-  place,
-  isAdmin,
-  setIsAdmin,
-  summaryMarker,
-  setEnabledMarkers,
-  enabledMarkers,
 }) {
+  const { placeSelected, setEnabledMarkers } = useGlobalMapContext();
+  const {
+    data: summaryMarker,
+    isLoading: isLoadingPlaceSummary,
+    isError: isErrorPlaceSummary,
+  } = usePlaceSummaryMarker(placeSelected?._id);
+  if(isLoadingPlaceSummary) return <div>Loading...</div>
   const handleToggle = (_id, checked) => {
     if (checked) {
       setEnabledMarkers((prev) => [...prev, _id]);
@@ -17,7 +20,6 @@ export default function MapLayerTwoSidebar({
       setEnabledMarkers((prev) => prev.filter((id) => id !== _id));
     }
   };
-
   const markerPlaceSummary = () => {
     return summaryMarker.filter((marker) => {
       return marker.mainType === MainMarkerTypeEnum.PLACES;
@@ -50,8 +52,8 @@ export default function MapLayerTwoSidebar({
             ))}
           </div>
           <div>
-            <p>{place.population} คน</p>
-            <p>{place.household} ครัวเรือน</p>
+            <p>{placeSelected?.population} คน</p>
+            <p>{placeSelected?.household} ครัวเรือน</p>
             {summaryPlace.map((item, index) => (
               <p key={index}>{item.count} ที่</p>
             ))}

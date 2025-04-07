@@ -1,51 +1,42 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import React from "react";
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import thailandPolygon from "@/components/data/thailand.json";
 import { Row, Col } from "antd";
-import { ENDPOINT } from "@/components/endpoint";
 import MapLayerOneSidebar from "./MapLayerOne/MapLayerOneSidebar";
-import ApiClient from "@/utils/apiClient";
+import { useGlobalMapContext } from "@/context/MapContext";
+import { usePlacePolygon } from "@/hooks/user-places";
 
 const DEFAULT_CENTER = [13.885556744960699, 100.63529495228143];
 const DEFAULT_ZOOM = 6;
 
-export default function ServiceAreaSelection({ changePage, setPlace }) {
-  const [placeSelected, setPlaceSelected] = useState(null);
-  const [placePolygon, setPlacePolygon] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState(null);
-  const [flyToLatLng, setFlyToLatLng] = useState(null);
-  const apiClient = useMemo(() => new ApiClient(), []);
+export default function ServiceAreaSelection() {
+  const { coordinateSelected,placeSelected } = useGlobalMapContext();
+  const { data: placePolygonData, isLoading, isError } = usePlacePolygon();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {isError}</div>;
+
+  
+const FlyToProvince = ({ position, zoom = DEFAULT_ZOOM }) => {
+  const map = useMap();
 
   useEffect(() => {
-    const fetchPlacePolygon = async () => {
-      try {
-        const response = await apiClient.get(ENDPOINT.GET_ALL_PLACE);
-        setPlacePolygon(response.data ?? []);
-      } catch (error) {
-        console.error("ERROR FETCH PLACES:", error);
-      }
-    };
-
-    fetchPlacePolygon();
-  }, [apiClient]);
-
-  const FlyToProvince = ({ position, zoom = 10 }) => {
-    const map = useMap();
-    useEffect(() => {
+    if (!position || position.length !== 2) {
+      map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 1 });
+    } else {
       const [lat, lng] = position;
-      if (position) {
-        if (lat === undefined || lng === undefined) {
-          map.flyTo(DEFAULT_CENTER, zoom, { duration: 1 });
-        } else {
-          map.flyTo(position, zoom, { duration: 1 });
-        }
+      if (lat === undefined || lng === undefined) {
+        map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 1 });
+      } else {
+        map.flyTo(position, zoom, { duration: 1 });
       }
-    }, [map, position, zoom]);
+    }
+  }, [map, position, zoom]);
 
-    return null;
-  };
+  return null;
+};
 
   return (
     <div className=" bg-gray-100">
@@ -68,7 +59,7 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
                   fillOpacity: 0.5,
                 }}
               />
-              {placePolygon.map((polygon, idx) => (
+              {placePolygonData.map((polygon, idx) => (
                 <React.Fragment key={idx}>
                   <GeoJSON
                     data={polygon.place.features}
@@ -92,12 +83,10 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
                 </React.Fragment>
               ))}
 
-              {flyToLatLng && (
-                <FlyToProvince
-                  position={flyToLatLng}
-                  zoom={placeSelected ? 13 : DEFAULT_ZOOM}
-                />
-              )}
+              <FlyToProvince
+                position={coordinateSelected}
+                zoom={placeSelected ? 13 : DEFAULT_ZOOM}
+              />
             </MapContainer>
           </div>
         </Col>
@@ -107,15 +96,7 @@ export default function ServiceAreaSelection({ changePage, setPlace }) {
           order={2}
           className="flex flex-col justify-center items-center p-5"
         >
-          <MapLayerOneSidebar
-            changePage={changePage}
-            selectedProvince={selectedProvince}
-            placeSelected={placeSelected}
-            setFlyToLatLng={setFlyToLatLng}
-            setPlaceSelected={setPlaceSelected}
-            setPlace={setPlace}
-            setSelectedProvince={setSelectedProvince}
-          />
+          <MapLayerOneSidebar />
         </Col>
       </Row>
     </div>

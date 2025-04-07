@@ -4,6 +4,7 @@ import { ENDPOINT } from "@/components/endpoint";
 import TitlePage from "@/components/ui/Admin/TitlePage";
 import ApiClient from "@/utils/apiClient";
 import { useEffect, useState } from "react";
+import { MarkerTypeContextProvider } from "@/context/MasterData/MarkerTypeContext";
 
 const MarkerTypePage = () => {
   const [mainMarker, setMainMarker] = useState([]);
@@ -21,7 +22,6 @@ const MarkerTypePage = () => {
       console.error(error);
     }
   };
-
   return (
     <>
       <TitlePage title={"จัดการประเภทหมุด"} />
@@ -35,5 +35,13 @@ const MarkerTypePage = () => {
     </>
   );
 };
+
+// const MarkerTypePage = () => {
+//   return (
+//     <MarkerTypeContextProvider>
+//       <MarkerTypeContent />
+//     </MarkerTypeContextProvider>
+//   );
+// };
 
 export default MarkerTypePage;

@@ -51,7 +51,7 @@ export const ENDPOINT = {
   GET_ONE_MARKER_ADMIN: `/markers/private/admin/`, // PARAM
   GET_COUNT_MARKER_ADMIN: `/markers/private/admin/count`,
   // PATCH
-  PATCH_MARKERS_ADMIN: `/markers/private/admin/`, // PARAM
+  PATCH_MARKERS_ADMIN: `/markers/private/admin`, // PARAM
   // DELETE
   DELETE_MARKER_ADMIN: `/markers/private/admin/`, // PARAM
   // User

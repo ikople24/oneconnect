@@ -7,7 +7,6 @@ import moment from "moment";
 
 const ModalAddMaker = ({
   form,
-  data,
   zoneSelected,
   place,
   isAdmin,
