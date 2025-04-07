@@ -46,7 +46,8 @@ const CreatePlaceForm = () => {
     try {
       const url = ENDPOINT.CREATE_PLACE;
       const body = formData;
-      const response = await apiClient.post(url, body);
+      console.log("body", Object.fromEntries(formData.entries()));
+      const response = await apiClient.postBuffer(url, body);
       message.success("สร้างเมืองสำเร็จ!");
       form.resetFields();
       setCityFile(null);
