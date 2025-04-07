@@ -25,7 +25,6 @@ import { useUser } from "@clerk/clerk-react";
 import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import ComponentGuard from "@/routes/ComponentGuard";
-import ApiClient from "@/utils/ApiClient";
 import ModalEditMarkerDetail from "../modal/ModalEditMarker";
 import { useGlobalMapContext } from "@/context/MapContext";
 import { useMarkerCreate } from "@/hooks/user-markers";
