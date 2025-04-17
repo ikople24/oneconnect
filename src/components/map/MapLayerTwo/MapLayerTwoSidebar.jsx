@@ -4,15 +4,14 @@ import CardBox from "@/components/ui/Card";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import { usePlaceSummaryMarker } from "@/hooks/user-places";
 import { useGlobalMapContext } from "@/context/MapContext";
-export default function MapLayerTwoSidebar({
-}) {
+export default function MapLayerTwoSidebar({}) {
   const { placeSelected, setEnabledMarkers } = useGlobalMapContext();
   const {
     data: summaryMarker,
     isLoading: isLoadingPlaceSummary,
     isError: isErrorPlaceSummary,
   } = usePlaceSummaryMarker(placeSelected?._id);
-  if(isLoadingPlaceSummary) return <div>Loading...</div>
+  if (isLoadingPlaceSummary) return <div>Loading...</div>;
   const handleToggle = (_id, checked) => {
     if (checked) {
       setEnabledMarkers((prev) => [...prev, _id]);
@@ -68,31 +67,6 @@ export default function MapLayerTwoSidebar({
             ))}
           </div>
         </div>
-      </CardBox>
-
-      <CardBox
-        title="ข้อมูลพื้นฐาน"
-        backgroundColor={"#0FA4AF"}
-        fontColor={"white"}
-      >
-        <Flex gap={20} className="mx-5 my-1 font-semibold">
-          <div>
-            <li>ประชากร</li>
-            <li>ครัวเรือน</li>
-            {summaryPlace.map((item, index) => (
-              <div key={index}>
-                <li>{item.name}</li>
-              </div>
-            ))}
-          </div>
-          <div>
-            <p>{placeSelected?.population} คน</p>
-            <p>{placeSelected?.household} ครัวเรือน</p>
-            {summaryPlace.map((item, index) => (
-              <p key={index}>{item.count} ที่</p>
-            ))}
-          </div>
-        </Flex>
       </CardBox>
       <CardBox
         title={"ข้อมูลคนเมือง"}
