@@ -41,6 +41,40 @@ export default function MapLayerTwoSidebar({
         backgroundColor={"#0FA4AF"}
         fontColor={"white"}
       >
+        <div className="grid grid-cols-2 gap-4 mx-5 my-1 font-semibold items-start">
+          {/* Column 1: Labels */}
+          <div className="flex flex-col gap-2">
+            <span>ประชากร</span>
+            <span>ครัวเรือน</span>
+            {summaryPlace.map((item, index) => (
+              <span key={index}>{item.name}</span>
+            ))}
+          </div>
+
+          {/* Column 2: Values + inline switches */}
+          <div className="flex flex-col gap-2">
+            <div>{placeSelected?.population} คน</div>
+            <div>{placeSelected?.household} ครัวเรือน</div>
+            {summaryPlace.map((item, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <span>{item.count} ที่</span>
+                {item.count > 0 && (
+                  <Switch
+                    defaultChecked
+                    onChange={(checked) => handleToggle(item._id, checked)}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardBox>
+
+      <CardBox
+        title="ข้อมูลพื้นฐาน"
+        backgroundColor={"#0FA4AF"}
+        fontColor={"white"}
+      >
         <Flex gap={20} className="mx-5 my-1 font-semibold">
           <div>
             <li>ประชากร</li>
@@ -62,32 +96,32 @@ export default function MapLayerTwoSidebar({
       </CardBox>
       <CardBox
         title={"ข้อมูลคนเมือง"}
-        // backgroundColor={"#0FA4AF"}
         fontColor={"#0FA4AF"}
         borderColor={"#0FA4AF"}
       >
-        <Flex gap={20} className="mx-5 my-1 font-semibold" justify="center">
-          <div>
+        <div className="grid grid-cols-2 gap-4 mx-5 my-1 font-semibold items-start">
+          {/* Column 1: Labels */}
+          <div className="flex flex-col gap-2">
             {summary.map((item, index) => (
               <p key={index}>{item.name}</p>
             ))}
           </div>
-          <div>
+
+          {/* Column 2: Value + inline switch */}
+          <div className="flex flex-col gap-2">
             {summary.map((item, index) => (
-              <p key={index}>{item.count} คน</p>
+              <div key={index} className="flex items-center gap-2">
+                <span>{item.count} คน</span>
+                {item.count > 0 && (
+                  <Switch
+                    defaultChecked
+                    onChange={(checked) => handleToggle(item._id, checked)}
+                  />
+                )}
+              </div>
             ))}
           </div>
-          <div>
-            {summary.map((item, index) => (
-              <p key={index}>
-                <Switch
-                  defaultChecked
-                  onChange={(checked) => handleToggle(item._id, checked)}
-                />
-              </p>
-            ))}
-          </div>
-        </Flex>
+        </div>
       </CardBox>
     </Flex>
   );
