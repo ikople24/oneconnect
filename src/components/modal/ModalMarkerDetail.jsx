@@ -28,7 +28,7 @@ const ModalPlaceDetail = ({ marker }) => {
           <Col span={24}>
             <div className="text-2xl flex items-center justify-center gap-2 ">
               <div>{renderIcon(marker)}</div>
-              <div>{marker?.properties.markerInfo?.name}</div>
+              <div className="break-all">{marker?.properties.markerInfo?.name}</div>
             </div>
           </Col>
           <Col span={24}>
@@ -39,6 +39,7 @@ const ModalPlaceDetail = ({ marker }) => {
               </span>
             </p>
           </Col>
+
           <Col span={24}>
             <p>
               เวลาทำการ :{" "}
@@ -88,6 +89,15 @@ const ModalPersonDetail = ({ marker }) => {
               <div>{marker?.properties.markerInfo?.name}</div>
             </div>
           </Col>
+          <Col span={24}>
+            <p>
+              รายละเอียด:{" "}
+              <span className="border py-0.5 px-1 rounded-md bg-gray-100">
+                {marker?.properties?.markerInfo?.description || '-'}
+              </span>
+            </p>
+          </Col>
+
           <Col span={24}>
             <p>
               ประเภท :{" "}

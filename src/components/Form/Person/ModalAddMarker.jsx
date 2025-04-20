@@ -4,6 +4,7 @@ import dayTh from "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import dayjs from "dayjs";
 import moment from "moment";
+import { useState } from "react";
 
 const ModalAddMaker = ({
   form,
@@ -15,6 +16,11 @@ const ModalAddMaker = ({
   isLoadingLatLng,
   getLocation,
 }) => {
+  const [genderSelected, setGenderSelected] = useState();
+  const [genderChoice] = useState([
+    { label: "ชาย", value: "Male" },
+    { label: "หญิง", value: "Female" },
+  ]);
   console.log(zoneSelected);
   dayjs.extend(buddhistEra);
   dayjs.locale(dayTh);
@@ -44,9 +50,23 @@ const ModalAddMaker = ({
     const age = moment().diff(birthMoment, "years");
     return age;
   };
+  const handleGenderChange = (value) => {
+    form.setFieldsValue({ gender: value });
+    setGenderSelected(value);
+  };
 
   return (
     <>
+      <Row gutter={8}>
+        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
+          <Form.Item
+            name="description"
+            label="รายละเอียด"
+          >
+            <Input.TextArea placeholder="e.g., ผู้พิการทางสายตา" maxLength={255} />
+          </Form.Item>
+        </Col>
+      </Row>
       <Row gutter={8}>
         <Col span={24} sm={24} md={24} xl={24} xxl={24}>
           <Form.Item
@@ -64,6 +84,36 @@ const ModalAddMaker = ({
           </Form.Item>
         </Col>
       </Row>
+      <Row gutter={8}>
+        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
+          <Form.Item
+            name="gender"
+            label="เพศ"
+            rules={[{ required: true, message: "กรุณาเลือกเพศ" }]}
+          >
+            <div className="flex flex-wrap gap-2">
+              {genderChoice.map((gender) => (
+                <Button
+                  key={gender.value}
+                  className={
+                    genderSelected === gender.value
+                      ? "border border-green-800 rounded-sm"
+                      : "rounded-sm"
+                  }
+                  onClick={() => handleGenderChange(gender.value)}
+                >
+                  {gender.label}
+                </Button>
+              ))}
+            </div>
+
+            {/* <Select placeholder="e.g., ชาย / หญิง / อื่น ๆ">
+              <Option value="Male">ชาย</Option>
+              <Option value="Female">หญิง</Option>
+            </Select> */}
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Row gutter={8}>
         <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -72,7 +122,7 @@ const ModalAddMaker = ({
             label="ชื่อจริง"
             rules={[{ required: true, message: "กรุณากรอกชื่อจริง" }]}
           >
-            <Input placeholder="e.g., สมชาย" maxLength={20} />
+            <Input placeholder="e.g., สมชาย" maxLength={255} />
           </Form.Item>
         </Col>
         <Col span={24} sm={24} md={12} xl={12} xxl={12}>
@@ -81,21 +131,7 @@ const ModalAddMaker = ({
             label="นามสกุล"
             rules={[{ required: true, message: "กรุณากรอกนามสกุล" }]}
           >
-            <Input placeholder="e.g., ใจดี" maxLength={20} />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={8}>
-        <Col span={24} sm={24} md={24} xl={24} xxl={24}>
-          <Form.Item
-            name="gender"
-            label="เพศ"
-            rules={[{ required: true, message: "กรุณาเลือกเพศ" }]}
-          >
-            <Select placeholder="e.g., ชาย / หญิง / อื่น ๆ">
-              <Option value="Male">ชาย</Option>
-              <Option value="Female">หญิง</Option>
-            </Select>
+            <Input placeholder="e.g., ใจดี" maxLength={255} />
           </Form.Item>
         </Col>
       </Row>

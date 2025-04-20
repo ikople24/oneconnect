@@ -6,6 +6,7 @@ import {
   Popup,
   LayerGroup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import styles from "@/components/map/tooltip.module.css";
 import "leaflet/dist/leaflet.css";
@@ -40,6 +41,7 @@ export default function MapLayerTwo() {
   } = useGlobalMapContext();
   const markerRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
+  const mapRef = useRef(null);
 
   const [isAdmin, setIsAdmin] = useState(
     checkIsAdminPlace(placeSelected?._id) || false
@@ -204,7 +206,7 @@ export default function MapLayerTwo() {
         div.onclick = function () {
           map.flyTo(placeSelected?.location?.coordinates, 13);
           if (markerRef.current) {
-          markerRef.current.remove();
+            markerRef.current.remove();
           }
         };
 
@@ -296,11 +298,20 @@ export default function MapLayerTwo() {
               key={marker._id}
               position={marker.geometry.coordinates}
               icon={getIcon(marker.properties?.markerType?.icon)}
+              // pane="customPane"
             >
               <Popup>
-                <Button type="primary" onClick={() => handleView(marker)}>
-                  ดูรายละเอียด
-                </Button>
+                <div className="py-2">
+                  ชื่อ : {marker.properties?.markerInfo.name}
+                </div>
+                <div className="py-2">
+                  ประเภท : {marker.properties?.markerType?.name}
+                </div>
+                <div className="text-center">
+                  <Button type="primary" onClick={() => handleView(marker)}>
+                    ดูรายละเอียด
+                  </Button>
+                </div>
               </Popup>
             </Marker>
           ) : (
@@ -308,6 +319,7 @@ export default function MapLayerTwo() {
               key={marker._id}
               position={marker.geometry.coordinates}
               icon={getIcon(marker.properties?.markerType?.icon)}
+              // pane="customPane"
             >
               <Popup>
                 <div className="py-2">
@@ -366,7 +378,7 @@ export default function MapLayerTwo() {
           },
           markerInfo: {
             name: values.name,
-            description: "",
+            description: values.description,
           },
           properties: {
             firstName: values.firstName,
@@ -482,6 +494,17 @@ export default function MapLayerTwo() {
     changeLayer((prev) => !prev);
   };
 
+  const CustomPaneSetup = () => {
+    useEffect(() => {
+      if (!map.getPane("customPane")) {
+        map.createPane("customPane");
+        //  map.getPane("customPane").style.zIndex= 9999999;
+      }
+    }, [map]);
+
+    return null; // this component just sets up the pane
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -515,11 +538,13 @@ export default function MapLayerTwo() {
 
           <div className="overflow-hidden rounded-lg border border-gray-200 relative">
             <MapContainer
+              // ref={mapRef}
               center={placeSelected?.location?.coordinates}
               zoom={13}
               style={{ height: "600px", width: "100%" }}
               whenReady={(mapInstance) => setMap(mapInstance.target)}
             >
+              <CustomPaneSetup />
               {map && (
                 <>
                   <FindMyLocationButton
@@ -555,6 +580,7 @@ export default function MapLayerTwo() {
                       dashArray: "4 10",
                     }}
                   />
+                  {/* show zone name */}
                   <GeoJSON
                     key={`zone`}
                     data={placeSelected?.zones?.features}

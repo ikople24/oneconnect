@@ -47,6 +47,8 @@ const ModalAddMarker = ({
   console.log(placeMarkerType);
   const [form] = Form.useForm();
   const [mainTypeSelected, setMainTypeSelected] = useState();
+  // use for render border in marker type selected
+  const [selectMarkerTypeId, setSelectMarkerTypeId] = useState(undefined);
   useEffect(() => {
     if (place && pointSelected) {
       form.setFieldsValue({
@@ -55,17 +57,18 @@ const ModalAddMarker = ({
         latitude: pointSelected[0] || "", // lat
         longitude: pointSelected[1] || "", // lng
       });
+      setMainTypeSelected(undefined);
+      setSelectMarkerTypeId(undefined);
     }
   }, [place, pointSelected, form]);
 
   const handleAddMarker = () => {
     form.validateFields().then((values) => {
-      const selectedType =  placeMarkerType.find((item) => item._id === values.markerType);
       console.log(values);
 
       const updatedValues = {
         ...values,
-        typeName: selectedType ? selectedType.type.name : undefined,
+        typeName: mainTypeSelected,
       };
 
       handleOK(updatedValues); // Pass updated values
@@ -73,13 +76,14 @@ const ModalAddMarker = ({
     });
   };
 
-
   const onSelectMarkerType = (value) => {
+    setSelectMarkerTypeId(value);
     const selectedType = placeMarkerType.find((item) => item._id === value);
     const typeName = selectedType ? selectedType.type.name : undefined;
 
     setMainTypeSelected(typeName); // Update state (if needed)
-    form.setFieldsValue({ typeName }); // Set value in the form
+    form.setFieldsValue({ markerType: value}); 
+    form.setFieldsValue({ typeName: typeName}); 
   };
 
   return (
@@ -118,6 +122,7 @@ const ModalAddMarker = ({
           xl: "35%",
           xxl: "35%",
         }}
+        
         bodyStyle={{ overflowY: "auto", maxHeight: "calc(100vh - 40vh)" }}
       >
         <div className="p-4">
@@ -129,7 +134,7 @@ const ModalAddMarker = ({
                   label="ชื่อหมุด"
                   rules={[{ required: true, message: "กรุณากรอกชื่อของหมุด" }]}
                 >
-                  <Input placeholder="e.g., ตลาดน้ำ" maxLength={20} />
+                  <Input placeholder="e.g., ตลาดน้ำ" maxLength={255} />
                 </Form.Item>
               </Col>
             </Row>
@@ -143,17 +148,37 @@ const ModalAddMarker = ({
                   ]}
                 >
                   {placeMarkerType ? (
-                    <Select
-                      onChange={onSelectMarkerType}
-                      placeholder="ประเภทข้อมูล"
-                      options={placeMarkerType.map((type) => ({
-                        label: type.name,
-                        value: type._id,
-                      }))}
-                    />
+                    <div className="flex gap-2 flex-wrap">
+                      {placeMarkerType.map((type) => (
+                        <Button
+                        
+                        name="markerType"
+                          className={`rounded-md border-gray-100   ${
+                            selectMarkerTypeId === type._id
+                              ? "border-green-800"
+                              : ""
+                          }`}
+                          key={type._id}
+                          onClick={() => onSelectMarkerType(type._id)}
+                        >
+                          {type.icon && (
+                            <span>
+                              <img
+                                className="w-5 h-5 rounded-full"
+                                src={type.icon}
+                                alt={type.name}
+                              />
+                            </span>
+                          )}
+                          {type.name}
+                        </Button>
+                      ))}
+                    </div>
                   ) : (
+                
                     <span>Loading...</span>
                   )}
+                 
                 </Form.Item>
               </Col>
             </Row>
