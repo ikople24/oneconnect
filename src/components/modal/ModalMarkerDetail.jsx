@@ -28,7 +28,7 @@ const ModalPlaceDetail = ({ marker }) => {
           <Col span={24}>
             <div className="text-2xl flex items-center justify-center gap-2 ">
               <div>{renderIcon(marker)}</div>
-              <div>{marker?.properties.markerInfo?.name}</div>
+              <div className="break-all">{marker?.properties.markerInfo?.name}</div>
             </div>
           </Col>
           <Col span={24}>
