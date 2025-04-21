@@ -114,7 +114,6 @@ const ModalAddMaker = ({
           </Form.Item>
         </Col>
       </Row>
-
       <Row gutter={8}>
         <Col span={24} sm={24} md={12} xl={12} xxl={12}>
           <Form.Item
