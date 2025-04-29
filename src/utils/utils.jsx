@@ -8,6 +8,12 @@ export const genderFormat = (gender) => {
   }
 };
 
+export const renderIcon = (marker) => {
+  const iconUrl = marker?.properties?.markerType?.icon;
+  if (!iconUrl) return null;
+
+  return <img width={25} height={25} className="text-center" src={iconUrl} />;
+};
 
 export function getLocationHandler({
   map,
