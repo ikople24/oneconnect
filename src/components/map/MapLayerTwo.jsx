@@ -39,12 +39,8 @@ import { LayerChangeHandler } from "./MapLayerTwo/LayerController";
 
 export default function MapLayerTwo() {
   const { checkIsAdminPlace, isLoaded } = useGlobalContext();
-  const {
-    placeSelected,
-    markers,
-    changeLayer,
-    resetSelected,
-  } = useGlobalMapContext();
+  const { placeSelected, markers, changeLayer, resetSelected } =
+    useGlobalMapContext();
   const markerRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
 
@@ -176,7 +172,7 @@ export default function MapLayerTwo() {
     }
   };
 
-    const handleView = (record) => {
+  const handleView = (record) => {
     setSelectedRecord(record);
     setModalMarkerIsVisible(!modalMarkerIsVisible);
   };
@@ -185,7 +181,7 @@ export default function MapLayerTwo() {
     changeLayer((prev) => !prev);
   };
 
-   return (
+  return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* แผนที่ */}
@@ -243,7 +239,10 @@ export default function MapLayerTwo() {
                 isAdmin={isAdmin}
                 handleView={handleView}
               />
-              <LayerChangeHandler setLayerMap={setLayerMap} geoJsonLayerRef={geoJsonLayerRef}/>
+              <LayerChangeHandler
+                setLayerMap={setLayerMap}
+                geoJsonLayerRef={geoJsonLayerRef}
+              />
               <LayerControllerHandler layerMap={layerMap} />
               <LocationMarker
                 isAdmin={isAdmin}
@@ -325,6 +324,7 @@ export default function MapLayerTwo() {
         data={selectedRecord}
       />
       <ModalEditMarkerDetail
+        setModalEditMarkerIsVisible={setModalEditMarkerIsVisible}
         visible={modalEditMarkerIsVisible}
         onCancel={() => setModalEditMarkerIsVisible(false)}
         data={selectedRecord || null}
