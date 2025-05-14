@@ -9,6 +9,7 @@ import {
   useMap,
 } from "react-leaflet";
 import styles from "@/components/map/tooltip.module.css";
+import "@/components/map/leaflet.css";
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
@@ -265,37 +266,48 @@ export default function MapLayerTwo() {
                   />
                   {/* show zone name */}
                   <GeoJSON
-                    key={`zone`}
+                    key={`zone-${layerMap}`}
                     data={placeSelected?.zones?.features}
-                    style={{
-                      color: "#f0ff",
-                      weight: 1,
-                      fillColor: "transparent",
-                      fillOpacity: 0.5,
+                    style={(feature) => {
+                      const color = feature.properties.color;
+                      return {
+                        color: "#f0ff",
+                        weight: 1,
+                        fillColor: color ?? "transparent",
+                        fillOpacity: 0.5,
+                      };
                     }}
                     ref={geoJsonLayerRef}
                     onEachFeature={(feature, layer) => {
-                      layer.on({
-                        click: handleMapClick,
-                      });
-                      if (
-                        feature.properties &&
-                        (feature.properties.Shot_Name ||
-                          feature.properties.community)
-                      ) {
-                        layer.bindTooltip(
-                          feature.properties.Shot_Name ||
-                            feature.properties.community,
-                          {
-                            permanent: true,
-                            direction: "center",
-                            className:
-                              layerMap !== "satellite"
-                                ? styles.tooltipSatellite
-                                : styles.tooltipRoadmap,
-                          }
-                        );
+                      const tooltipText =
+                        feature.properties?.Shot_Name ||
+                        feature.properties?.community;
+
+                      if (tooltipText) {
+                        layer.bindTooltip(tooltipText, {
+                          permanent: false, // Show on hover only
+                          direction: "center",
+                          interactive: false,
+                          className:
+                            layerMap !== "satellite"
+                              ? styles.tooltipSatellite
+                              : styles.tooltipRoadmap,
+                        });
+
+                        // Make sure tooltip only appears on hover
+                        layer.on("mouseover", () => {
+                          layer.openTooltip();
+                        });
+
+                        layer.on("mouseout", () => {
+                          layer.closeTooltip();
+                        });
                       }
+
+                      // Optional: click handling
+                      layer.on("click", () => {
+                        // Your logic
+                      });
                     }}
                   />
                 </React.Fragment>

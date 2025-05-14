@@ -19,15 +19,16 @@ import CreatePlaceForm from "../../../components/Form/Place/CreatePlaceForm";
 import ComponentGuard from "@/routes/ComponentGuard";
 import ApiClient from "@/utils/apiClient";
 import {
-  usePlace,
+  useAllPlace,
   usePlaceMarkerType,
   usePlaceMarkerTypeCreate,
   usePlaceMarkerTypeDelete,
 } from "@/hooks/user-places";
 import { useMarkerType } from "@/hooks/user-markers";
+import { MainPlaceComponent } from "@/components/admin/places/MainPlaceComponent";
 
 const PlaceDropdown = ({ setPlaceSelected, placeSelected, role }) => {
-  const { data: places, isLoading: isLoadingPlaces } = usePlace();
+  const { data: places, isLoading: isLoadingPlaces } = useAllPlace();
   if (isLoadingPlaces) return <Spin />;
   return (
     <Select
@@ -46,11 +47,7 @@ const PlaceDropdown = ({ setPlaceSelected, placeSelected, role }) => {
   );
 };
 
-const PlaceMarkerTypeTable = ({
-  handleEdit,
-  handleDelete,
-  placeSelected,
-}) => {
+const PlaceMarkerTypeTable = ({ handleEdit, handleDelete, placeSelected }) => {
   const { data: placeMarkerType, isLoading: isLoadingPlaceMarkerType } =
     usePlaceMarkerType(placeSelected || "");
   if (isLoadingPlaceMarkerType) return <Spin />;
@@ -137,7 +134,6 @@ const Places = () => {
     }
   }, [role, userPlaceId]);
 
- 
   const handleCreate = async (values) => {
     setLoading(true);
     console.log(values);
@@ -145,7 +141,6 @@ const Places = () => {
       markerTypes: [values.type],
     };
     try {
-   
       createPlaceMarkerType({ placeId: placeSelected, body: markerTypes });
       message.success("สร้างประเภทหมุดสำเร็จ!");
       form.resetFields();
@@ -182,9 +177,10 @@ const Places = () => {
 
   return (
     <>
-      <ComponentGuard allowedRoles={[Role.SUPER_ADMIN]}>
+      {/* <ComponentGuard allowedRoles={[Role.SUPER_ADMIN]}>
         <CreatePlaceForm />
-      </ComponentGuard>
+      </ComponentGuard> */}
+      <MainPlaceComponent />
       <TitlePage title={"จัดการหมุดเมือง"} />
       <div className="flex justify-between my-2">
         <PlaceDropdown
