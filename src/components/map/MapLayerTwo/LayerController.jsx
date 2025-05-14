@@ -49,24 +49,24 @@ export const LayerChangeHandler = ({setLayerMap, geoJsonLayerRef}) => {
         layerName = "roadmap";
         setLayerMap("roadmap");
       }
-      if (geoJsonLayerRef.current) {
-        console.log(layerName);
-        geoJsonLayerRef.current.eachLayer((layer) => {
-          const feature = layer.feature;
-          layer.unbindTooltip();
-          layer.bindTooltip(
-            feature.properties.Shot_Name || feature.properties.community,
-            {
-              permanent: true,
-              direction: "center",
-              className:
-                layerName !== "satellite"
-                  ? styles.tooltipSatellite
-                  : styles.tooltipRoadmap,
-            }
-          );
-        });
-      }
+      // if (geoJsonLayerRef.current) {
+      //   console.log(layerName);
+      //   geoJsonLayerRef.current.eachLayer((layer) => {
+      //     const feature = layer.feature;
+      //     layer.unbindTooltip();
+      //     layer.bindTooltip(
+      //       feature.properties.Shot_Name || feature.properties.community,
+      //       {
+      //         permanent: true,
+      //         direction: "center",
+      //         className:
+      //           layerName !== "satellite"
+      //             ? styles.tooltipSatellite
+      //             : styles.tooltipRoadmap,
+      //       }
+      //     );
+      //   });
+      // }
     },
   });
 

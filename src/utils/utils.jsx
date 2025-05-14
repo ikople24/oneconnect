@@ -1,4 +1,5 @@
-
+import toGeoJSON from "@mapbox/togeojson";
+import JSZip from "jszip";
 import * as L from "leaflet";
 export const genderFormat = (gender) => {
   if (gender === "Male") {
@@ -6,6 +7,19 @@ export const genderFormat = (gender) => {
   } else {
     return "หญิง";
   }
+};
+
+export const convertKMZFileToObject = async (file) => {
+  const zip = await JSZip.loadAsync(file);
+  const kmlEntry = Object.values(zip.files).find((f) =>
+    f.name.endsWith(".kml")
+  );
+  const kmlText = await kmlEntry.async("text");
+  const parser = new DOMParser();
+  const kmlDoc = parser.parseFromString(kmlText, "text/xml");
+  console.log("kmlDoc", kmlDoc);
+  const geojson = toGeoJSON.kml(kmlDoc);
+  return geojson
 };
 
 export const renderIcon = (marker) => {

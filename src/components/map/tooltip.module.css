@@ -2,21 +2,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 .tooltipSatellite{
   background-color: transparent;
-  color: #000000;
+  color: #000000 !important;
   border: none;
   box-shadow: none;
   -webkit-text-stroke: #000000 !important;
@@ -25,7 +13,7 @@
 }
 .tooltipRoadmap{
   background-color: transparent;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   border: none;
   box-shadow: none;
   -webkit-text-stroke: #000000 !important;

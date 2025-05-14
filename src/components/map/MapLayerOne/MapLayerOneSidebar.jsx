@@ -29,6 +29,7 @@ export default function MapLayerOneSidebar({  }) {
   if (placeListLoading) return <div>Loading...</div>;
   if (regionListLoading) return <div>Loading...</div>;
   if (provinceListLoading) return <div>Loading...</div>;
+  console.log('place list',placeList)
 
   const onChangePlace = (value) => {
     setPlaceSelected(value);
