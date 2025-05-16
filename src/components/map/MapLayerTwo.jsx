@@ -257,11 +257,11 @@ export default function MapLayerTwo() {
                     key={`place`}
                     data={placeSelected?.place?.features}
                     style={{
-                      color: "black",
+                      color: "#0d39ff",
                       weight: 4,
                       fillColor: "transparent",
                       fillOpacity: 0.5,
-                      dashArray: "4 10",
+                      // dashArray: "4 10",
                     }}
                   />
                   {/* show zone name */}
@@ -271,7 +271,8 @@ export default function MapLayerTwo() {
                     style={(feature) => {
                       const color = feature.properties.color;
                       return {
-                        color: "#f0ff",
+                        color: "#0d39ff",
+                        // color: "#fbff0f",
                         weight: 1,
                         fillColor: color ?? "transparent",
                         fillOpacity: 0.5,
