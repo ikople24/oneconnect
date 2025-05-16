@@ -6,8 +6,10 @@ import {
   Popup,
   LayerGroup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import styles from "@/components/map/tooltip.module.css";
+import "@/components/map/leaflet.css";
 import "leaflet/dist/leaflet.css";
 import React from "react";
 import { Button } from "antd";
@@ -28,16 +30,18 @@ import ComponentGuard from "@/routes/ComponentGuard";
 import ModalEditMarkerDetail from "../modal/ModalEditMarker";
 import { useGlobalMapContext } from "@/context/MapContext";
 import { useMarkerCreate } from "@/hooks/user-markers";
+import { getLocationHandler } from "@/utils/utils";
+import { FindMyLocationButton } from "./MapLayerTwo/FindMyLocationButton";
+import { LocationMarker } from "./MapLayerTwo/LocationMarker";
+import { FindMyPlace } from "./MapLayerTwo/FindMyPlaceButton";
+import { RenderMarker } from "./MapLayerTwo/RenderMarker";
+import { LayerControllerHandler } from "./MapLayerTwo/LayerController";
+import { LayerChangeHandler } from "./MapLayerTwo/LayerController";
 
 export default function MapLayerTwo() {
   const { checkIsAdminPlace, isLoaded } = useGlobalContext();
-  const {
-    placeSelected,
-    setPlaceSelected,
-    markers,
-    changeLayer,
-    resetSelected,
-  } = useGlobalMapContext();
+  const { placeSelected, markers, changeLayer, resetSelected } =
+    useGlobalMapContext();
   const markerRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
 
@@ -62,191 +66,15 @@ export default function MapLayerTwo() {
   const { mutate: mutateMarkerCreate } = useMarkerCreate();
   const getLocation = () => {
     setIsTriggerReq(true);
-    setIsLoadingLatLng(true);
-    setIsLatLngError(false);
-
-    if (map) {
-      map.locate({ setView: true, maxZoom: 15 }); // Request the user's location
-      map.off("locationfound").off("locationerror");
-      map.on("locationfound", (e) => {
-        const lat = e.latitude;
-        const long = e.longitude;
-        let isInsideZone = false;
-
-        for (const zoneGeoJSON of placeSelected?.zones?.features) {
-          const zoneLayer = L.geoJSON(zoneGeoJSON);
-          if (zoneLayer.getBounds().contains([lat, long])) {
-            setZoneSelected({
-              zoneName: zoneGeoJSON.properties.community,
-              zoneId: zoneGeoJSON._id,
-            });
-            isInsideZone = true;
-            if (markerRef.current) {
-              markerRef.current.remove();
-            }
-
-            // Create a new marker and store it in the reference
-            const newMarker = L.marker([lat, long])
-              .addTo(map)
-              .bindPopup("You are here and inside the zone!")
-              .openPopup();
-
-            markerRef.current = newMarker; // Store the new marker in the reference
-
-            setIsLatLngError(false);
-            map.flyTo([lat, long], 15);
-            setPointSelected([lat, long]);
-            break;
-          }
-        }
-
-        if (!isInsideZone) {
-          setIsLatLngError(true);
-          setIsLoadingLatLng(false);
-        }
-        console.log("ตำแหน่งที่ได้รับ:", lat, long);
-        setIsLoadingLatLng(false);
-      });
-
-      map.on("locationerror", (error) => {
-        console.error("เกิดข้อผิดพลาดในการดึงตำแหน่ง", error);
-        setIsLatLngError(true);
-        setIsLoadingLatLng(false);
-      });
-    } else {
-      console.log("Map not available.");
-      setIsLatLngError(true);
-      setIsLoadingLatLng(false);
-    }
-  };
-
-  const FindMyLocationButton = ({ map, setPointSelected, zonesGeoJSON }) => {
-    useEffect(() => {
-      if (!map || !zonesGeoJSON || zonesGeoJSON.length === 0) return;
-
-      const button = L.control({ position: "bottomright" });
-
-      button.onAdd = function () {
-        const div = L.DomUtil.create("button", "custom-location-button");
-        div.className =
-          "w-10 h-10 bg-white border border-gray-300 rounded-md flex focus:ring-2 justify-center items-center ";
-        // Create the image element from a CDN link
-        const icon = L.DomUtil.create("img", "location-icon");
-        icon.src = "https://cdn-icons-png.flaticon.com/512/3710/3710297.png"; // Replace with your CDN link
-        icon.alt = "Find me"; // Alt text for the image
-        icon.className =
-          "w-8 h-8 rounded-xl border shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer";
-
-        div.appendChild(icon);
-
-        div.onclick = function () {
-          map.off("locationfound").off("locationerror");
-          map
-            .locate()
-            .on("locationfound", function (e) {
-              const userLatLng = e.latlng;
-              console.log(e);
-              console.log(userLatLng);
-              const userIcon = L.icon({
-                iconUrl:
-                  "https://cdn-icons-png.flaticon.com/512/3710/3710297.png", // Replace with the path to your custom icon
-                iconSize: [32, 32], // Size of the icon [width, height]
-                iconAnchor: [16, 32], // Point of the icon which will correspond to the marker's location
-                popupAnchor: [0, -32], // Point from which the popup should open relative to the iconAnchor
-              });
-              if (markerRef.current) {
-                markerRef.current.remove();
-              }
-
-              const newMarker = L.marker(userLatLng, { icon: userIcon })
-                .addTo(map)
-                .bindPopup("You are here and inside the zone!")
-                .openPopup();
-
-              markerRef.current = newMarker;
-
-              map.flyTo(userLatLng, 15);
-            })
-            .on("locationerror", function () {
-              alert("Location access denied or unavailable.");
-            });
-        };
-
-        return div;
-      };
-
-      button.addTo(map);
-
-      return () => {
-        map.removeControl(button);
-      };
-    }, [map, setPointSelected, zonesGeoJSON]);
-
-    return null;
-  };
-  const FindMyPlace = ({ map }) => {
-    useEffect(() => {
-      const button = L.control({ position: "bottomright" });
-
-      button.onAdd = function () {
-        const div = L.DomUtil.create("button", "custom-location-button");
-        div.className =
-          "w-10 h-10 bg-white border border-gray-300 rounded-md flex focus:ring-2 justify-center items-center ";
-        // Create the image element from a CDN link
-        const icon = L.DomUtil.create("img", "location-icon");
-        icon.src = "https://cdn-icons-png.flaticon.com/512/2803/2803287.png"; // Replace with your CDN link
-        icon.alt = "Find me"; // Alt text for the image
-        icon.className =
-          "w-8 h-8 rounded-xl border shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer";
-
-        div.appendChild(icon);
-
-        div.onclick = function () {
-          map.flyTo(placeSelected?.location?.coordinates, 13);
-          if (markerRef.current) {
-          markerRef.current.remove();
-          }
-        };
-
-        return div;
-      };
-
-      button.addTo(map);
-
-      return () => {
-        map.removeControl(button);
-      };
-    }, [map]);
-
-    return null;
-  };
-  const LocationMarker = ({ isAdmin, setPointSelected, pointSelected }) => {
-    const LeafIcon = L.Icon.extend({
-      options: {},
+    getLocationHandler({
+      map,
+      placeSelected,
+      markerRef,
+      setZoneSelected,
+      setIsLatLngError,
+      setIsLoadingLatLng,
+      setPointSelected,
     });
-
-    const currentMarkerIcon = new LeafIcon({
-      iconUrl: "https://cdn-icons-png.flaticon.com/512/14090/14090313.png",
-      iconSize: [40, 45],
-      iconAnchor: [20, 40],
-      popupAnchor: [0, -40],
-    });
-    return pointSelected && isAdmin ? (
-      <Marker position={pointSelected} icon={currentMarkerIcon}>
-        <Popup>
-          <Button
-            type="primary"
-            size=""
-            onClick={() => {
-              console.log("ZONE", zoneSelected);
-              setIsModalVisible(!isModalVisible);
-            }}
-          >
-            ปักหมุดแผนที่
-          </Button>
-        </Popup>
-      </Marker>
-    ) : null;
   };
 
   const handleMapClick = (e) => {
@@ -263,65 +91,6 @@ export default function MapLayerTwo() {
       zoneId: zoneId,
     });
     console.log(`Clicked on Zone: ${zoneName} (ID: ${zoneId})`);
-  };
-
-  const RenderMarker = ({ markers }) => {
-    const getIcon = (iconUrl) => {
-      console.log(iconUrl);
-      if (!iconUrl) {
-        // Return a default icon when iconUrl is missing
-        return L.icon({
-          iconUrl:
-            "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-        });
-      }
-
-      return L.icon({
-        // iconUrl: iconBaseUrl + iconUrl,
-        iconUrl: iconUrl,
-        iconSize: [32, 32], // Adjust size [width, height]
-        iconAnchor: [16, 32], // Point of the icon that corresponds to marker's location
-        popupAnchor: [0, -32],
-      });
-    };
-
-    return (
-      <>
-        {markers.map((marker) => {
-          return isAdmin ? (
-            <Marker
-              key={marker._id}
-              position={marker.geometry.coordinates}
-              icon={getIcon(marker.properties?.markerType?.icon)}
-            >
-              <Popup>
-                <Button type="primary" onClick={() => handleView(marker)}>
-                  ดูรายละเอียด
-                </Button>
-              </Popup>
-            </Marker>
-          ) : (
-            <Marker
-              key={marker._id}
-              position={marker.geometry.coordinates}
-              icon={getIcon(marker.properties?.markerType?.icon)}
-            >
-              <Popup>
-                <div className="py-2">
-                  ชื่อ : {marker.properties?.markerInfo.name}
-                </div>
-                <div className="py-2">
-                  ประเภท : {marker.properties?.markerType?.name}
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
-      </>
-    );
   };
 
   // method สำหรับ เพิ่มหมุด
@@ -366,7 +135,7 @@ export default function MapLayerTwo() {
           },
           markerInfo: {
             name: values.name,
-            description: "",
+            description: values.description,
           },
           properties: {
             firstName: values.firstName,
@@ -395,7 +164,6 @@ export default function MapLayerTwo() {
           );
         }
       }
-      // const url = `${ENDPOINT.CREATE_MARKER}`;
       const body = bodyData;
       // mutate and refetch
       mutateMarkerCreate(body);
@@ -403,74 +171,6 @@ export default function MapLayerTwo() {
     } catch (error) {
       console.log("error", error);
     }
-  };
-
-  const LayerChangeHandler = () => {
-    useMapEvents({
-      baselayerchange: (e) => {
-        let layerName = "";
-        console.log("e", e);
-        if (e.name === "แผนที่ภาพถ่ายดาวเทียม") {
-          layerName = "satellite";
-          setLayerMap("satellite");
-        } else if (e.name === "แผนที่ถนน") {
-          layerName = "roadmap";
-          setLayerMap("roadmap");
-        }
-        if (geoJsonLayerRef.current) {
-          console.log(layerName);
-          geoJsonLayerRef.current.eachLayer((layer) => {
-            const feature = layer.feature;
-            layer.unbindTooltip();
-            layer.bindTooltip(
-              feature.properties.Shot_Name || feature.properties.community,
-              {
-                permanent: true,
-                direction: "center",
-                className:
-                  layerName !== "satellite"
-                    ? styles.tooltipSatellite
-                    : styles.tooltipRoadmap,
-              }
-            );
-          });
-        }
-      },
-    });
-
-    return null;
-  };
-  const LayerControllerHandler = () => {
-    const layers = useMemo(
-      () => (
-        <LayersControl position="topright">
-          <LayersControl.BaseLayer
-            name={"แผนที่ภาพถ่ายดาวเทียม"}
-            checked={layerMap === "satellite"}
-          >
-            <TileLayer
-              url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-              attribution="&copy; Google Maps"
-              subdomains={["mt0", "mt1", "mt2", "mt3"]}
-              maxZoom={20}
-            />
-          </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer
-            name={"แผนที่ถนน"}
-            checked={layerMap === "roadmap"}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              maxZoom={20}
-            />
-          </LayersControl.BaseLayer>
-        </LayersControl>
-      ),
-      []
-    );
-
-    return layers;
   };
 
   const handleView = (record) => {
@@ -526,20 +226,29 @@ export default function MapLayerTwo() {
                     map={map}
                     setPointSelected={setPointSelected}
                     zonesGeoJSON={placeSelected?.zones?.features}
+                    markerRef={markerRef}
                   />
                   <FindMyPlace
                     map={map}
-                    setPointSelected={setPointSelected}
-                    zonesGeoJSON={placeSelected?.zones?.features}
+                    placeSelected={placeSelected}
+                    markerRef={markerRef}
                   />
                 </>
               )}
-              <RenderMarker markers={markers} />
-              <LayerChangeHandler />
-              <LayerControllerHandler />
+              <RenderMarker
+                markers={markers}
+                isAdmin={isAdmin}
+                handleView={handleView}
+              />
+              <LayerChangeHandler
+                setLayerMap={setLayerMap}
+                geoJsonLayerRef={geoJsonLayerRef}
+              />
+              <LayerControllerHandler layerMap={layerMap} />
               <LocationMarker
                 isAdmin={isAdmin}
-                setPointSelected={setPointSelected}
+                setIsModalVisible={setIsModalVisible}
+                isModalVisible={isModalVisible}
                 pointSelected={pointSelected}
               />
               {
@@ -548,45 +257,58 @@ export default function MapLayerTwo() {
                     key={`place`}
                     data={placeSelected?.place?.features}
                     style={{
-                      color: "black",
+                      color: "#0d39ff",
                       weight: 4,
                       fillColor: "transparent",
                       fillOpacity: 0.5,
-                      dashArray: "4 10",
+                      // dashArray: "4 10",
                     }}
                   />
+                  {/* show zone name */}
                   <GeoJSON
-                    key={`zone`}
+                    key={`zone-${layerMap}`}
                     data={placeSelected?.zones?.features}
-                    style={{
-                      color: "#f0ff",
-                      weight: 1,
-                      fillColor: "transparent",
-                      fillOpacity: 0.5,
+                    style={(feature) => {
+                      const color = feature.properties.color;
+                      return {
+                        color: "#0d39ff",
+                        // color: "#fbff0f",
+                        weight: 1,
+                        fillColor: color ?? "transparent",
+                        fillOpacity: 0.5,
+                      };
                     }}
                     ref={geoJsonLayerRef}
                     onEachFeature={(feature, layer) => {
-                      layer.on({
-                        click: handleMapClick,
-                      });
-                      if (
-                        feature.properties &&
-                        (feature.properties.Shot_Name ||
-                          feature.properties.community)
-                      ) {
-                        layer.bindTooltip(
-                          feature.properties.Shot_Name ||
-                            feature.properties.community,
-                          {
-                            permanent: true,
-                            direction: "center",
-                            className:
-                              layerMap !== "satellite"
-                                ? styles.tooltipSatellite
-                                : styles.tooltipRoadmap,
-                          }
-                        );
+                      const tooltipText =
+                        feature.properties?.Shot_Name ||
+                        feature.properties?.community;
+
+                      if (tooltipText) {
+                        layer.bindTooltip(tooltipText, {
+                          permanent: false, // Show on hover only
+                          direction: "center",
+                          interactive: false,
+                          className:
+                            layerMap !== "satellite"
+                              ? styles.tooltipSatellite
+                              : styles.tooltipRoadmap,
+                        });
+
+                        // Make sure tooltip only appears on hover
+                        layer.on("mouseover", () => {
+                          layer.openTooltip();
+                        });
+
+                        layer.on("mouseout", () => {
+                          layer.closeTooltip();
+                        });
                       }
+
+                      // Optional: click handling
+                      layer.on("click", () => {
+                        // Your logic
+                      });
                     }}
                   />
                 </React.Fragment>
@@ -615,6 +337,7 @@ export default function MapLayerTwo() {
         data={selectedRecord}
       />
       <ModalEditMarkerDetail
+        setModalEditMarkerIsVisible={setModalEditMarkerIsVisible}
         visible={modalEditMarkerIsVisible}
         onCancel={() => setModalEditMarkerIsVisible(false)}
         data={selectedRecord || null}

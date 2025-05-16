@@ -57,6 +57,41 @@ export function useMarkerCreate() {
   });
 }
 
+export function useMarkerUpdate() {
+  const queryClient = useQueryClient();
+  const { placeSelected } = useGlobalMapContext();
+  const { isAdmin } = useGlobalContext();
+  return useMutation({
+    mutationFn: async ({ id, body }) => {
+      const payload = {
+        ...body,
+        markerInfo: {
+          name: body.name,
+          description: body.description,
+        },
+        properties: {
+          openingDate: body.openingDate,
+          openingTime: body.openingTime,
+          firstName: body.firstName,
+          lastName: body.lastName,
+          gender: body.gender,
+          idCard: body.idCard,
+          telNumber: body.telNumber,
+          birthdate: body.birthdate,
+          age: body.age,
+        },
+      };
+      await apiClient.patch(`${ENDPOINT.PATCH_MARKERS_ADMIN}/${id}`, payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["markers", placeSelected?._id, isAdmin],
+      });
+      return true
+    },
+  });
+}
+
 export function useMarkerDelete() {
   const { isAdmin } = useGlobalContext();
   const queryClient = useQueryClient();
@@ -90,7 +125,7 @@ export function useMarkerDelete() {
 export function useMainMarkerType() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["mainMarkerType"],
-    queryFn: async () => (await apiClient.get(`${ENDPOINT.GET_ALL_MAIN_MARKER}`)),
+    queryFn: async () => await apiClient.get(`${ENDPOINT.GET_ALL_MAIN_MARKER}`),
   });
   return { data, isLoading, isError };
 }
@@ -109,8 +144,11 @@ export function useMainMarkerTypeCreate() {
 export function useMainMarkerTypeEdit() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({mainMarkerId, body}) =>
-      await apiClient.patch(`${ENDPOINT.UPDATE_MAIN_MARKER}/${mainMarkerId}`, body),
+    mutationFn: async ({ mainMarkerId, body }) =>
+      await apiClient.patch(
+        `${ENDPOINT.UPDATE_MAIN_MARKER}/${mainMarkerId}`,
+        body
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mainMarkerType"] });
     },
@@ -128,16 +166,18 @@ export function useMainMarkerTypeDelete() {
   });
 }
 
-
 export function useMarkerType(placeId) {
-  console.log('placeId',placeId)
+  console.log("placeId", placeId);
   const params = new URLSearchParams();
   if (placeId) {
     params.append("placeId", placeId);
   }
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["markerType", placeId],
-    queryFn: async () => (await apiClient.get(`${ENDPOINT.GET_ALL_MARKER_TYPE}?${params.toString()}`)),
+    queryFn: async () =>
+      await apiClient.get(
+        `${ENDPOINT.GET_ALL_MARKER_TYPE}?${params.toString()}`
+      ),
   });
   return { data, isLoading, isError, refetch };
 }
@@ -156,8 +196,11 @@ export function useMarkerTypeCreate() {
 export function useMarkerTypeEdit() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({markerTypeId, body}) =>
-      await apiClient.patchBuffer(`${ENDPOINT.EDIT_MARKER_TYPE}/${markerTypeId}`, body),
+    mutationFn: async ({ markerTypeId, body }) =>
+      await apiClient.patchBuffer(
+        `${ENDPOINT.EDIT_MARKER_TYPE}/${markerTypeId}`,
+        body
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["markerType"] });
     },
@@ -174,6 +217,3 @@ export function useMarkerTypeDelete() {
     },
   });
 }
-  
-
-  

@@ -10,8 +10,9 @@ export const ENDPOINT = {
   //TODO: Places
   //POST
   CREATE_PLACE: `/places`,
+  CREATE_PLACE_DASHBOARD: `/places/create-dashboard`,
   //PATCH
-  UPDATE_PLACE: `/places/`, // PARAM
+  UPDATE_PLACE: `/places/update`, // PARAM
   ADD_PLACE_MARKER_TYPE: `/places/add-marker`,
   REMOVE_PLACE_MARKER_TYPE: `/places/remove-marker`,
 
