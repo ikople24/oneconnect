@@ -25,17 +25,17 @@ COPY . .
 # Build the frontend application (Vite will use the ENV variables)
 RUN npm run build
 
-# Stage 2: Serve the application using Nginx
-FROM nginx:alpine
+# # Stage 2: Serve the application using Nginx
+# FROM nginx:alpine
 
-# Copy custom nginx configuration if you have one
-COPY .nginx.conf /etc/nginx/nginx.conf
+# # Copy custom nginx configuration if you have one
+# COPY .nginx.conf /etc/nginx/nginx.conf
 
-# Copy the built frontend files from the build stage
-COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
+# # Copy the built frontend files from the build stage
+# COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
 
-# Expose port 80 for the Nginx server
-EXPOSE 80
+# # Expose port 80 for the Nginx server
+# EXPOSE 80
 
-# Start the Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# # Start the Nginx server
+# CMD ["nginx", "-g", "daemon off;"]
