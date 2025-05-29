@@ -14,8 +14,7 @@ export const LayerControllerHandler = ({layerMap}) => {
           <TileLayer
             // url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
             url="https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/{z}/{x}/{y}.jpeg?key=85B54E0BD1F24BD5957582838B21094D"
-            // attribution="&copy; Google Maps"
-            // subdomains={["mt0", "mt1", "mt2", "mt3"]}
+            attribution="&copy; powered by <a href='https://www.gistda.or.th/'>GISTDA</a>"
             maxZoom={20}
           />
         </LayersControl.BaseLayer>
