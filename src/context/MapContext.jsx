@@ -34,7 +34,9 @@ export const MapContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (!placeSelected?._id) return;
-
+    if(isLoadingMarkers){
+      console.log('loadddddd', markerUser)
+    }
     const isDataReady = (data, isLoading, isError) =>
       !isLoading && !isError && data;
 
@@ -42,7 +44,7 @@ export const MapContextProvider = ({ children }) => {
     const filterMarkers = (data) =>
       enabledMarkers.length > 0
         ? data.filter((marker) =>
-            enabledMarkers.includes(marker.properties.markerType._id)
+            enabledMarkers.includes(marker?.properties?.markerType?._id)
           )
         : data;
 
@@ -94,7 +96,7 @@ export const MapContextProvider = ({ children }) => {
       markers,
       enabledMarkers,
       setEnabledMarkers,
-      resetSelected
+      resetSelected,
     }),
     [
       placeSelected,
@@ -109,7 +111,7 @@ export const MapContextProvider = ({ children }) => {
       setCoordinateSelected,
       markers,
       enabledMarkers,
-      resetSelected
+      resetSelected,
     ]
   );
 

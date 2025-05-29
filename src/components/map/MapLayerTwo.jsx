@@ -28,6 +28,7 @@ import Role from "@/enum/role.enum";
 import MainMarkerTypeEnum from "@/enum/main-marker-type";
 import ComponentGuard from "@/routes/ComponentGuard";
 import ModalEditMarkerDetail from "../modal/ModalEditMarker";
+import ModalMaintainMarker from "../modal/ModalMaintainMarker";
 import { useGlobalMapContext } from "@/context/MapContext";
 import { useMarkerCreate } from "@/hooks/user-markers";
 import { getLocationHandler } from "@/utils/utils";
@@ -56,6 +57,8 @@ export default function MapLayerTwo() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMarkerIsVisible, setModalMarkerIsVisible] = useState(false);
   const [modalEditMarkerIsVisible, setModalEditMarkerIsVisible] =
+    useState(false);
+  const [modalMaintainMarkerIsVisible, setModalMaintainMarkerIsVisible] =
     useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isLoadingLatLng, setIsLoadingLatLng] = useState(false);
@@ -182,6 +185,12 @@ export default function MapLayerTwo() {
     changeLayer((prev) => !prev);
   };
 
+  const handleMaintainView = (record) => {
+    console.log("main tain nainn", record);
+    setSelectedRecord(record);
+    setModalMaintainMarkerIsVisible(!modalMaintainMarkerIsVisible);
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -239,6 +248,7 @@ export default function MapLayerTwo() {
                 markers={markers}
                 isAdmin={isAdmin}
                 handleView={handleView}
+                handleMaintainView={handleMaintainView}
               />
               <LayerChangeHandler
                 setLayerMap={setLayerMap}
@@ -306,8 +316,8 @@ export default function MapLayerTwo() {
                       }
 
                       // Optional: click handling
-                      layer.on("click", () => {
-                        // Your logic
+                      layer.on({
+                        click: handleMapClick,
                       });
                     }}
                   />
@@ -335,6 +345,11 @@ export default function MapLayerTwo() {
         visible={modalMarkerIsVisible}
         onCancel={() => setModalMarkerIsVisible(false)}
         data={selectedRecord}
+      />
+      <ModalMaintainMarker
+        visible={modalMaintainMarkerIsVisible}
+        onCancel={() => setModalMaintainMarkerIsVisible(false)}
+        marker={selectedRecord}
       />
       <ModalEditMarkerDetail
         setModalEditMarkerIsVisible={setModalEditMarkerIsVisible}
