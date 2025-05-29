@@ -24,7 +24,7 @@ const EditPlaceForm = ({
       const valueTmp = { ...initialValues };
       valueTmp.latitude = initialValues.location.coordinates[0];
       valueTmp.longitude = initialValues.location.coordinates[1];
-      valueTmp.province = initialValues.province._id;
+      valueTmp.province = initialValues?.province?._id;
       form.setFieldsValue(valueTmp);
     }
   }, [initialValues]);

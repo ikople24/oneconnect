@@ -2,8 +2,7 @@ import { Marker, Popup } from "react-leaflet";
 import * as L from "leaflet";
 import { Button } from "antd";
 
-
-export const RenderMarker = ({ markers, isAdmin, handleView }) => {
+export const RenderMarker = ({ markers, isAdmin, handleView, handleMaintainView }) => {
   const getIcon = (iconUrl) => {
     console.log(iconUrl);
     if (!iconUrl) {
@@ -63,6 +62,13 @@ export const RenderMarker = ({ markers, isAdmin, handleView }) => {
               <div className="py-2">
                 ประเภท : {marker.properties?.markerType?.name}
               </div>
+              {marker.properties.markerType.type.name === "Repair" && (
+                <div className="text-center">
+                  <Button type="primary" onClick={() => handleMaintainView(marker)}>
+                    ดูรายละเอียด
+                  </Button>
+                </div>
+              )}
             </Popup>
           </Marker>
         );

@@ -25,6 +25,7 @@ export function useMarkerAdmin(placeId) {
       apiClient.post(ENDPOINT.GET_ALL_MARKER_ADMIN + `?placeId=${placeId}`, {}),
     enabled: !!placeId && isAdmin,
   });
+  console.log("data", data);
   return { data, isLoading, isError };
 }
 
