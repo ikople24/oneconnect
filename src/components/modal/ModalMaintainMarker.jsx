@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Row, Col,Image } from "antd";
+import { Modal, Button, Row, Col, Image } from "antd";
 import { renderIcon } from "@/utils/utils";
 const ModalMaintainMarkerDetail = ({ visible, onCancel, marker }) => {
   if (!marker) return null;
@@ -25,10 +25,10 @@ const ModalMaintainMarkerDetail = ({ visible, onCancel, marker }) => {
               </Col>
               <Col span={24}>
                 <div>
-                  <div>รายละเอียด:</div>
-                  <div className="border py-0.5 px-1 rounded-md bg-gray-100">
-                    {marker?.properties?.markerInfo?.description || "-"}
-                  </div>
+                  <div>ประเภท: </div>
+                  <span className="border py-0.5 px-1 rounded-md bg-gray-100">
+                    {marker?.properties?.markerType?.name || "-"}
+                  </span>
                 </div>
               </Col>
               <Col span={24}>
@@ -41,21 +41,30 @@ const ModalMaintainMarkerDetail = ({ visible, onCancel, marker }) => {
               </Col>
               <Col span={24}>
                 <div>
+                  <div>รายละเอียด:</div>
+                  <div className="border py-0.5 px-1 rounded-md bg-gray-100">
+                    {marker?.properties?.markerInfo?.description || "-"}
+                  </div>
+                </div>
+              </Col>
+
+              <Col span={24}>
+                <div>
                   <p>รูปภาพ:</p>
                   <Image.PreviewGroup>
                     {marker?.properties?.markerInfo?.image?.length > 0
                       ? marker?.properties?.markerInfo?.image.map((item) => {
-                        return (
-                          <Image
-                            key={item}
-                            src={item}
-                            width={200}
-                            height={200}
-                            alt=""
-                            className=""
-                          />
-                        );
-                      })
+                          return (
+                            <Image
+                              key={item}
+                              src={item}
+                              width={200}
+                              height={200}
+                              alt=""
+                              className=""
+                            />
+                          );
+                        })
                       : "-"}
                   </Image.PreviewGroup>
                   {/* <div className="flex items-center gap-2">
