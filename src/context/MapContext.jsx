@@ -34,19 +34,31 @@ export const MapContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (!placeSelected?._id) return;
-    if(isLoadingMarkers){
-      console.log('loadddddd', markerUser)
+    if (isLoadingMarkers) {
+      console.log("loadddddd", markerUser);
     }
     const isDataReady = (data, isLoading, isError) =>
       !isLoading && !isError && data;
 
     // filter marker in local cause tanstack cache
-    const filterMarkers = (data) =>
-      enabledMarkers.length > 0
-        ? data.filter((marker) =>
-            enabledMarkers.includes(marker?.properties?.markerType?._id)
-          )
-        : data;
+   const filterMarkers = (data) => {
+     console.log("before filter", enabledMarkers);
+
+     const filterData =
+       enabledMarkers.length > 0
+         ? data.filter((marker) => {
+             const markerTypeId = marker?.properties?.markerType?._id;
+             return (
+               enabledMarkers.includes(markerTypeId) ||
+               marker?.properties?.markerType?.type.name === "Repair"
+             );
+           })
+         : data;
+
+     console.log("after filter", filterData);
+     return filterData;
+   };
+
 
     if (
       isAdmin &&
